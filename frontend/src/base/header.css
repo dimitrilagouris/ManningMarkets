@@ -1,0 +1,172 @@
+/** { box-sizing: border-box; }*/
+html,body {
+  height: 100%; margin: 0;
+}
+
+body {
+  font-family: -apple-system, 'Apercu', "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #111;
+  background: #ffffff;
+}
+
+.site-header {
+  background: #ffffff;
+  border-bottom: 1px solid #e6e6e6;
+  height: 80px;
+  align-content: center;
+}
+
+/* makes our header into 3 main columns: left auto, centre fluid, right auto */
+.site-header__inner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 30px;
+  height: 80px;
+  padding: 0 20px;
+}
+
+.site-header__brand.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+  white-space: nowrap;
+}
+
+.brand__title {
+  font-family: "LyonDisplay";
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--usyd-grey-800);
+}
+
+.brand__subtitle {
+  font-family: "Georgia", Times, serif;
+  font-size: 13px;
+  color: #666;
+  margin-top: 2px;
+}
+
+.site-header__search.search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  height: 60px;
+}
+.search__input {
+  flex: 1 1 auto;
+  padding: 0 20px;
+  border: none;
+  background: var(--usyd-grey-100);
+  border-radius: 6px 0 0 6px;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: 'Apercu';
+  color: var(--usyd-grey-800);
+  outline: none;
+  height: 100%;
+}
+
+.search__input::placeholder {
+  color: var(--usyd-grey-500);
+  font-weight: 500;
+}
+
+.search__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 100%;
+  margin: 0;
+  border: none;
+  background: var(--usyd-red);
+  border-radius: 0 6px 6px 0;
+  cursor: pointer;
+  box-shadow: none;
+  padding: 0;
+  transition: var(--transition-base);
+}
+
+.search__submit svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+  color: white !important;
+  transition: var(--transition-base);
+  stroke-width: 2;
+}
+
+.search__submit:hover {
+  background: white;
+  border: 2px solid var(--usyd-red);
+}
+
+.search__submit:hover svg {
+  color: var(--usyd-red) !important
+}
+
+.site-header__right {
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+}
+
+
+.main-nav__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: stretch;
+  height: 80px;
+}
+
+.main-nav__item {
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+}
+
+.main-nav__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  font-size: 14px;
+  color: var(--usyd-grey-800);
+  text-decoration: none;
+  font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  height: 100%;
+  transition: var(--transition-base);
+}
+
+.main-nav__link:hover,
+.main-nav__link:active {
+  background: var(--usyd-red);
+  color: white;
+  text-decoration: none;
+}
+
+
+
+
+@media (max-width: 780px) {
+  .site-header__inner { 
+    grid-template-columns: auto 1fr auto; 
+    gap: 12px; 
+    padding: 0 12px; 
+  }
+  .main-nav__list { 
+    display: none; 
+  }
+}
