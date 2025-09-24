@@ -43,7 +43,7 @@ body {
   font-family: LyonDisplay;
   font-style: italic;
   font-size: 13px;
-  color: #666;
+  color: var(--usyd-grey-800);
   margin-top: 2px;
 }
 
