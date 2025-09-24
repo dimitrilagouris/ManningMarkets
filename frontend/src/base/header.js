@@ -1,11 +1,10 @@
+// Header.jsx
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
-
+import { faMagnifyingGlass, faUser } from '@fortawesome/free-solid-svg-icons'
 import React from 'react';
 
 import './header.css';
 import '../base.css';
-
 
 function Header() {
   return (
@@ -13,7 +12,7 @@ function Header() {
           <div className="site-header__inner">
 
               <div className="site-header__brand brand">
-                  <div className="brand__title">MANNING MARKETS</div>
+                  <div className="brand__title">Manning Markets</div>
                   <div className="brand__subtitle">Celebrating 175 years</div>
               </div>
 
@@ -36,6 +35,10 @@ function Header() {
                           </li>
                       </ul>
                   </nav>
+
+                  <button className="user-button" type="button" aria-label="Account">
+                    <FontAwesomeIcon icon={faUser} />
+                  </button>
               </div>
 
           </div>

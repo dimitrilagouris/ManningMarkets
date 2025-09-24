@@ -1,29 +1,27 @@
-/** { box-sizing: border-box; }*/
 html,body {
   height: 100%; margin: 0;
 }
 
 body {
   font-family: -apple-system, 'Apercu', "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  color: #111;
+  color: var(--usyd-grey-800);
   background: #ffffff;
 }
 
 .site-header {
-  background: #ffffff;
-  border-bottom: 1px solid #e6e6e6;
+  background: white;
+  border-bottom: 1px solid var(--usyd-grey-200);
   height: 80px;
   align-content: center;
 }
 
-/* makes our header into 3 main columns: left auto, centre fluid, right auto */
 .site-header__inner {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 30px;
   height: 80px;
-  padding: 0 20px;
+  padding: 0 0 0 20px;
 }
 
 .site-header__brand.brand {
@@ -36,13 +34,14 @@ body {
 
 .brand__title {
   font-family: "LyonDisplay";
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 400;
   color: var(--usyd-grey-800);
 }
 
 .brand__subtitle {
-  font-family: "Georgia", Times, serif;
+  font-family: LyonDisplay;
+  font-style: italic;
   font-size: 13px;
   color: #666;
   margin-top: 2px;
@@ -60,15 +59,15 @@ body {
 .search__input {
   flex: 1 1 auto;
   padding: 0 20px;
-  border: none;
   background: var(--usyd-grey-100);
-  border-radius: 6px 0 0 6px;
+  border-radius: 5px 0 0 5px;
   font-size: 15px;
   font-weight: 500;
   font-family: 'Apercu';
   color: var(--usyd-grey-800);
-  outline: none;
   height: 100%;
+  border: 0px solid transparent;
+  transition: var(--transition-base);
 }
 
 .search__input::placeholder {
@@ -84,7 +83,7 @@ body {
   height: 100%;
   margin: 0;
   border: none;
-  background: var(--usyd-red);
+  background: var(--usyd-red-dark);
   border-radius: 0 6px 6px 0;
   cursor: pointer;
   box-shadow: none;
@@ -103,11 +102,11 @@ body {
 
 .search__submit:hover {
   background: white;
-  border: 2px solid var(--usyd-red);
+  border: 2px solid var(--usyd-red-dark);
 }
 
 .search__submit:hover svg {
-  color: var(--usyd-red) !important
+  color: var(--usyd-red-dark) !important;
 }
 
 .site-header__right {
@@ -152,7 +151,7 @@ body {
 
 .main-nav__link:hover,
 .main-nav__link:active {
-  background: var(--usyd-red);
+  background: var(--usyd-red-dark);
   color: white;
   text-decoration: none;
 }
@@ -161,12 +160,54 @@ body {
 
 
 @media (max-width: 780px) {
-  .site-header__inner { 
-    grid-template-columns: auto 1fr auto; 
-    gap: 12px; 
-    padding: 0 12px; 
+  .site-header__inner {
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+    padding: 0 12px;
   }
-  .main-nav__list { 
-    display: none; 
+  .main-nav__list {
+    display: none;
   }
 }
+
+
+
+
+.site-header__right {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  gap: 12px;
+}
+
+.user-button {
+  width: 70px;
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-base);
+  background: var(--usyd-red-dark);
+  font-size: 16px;
+  padding: 0;
+  box-sizing: border-box;
+  align-self: center;
+}
+
+.user-button:hover {
+  background: white;
+  border: 2px solid var(--usyd-red);
+}
+
+.user-button .svg-inline--fa {
+  width: 18px;
+  height: 18px;
+  display: block;
+  color: white;
+}
+
+

@@ -1,5 +1,6 @@
 import React from 'react';
 import Header from './base/header';
+import Login from './login/login';
 import Market from './markets/markets';
 import './App.css';
 
@@ -70,28 +71,28 @@ function App() {
   return (
     <div className="App">
       <Header />
+        <Login />
+      {/*<main className="main-content">*/}
+      {/*  <div className="markets-container">*/}
+      {/*    <Market*/}
+      {/*      marketName="Who will be elected USU President?"*/}
+      {/*      events={presidentialPrediction}*/}
+      {/*      volume="$12,840"*/}
+      {/*    />*/}
 
-      <main className="main-content">
-        <div className="markets-container">
-          <Market
-            marketName="Who will be elected USU President?"
-            events={presidentialPrediction}
-            volume="$12,840"
-          />
+      {/*    <Market*/}
+      {/*      marketName="How will transport to the new campus be solved?"*/}
+      {/*      events={busRouteExpansion}*/}
+      {/*      volume="$5,210"*/}
+      {/*    />*/}
 
-          <Market
-            marketName="How will transport to the new campus be solved?"
-            events={busRouteExpansion}
-            volume="$5,210"
-          />
-
-          <Market
-            marketName="Who will win the next inter-varsity grand final?"
-            events={grandFinalWinner}
-            volume="$7,690"
-          />
-        </div>
-      </main>
+      {/*    <Market*/}
+      {/*      marketName="Who will win the next inter-varsity grand final?"*/}
+      {/*      events={grandFinalWinner}*/}
+      {/*      volume="$7,690"*/}
+      {/*    />*/}
+      {/*  </div>*/}
+      {/*</main>*/}
     </div>
   );
 }

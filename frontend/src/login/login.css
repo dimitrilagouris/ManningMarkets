@@ -1,0 +1,257 @@
+.login-page {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  background: white;
+  box-sizing: border-box;
+  font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: var(--usyd-grey-800);
+  overflow-x: hidden;
+}
+
+.top-band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 110px;
+  background: var(--usyd-red-light);
+  z-index: 0;
+}
+
+.login-image {
+  grid-column: 1 / 2;
+  width: 100%;
+  height: calc(80vh);
+  max-height: 980px;
+  align-self: start;
+  transform: translateY(56px);
+  background-image: url('/Users/dimitrilagouris/Desktop/ELEC3609/Group Assignment 1/FRI-13-16-09/ManningMarkets/frontend/public/images/login-hero.jpg');
+  background-size: cover;
+  background-position: center 30%;
+  z-index: 1;
+  margin: 0;
+}
+
+.login-side {
+  grid-column: 2 / 3;
+  background: var(--usyd-red-light);
+  padding: 40px 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  align-self: start;
+  max-height: calc(80vh - 48px);
+  overflow: visible;
+  z-index: 0;
+}
+
+.login-side__content {
+  max-width: 520px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.login-side__title {
+  font-family: LyonDisplay, Apercu, sans-serif;
+  font-size: 40px;
+  margin: 0 0 16px 0;
+  color: var(--usyd-grey-800);
+  font-weight: 400;
+  line-height: 1.02;
+}
+
+.login-side__lead {
+  margin: 0 0 24px 0;
+  color: var(--usyd-grey-800);
+  font-family: -apple-system, 'Apercu', "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+.login-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 0 20px 0;
+}
+
+.login-list__item {
+  background: transparent;
+  border-bottom: 1px solid rgba(20, 20, 20, 0.07);
+  padding: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-sizing: border-box;
+}
+
+.login-field__control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--usyd-grey-100);
+  border-radius: var(--border-rad-main);
+  padding: 12px 14px;
+  box-sizing: border-box;
+  border: 2px solid transparent;
+  transition: var(--transition-base);
+}
+
+.login-field__control:focus-within {
+  border-color: var(--select-blue);
+  box-shadow: 0 8px 22px rgba(0, 122, 255, 0.06);
+}
+
+.field-icon {
+  color: var(--usyd-grey-500);
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.login-field__control input {
+  border: none;
+  outline: none;
+  font-size: 15px;
+  width: 100%;
+  background: transparent;
+  color: var(--usyd-grey-800);
+  font-family: inherit;
+  padding: 6px 0;
+}
+
+.login-cta {
+  margin-top: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: var(--border-rad-main);
+  background: var(--usyd-red-dark);
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: var(--transition-base);
+  height: 48px;
+  font-family: Apercu;
+}
+
+.login-links {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.login-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  text-decoration: none;
+  color: var(--usyd-grey-800);
+  border-bottom: 1px solid rgba(20, 20, 20, 0.06);
+  font-size: 15px;
+}
+
+.login-link .svg-inline--fa {
+  color: var(--usyd-red);
+}
+
+.info-link {
+  display: inline-block;
+  margin-top: 18px;
+  color: var(--usyd-red-dark);
+  font-weight: 900;
+  font-size: 14px;
+  text-decoration: none;
+  border-bottom: 1px solid var(--usyd-red-dark);
+  padding-bottom: 6px;
+  transition: var(--transition-base);
+}
+
+.info-link:hover {
+  color: black;
+  border-bottom: 1px solid black;
+}
+
+/* responsive: stacked layout with side panel first and image second */
+@media (max-width: 1000px) {
+  .login-page {
+    grid-template-columns: 1fr;
+  }
+
+  .top-band {
+    display: none;
+  }
+
+  .login-side {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    background: var(--usyd-red-light);
+    /* bigger top padding so there is more space between site header and the title */
+    padding: 56px 20px 28px 20px;
+    align-self: start;
+    max-height: none;
+    margin-top: 0;
+  }
+
+  .login-side__content {
+    margin: 0 auto;
+    max-width: 520px;
+    width: 100%;
+  }
+
+  .login-side__title {
+    font-size: 34px;
+    margin-top: 8px;
+  }
+
+  .login-image {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+    height: 320px;
+    max-height: none;
+    align-self: start;
+    transform: translateY(0);
+    background-position: center 30%;
+    box-shadow: none;
+    border-radius: 0;
+    margin: 0;
+  }
+}
+
+/* small phones */
+@media (max-width: 520px) {
+  .login-image {
+    height: 260px;
+  }
+
+  .login-side {
+    padding: 40px 16px 20px 16px; /* slightly reduced padding on small phones */
+  }
+
+  .login-side__title {
+    font-size: 28px;
+  }
+
+  .login-field__control {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .login-cta {
+    padding: 13px 14px;
+    font-size: 15px;
+    height: 44px;
+  }
+
+  .login-list__item {
+    padding: 10px 0;
+  }
+}

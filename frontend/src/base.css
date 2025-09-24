@@ -1,14 +1,14 @@
 :root {
     --usyd-red: #E64626;
     --usyd-red-dark: #c63a1d;
-    --usyd-red-light: #ffe4e3;
+    --usyd-red-light: #fcece2;
     --usyd-baby-blue: #d5daeb;
     --usyd-grey-100: #f7f7f7;
     --usyd-grey-200: #dedede;
     --usyd-grey-500: #757575;
     --usyd-grey-600: #424242;
     --usyd-grey-800: #141414;
-    --border-rad-main: 10px;
+    --border-rad-main: 5px;
     --select-blue: #007aff;
     --transition-base: all 0.4s ease;
 }
