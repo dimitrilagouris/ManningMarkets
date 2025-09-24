@@ -41,7 +41,6 @@
   margin: 0;
 }
 
-/* percent pill/top-right for single-event markets */
 .market__percent {
   position: absolute;
   right: 0;
@@ -56,7 +55,6 @@
   line-height: 1;
 }
 
-/* events wrapper */
 .market__events-wrapper {
   flex: 1 1 auto;
   min-height: 0;
@@ -129,17 +127,16 @@
   transition: var(--transition-base);
 }
 
-/* single-event specific tweaks */
+
 .market--single .market__header {
   margin-bottom: 14px;
-  padding-right: 64px; /* make room for the percent pill */
+  padding-right: 64px;
 }
 
 .market--single .market__events {
   gap: 12px;
 }
 
-/* event block for single-event markets */
 .market__event--single {
   display: flex;
   flex-direction: column;
@@ -181,7 +178,6 @@
   }
 }
 
-/* single column on small screens */
 @media (max-width: 680px) {
   .markets-container {
     grid-template-columns: 1fr;
@@ -189,7 +185,7 @@
 }
 
 
-/* responsive fallback */
+
 @media (max-width: 600px) {
   .main-content {
     padding: 16px;
@@ -226,7 +222,6 @@
     max-height: min(280px, 45vh);
   }
 
-  /* ensure single-event layout remains usable on small screens */
   .market__event--single .event__buttons--single {
     flex-direction: row;
     gap: 8px;
