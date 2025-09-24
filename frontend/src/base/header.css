@@ -187,27 +187,30 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: none;
+  background: var(--usyd-red-dark);
+  color: white; /* icon will inherit this */
   border: none;
   cursor: pointer;
   transition: var(--transition-base);
-  background: var(--usyd-red-dark);
   font-size: 16px;
   padding: 0;
   box-sizing: border-box;
   align-self: center;
 }
 
+/* hover: swap colours so icon becomes usyd red */
 .user-button:hover {
   background: white;
+  color: var(--usyd-red); /* icon will pick this up */
   border: 2px solid var(--usyd-red);
 }
 
+/* make the FontAwesome svg inherit the button colour */
 .user-button .svg-inline--fa {
   width: 18px;
   height: 18px;
   display: block;
-  color: white;
+  color: currentColor;
 }
 
 

@@ -35,7 +35,7 @@ function App() {
     },
     {
       name: "A new express shuttle will be introduced",
-      odds: "37%x",
+      odds: "37%",
       onYesClick: () => console.log("User bet on new shuttle"),
       onNoClick: () => console.log("User bet against new shuttle")
     },
@@ -68,10 +68,71 @@ function App() {
     }
   ];
 
+  // New markets (including single-event markets)
+  const chancellorResign = [
+    {
+      name: "Chancellor will step down by 31 Dec 2025",
+      odds: "8%",
+      onYesClick: () => console.log("User bet Chancellor resign: yes"),
+      onNoClick: () => console.log("User bet Chancellor resign: no")
+    }
+  ];
+
+  const rainTomorrow = [
+    {
+      name: "Rain in Sydney tomorrow (any measurable)",
+      odds: "44%",
+      onYesClick: () => console.log("User bet rain tomorrow: yes"),
+      onNoClick: () => console.log("User bet rain tomorrow: no")
+    }
+  ];
+
+  const tramCompletion = [
+    {
+      name: "On schedule (complete by end of 2026)",
+      odds: "28%",
+      onYesClick: () => console.log("User bet tram on schedule"),
+      onNoClick: () => console.log("User bet tram not on schedule")
+    },
+    {
+      name: "Delayed but complete by 2028",
+      odds: "52%",
+      onYesClick: () => console.log("User bet tram delayed to 2028"),
+      onNoClick: () => console.log("User bet tram other")
+    },
+    {
+      name: "Significant cancellation/changes",
+      odds: "20%",
+      onYesClick: () => console.log("User bet tram cancelled"),
+      onNoClick: () => console.log("User bet tram other")
+    }
+  ];
+
+  const localElection = [
+    {
+      name: "Council candidate A",
+      odds: "34%",
+      onYesClick: () => console.log("User bet on candidate A"),
+      onNoClick: () => console.log("User bet against candidate A")
+    },
+    {
+      name: "Council candidate B",
+      odds: "29%",
+      onYesClick: () => console.log("User bet on candidate B"),
+      onNoClick: () => console.log("User bet against candidate B")
+    },
+    {
+      name: "Other",
+      odds: "37%",
+      onYesClick: () => console.log("User bet on other"),
+      onNoClick: () => console.log("User bet against other")
+    }
+  ];
+
   return (
     <div className="App">
       <Header />
-        {/*<Login />*/}
+      {/* <Login /> */}
       <main className="main-content">
         <div className="markets-container">
           <Market
@@ -90,6 +151,31 @@ function App() {
             marketName="Who will win the next inter-varsity grand final?"
             events={grandFinalWinner}
             volume="$7,690"
+          />
+
+          {/* new markets */}
+          <Market
+            marketName="Will the Chancellor resign in 2025?"
+            events={chancellorResign}
+            volume="$1,120"
+          />
+
+          <Market
+            marketName="Chance of rain tomorrow in Sydney"
+            events={rainTomorrow}
+            volume="$920"
+          />
+
+          <Market
+            marketName="Light rail completion scenario"
+            events={tramCompletion}
+            volume="$3,400"
+          />
+
+          <Market
+            marketName="Local council result — North Ward"
+            events={localElection}
+            volume="$2,050"
           />
         </div>
       </main>

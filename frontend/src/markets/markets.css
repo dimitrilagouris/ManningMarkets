@@ -2,7 +2,6 @@
   width: 100%;
   max-width: 1200px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 24px;
   align-items: stretch;
   box-sizing: border-box;
@@ -31,16 +30,33 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 32px;
+  margin-bottom: 20px;
+  position: relative;
 }
 
 .market__name {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
   color: var(--usyd-grey-800);
   margin: 0;
 }
 
+/* percent pill/top-right for single-event markets */
+.market__percent {
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: translateY(-6px);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--usyd-red-dark);
+  background: white;
+  padding: 6px 10px;
+  border-radius: 999px;
+  line-height: 1;
+}
+
+/* events wrapper */
 .market__events-wrapper {
   flex: 1 1 auto;
   min-height: 0;
@@ -57,8 +73,6 @@
   height: 100%;
 }
 
-
-
 .market__events::-webkit-scrollbar { width: 10px; }
 .market__events::-webkit-scrollbar-track { background: transparent; }
 .market__events::-webkit-scrollbar-thumb {
@@ -74,7 +88,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /*min-height: 48px;*/
 }
 
 .event__info {
@@ -85,9 +98,10 @@
 }
 
 .event__name {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
   color: var(--usyd-grey-800);
+  word-break: break-word;
 }
 
 .event__odds {
@@ -96,33 +110,57 @@
   color: #666666;
 }
 
+/* buttons - default */
 .event__buttons {
   display: flex;
   gap: 8px;
 }
 
 .event__button {
-  padding: 8px 16px;
+  padding: 8px 8px;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--border-rad-main);
   background: #dedede;
   font-size: 14px;
   font-weight: 600;
   color: var(--usyd-grey-800);
   cursor: pointer;
-  min-width: 60px;
+  min-width: 40px;
   transition: var(--transition-base);
 }
 
-.event__button--yes:hover {
-  background: #e8f5e8;
-  color: #4caf50;
+/* single-event specific tweaks */
+.market--single .market__header {
+  margin-bottom: 14px;
+  padding-right: 64px; /* make room for the percent pill */
 }
 
-.event__button--no:hover {
-  background: #ffeaea;
-  color: #f44336;
+.market--single .market__events {
+  gap: 12px;
 }
+
+/* event block for single-event markets */
+.market__event--single {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+}
+
+
+.event__buttons--single {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.market--single .event__button {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 12px 10px;
+
+}
+
 
 .market__footer {
   border-top: 1px solid var(--usyd-grey-200);
@@ -137,6 +175,21 @@
   font-family: 'Apercu mono';
 }
 
+@media (max-width: 1100px) {
+  .markets-container {
+    grid-template-columns: repeat(2, minmax(260px, 1fr));
+  }
+}
+
+/* single column on small screens */
+@media (max-width: 680px) {
+  .markets-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* responsive fallback */
 @media (max-width: 600px) {
   .main-content {
     padding: 16px;
@@ -147,7 +200,7 @@
   }
 
   .market__header {
-    margin-bottom: 24px;
+    margin-bottom: 16px;
   }
 
   .market__name {
@@ -172,4 +225,16 @@
   .market__events {
     max-height: min(280px, 45vh);
   }
+
+  /* ensure single-event layout remains usable on small screens */
+  .market__event--single .event__buttons--single {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .market--single .market__header {
+    padding-right: 0;
+  }
 }
+
+
