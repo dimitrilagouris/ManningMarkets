@@ -132,53 +132,53 @@ function App() {
   return (
     <div className="App">
       <Header />
-      {/* <Login /> */}
-      <main className="main-content">
-        <div className="markets-container">
-          <Market
-            marketName="Who will be elected USU President?"
-            events={presidentialPrediction}
-            volume="$12,840"
-          />
+       <Login />
+      {/*<main className="main-content">*/}
+      {/*  <div className="markets-container">*/}
+      {/*    <Market*/}
+      {/*      marketName="Who will be elected USU President?"*/}
+      {/*      events={presidentialPrediction}*/}
+      {/*      volume="$12,840"*/}
+      {/*    />*/}
 
-          <Market
-            marketName="How will transport to the new campus be solved?"
-            events={busRouteExpansion}
-            volume="$5,210"
-          />
+      {/*    <Market*/}
+      {/*      marketName="How will transport to the new campus be solved?"*/}
+      {/*      events={busRouteExpansion}*/}
+      {/*      volume="$5,210"*/}
+      {/*    />*/}
 
-          <Market
-            marketName="Who will win the next inter-varsity grand final?"
-            events={grandFinalWinner}
-            volume="$7,690"
-          />
+      {/*    <Market*/}
+      {/*      marketName="Who will win the next inter-varsity grand final?"*/}
+      {/*      events={grandFinalWinner}*/}
+      {/*      volume="$7,690"*/}
+      {/*    />*/}
 
-          {/* new markets */}
-          <Market
-            marketName="Will the Chancellor resign in 2025?"
-            events={chancellorResign}
-            volume="$1,120"
-          />
+      {/*    /!* new markets *!/*/}
+      {/*    <Market*/}
+      {/*      marketName="Will the Chancellor resign in 2025?"*/}
+      {/*      events={chancellorResign}*/}
+      {/*      volume="$1,120"*/}
+      {/*    />*/}
 
-          <Market
-            marketName="Chance of rain tomorrow in Sydney"
-            events={rainTomorrow}
-            volume="$920"
-          />
+      {/*    <Market*/}
+      {/*      marketName="Chance of rain tomorrow in Sydney"*/}
+      {/*      events={rainTomorrow}*/}
+      {/*      volume="$920"*/}
+      {/*    />*/}
 
-          <Market
-            marketName="Light rail completion scenario"
-            events={tramCompletion}
-            volume="$3,400"
-          />
+      {/*    <Market*/}
+      {/*      marketName="Light rail completion scenario"*/}
+      {/*      events={tramCompletion}*/}
+      {/*      volume="$3,400"*/}
+      {/*    />*/}
 
-          <Market
-            marketName="Local council result — North Ward"
-            events={localElection}
-            volume="$2,050"
-          />
-        </div>
-      </main>
+      {/*    <Market*/}
+      {/*      marketName="Local council result — North Ward"*/}
+      {/*      events={localElection}*/}
+      {/*      volume="$2,050"*/}
+      {/*    />*/}
+      {/*  </div>*/}
+      {/*</main>*/}
     </div>
   );
 }
