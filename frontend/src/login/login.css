@@ -28,7 +28,7 @@
   max-height: 980px;
   align-self: start;
   transform: translateY(56px);
-  background-image: url('/Users/dimitrilagouris/Desktop/ELEC3609/Group Assignment 1/FRI-13-16-09/ManningMarkets/frontend/public/images/login-hero.jpg');
+  background-image: url('../../public/images/login-hero.jpg');
   background-size: cover;
   background-position: center 30%;
   z-index: 1;
@@ -44,7 +44,7 @@
   justify-content: flex-start;
   box-sizing: border-box;
   align-self: start;
-  max-height: calc(80vh - 48px);
+  /*max-height: calc(80vh - 48px);*/
   overflow: visible;
   z-index: 0;
 }
