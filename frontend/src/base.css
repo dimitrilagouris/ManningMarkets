@@ -1,0 +1,51 @@
+:root {
+    --usyd-red: #E64626;
+    --usyd-red-dark: #c63a1d;
+    --usyd-red-light: #fcece2;
+    --usyd-baby-blue: #d5daeb;
+    --usyd-grey-100: #f7f7f7;
+    --usyd-grey-200: #dedede;
+    --usyd-grey-500: #757575;
+    --usyd-grey-600: #424242;
+    --usyd-grey-800: #141414;
+    --border-rad-main: 5px;
+    --select-blue: #007aff;
+    --transition-base: all 0.4s ease;
+}
+
+
+@font-face {
+  font-family: 'Apercu';
+  src: url('fonts/Apercu-Regular-Web.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Apercu mono';
+  src: url('fonts/Apercu-Mono-Web.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Apercu';
+  src: url('fonts/Apercu-Medium-Web.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'LyonDisplay';
+  src: url('fonts/LyonDisplayLF-Regular-Web.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'LyonDisplay';
+  src: url('fonts/LyonDisplayLF-RegularItalic-Web.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+}
+
