@@ -56,42 +56,67 @@ class Events(models.Model):
     Price = models.FloatField(validators=[MinValueValidator(0.0)])
     Volume = models.IntegerField(validators=[MinValueValidator(0)])
 
+
 class Orders(models.Model):
     
     class OrderStatus(models.TextChoices):
-        ACTIVE = "A",
-        FILLED = "F",
-        CANCELLED = "C"
+        ACTIVE = "ACTIVE"
+        FILLED = "FILLED"
+        PARTIALLY_FILLED = "PARTIALLY_FILLED"
+        CANCELLED = "CANCELLED"
+
+    class OrderType(models.TextChoices):
+        BUY = "BUY"
+        SELL = "SELL"
 
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(Profiles)
-    event = models.ForeignKey(Events)
+    user = models.ForeignKey(Profiles, on_delete=models.CASCADE)
+    event = models.ForeignKey(Events, on_delete=models.CASCADE)
     
-    side = models.CharField(
+    # Order type: BUY or SELL
+    order_type = models.CharField(
+        max_length=4,
+        choices=OrderType,
+        default=OrderType.BUY
+    )
+    
+    # Share type: YES or NO
+    share_type = models.CharField(
         max_length=1,
         choices=OrderSide,
         default=OrderSide.YES,
     )
 
-    price = models.FloatField(validators=[MinValueValidator(0.0)])
-    amount = models.IntegerField(validators=[MinValueValidator(0)])
+    price = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.0)])
+
+    # Amount is the initial quantity of shares sent to the matching engine, remaining quantity exists to track how many shares are left to be filled
+    amount = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
+    remaining_quantity = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
 
     status = models.CharField(
-        max_length=1,
+        max_length=20,
         choices=OrderStatus,
         default=OrderStatus.ACTIVE,
     )
 
     cancellation_time = models.TimeField(null=True, blank=True)
-    created_at = models.TimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def save(self, *args, **kwargs):
+        if self.remaining_quantity is None:
+            self.remaining_quantity = self.amount
+        super().save(*args, **kwargs)
 
 class Trades(models.Model):
     id = models.AutoField(primary_key=True)
-    maker_order_id = models.ForeignKey(Orders)
-    taker_order_id = models.ForeignKey(Orders)
+    maker_order_id = models.ForeignKey(Orders, related_name='maker_trades', on_delete=models.CASCADE)
+    taker_order_id = models.ForeignKey(Orders, related_name='taker_trades', on_delete=models.CASCADE)
     quantity_filled = models.IntegerField(validators=[MinValueValidator(0)])
     price = models.FloatField(validators=[MinValueValidator(0.0)])
     created_at = models.TimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
 class Positions(models.Model):
     event = models.ForeignKey(Events)
