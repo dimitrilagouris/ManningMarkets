@@ -1,6 +1,4 @@
 // Header.jsx
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMagnifyingGlass, faUser } from '@fortawesome/free-solid-svg-icons'
 import React from 'react';
 
 import './header.css';
@@ -20,7 +18,7 @@ function Header() {
                   <input className="search__input" type="search"
                          placeholder="Enter keywords to find a market e.g timetables"/>
                   <button className="search__submit" type="submit" aria-label="Search">
-                      <FontAwesomeIcon icon={faMagnifyingGlass} />
+                      <span className="iconify" data-icon="ri:search-line" data-inline="false"></span>
                   </button>
               </form>
 
@@ -37,7 +35,7 @@ function Header() {
                   </nav>
 
                   <button className="user-button" type="button" aria-label="Account">
-                    <FontAwesomeIcon icon={faUser} />
+                      <span className="iconify" data-icon="ri:user-fill" data-inline="false"></span>
                   </button>
               </div>
 

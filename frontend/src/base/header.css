@@ -82,8 +82,8 @@ body {
   width: 60px;
   height: 100%;
   margin: 0;
-  border: none;
   background: var(--usyd-red-dark);
+  border: 2px solid transparent;
   border-radius: 0 6px 6px 0;
   cursor: pointer;
   box-shadow: none;
@@ -97,12 +97,12 @@ body {
   display: block;
   color: white !important;
   transition: var(--transition-base);
-  stroke-width: 2;
 }
 
 .search__submit:hover {
   background: white;
   border: 2px solid var(--usyd-red-dark);
+
 }
 
 .search__submit:hover svg {
@@ -188,11 +188,11 @@ body {
   align-items: center;
   justify-content: center;
   background: var(--usyd-red-dark);
-  color: white; /* icon will inherit this */
-  border: none;
+  color: white;
+  border: 2px solid transparent;
   cursor: pointer;
   transition: var(--transition-base);
-  font-size: 16px;
+  font-size: 24px;
   padding: 0;
   box-sizing: border-box;
   align-self: center;
