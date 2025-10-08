@@ -44,7 +44,6 @@
   justify-content: flex-start;
   box-sizing: border-box;
   align-self: start;
-  /*max-height: calc(80vh - 48px);*/
   overflow: visible;
   z-index: 0;
 }
