@@ -193,5 +193,83 @@
     box-shadow: 0 0 0 3px var(--usyd-red-light);
   }
   
-
+  .admin-table-container {
+    background: white;
+    border-radius: var(--border-rad-main);
+    overflow: hidden;
+    border: 2px solid var(--usyd-grey-200);
+  }
+  
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .admin-table thead {
+    background: var(--usyd-grey-200);
+  }
+  
+  .admin-table th {
+    padding: 14px 16px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--usyd-grey-700);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--usyd-grey-300);
+  }
+  
+  .admin-table tbody tr {
+    border-bottom: 1px solid var(--usyd-grey-200);
+    transition: var(--transition-base);
+  }
+  
+  .admin-table tbody tr:hover {
+    background: var(--usyd-red-light);
+  }
+  
+  .admin-table tbody tr:last-child {
+    border-bottom: none;
+  }
+  
+  .admin-table td {
+    padding: 14px 16px;
+    font-size: 14px;
+    color: var(--usyd-grey-800);
+  }
+  
+  .user-name,
+  .market-title {
+    font-weight: 600;
+  }
+  
+  .user-email {
+    color: var(--usyd-grey-600);
+  }
+  
+  .status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .status-badge--active {
+    background: #d4edda;
+    color: #155724;
+  }
+  
+  .status-badge--suspended {
+    background: #fff3cd;
+    color: #856404;
+  }
+  
+  .status-badge--closed {
+    background: var(--usyd-grey-200);
+    color: var(--usyd-grey-700);
+  }
   
