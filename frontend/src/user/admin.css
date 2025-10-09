@@ -41,3 +41,75 @@
   border-radius: var(--border-rad-main);
   padding: 32px;
 }
+
+.admin-section__title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--usyd-grey-700);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 24px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .admin-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+  
+  .stat-card {
+    background: white;
+    border: 2px solid var(--usyd-grey-200);
+    border-radius: var(--border-rad-main);
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: var(--transition-base);
+  }
+  
+  .stat-card:hover {
+    border-color: var(--usyd-red);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .stat-icon {
+    font-size: 32px;
+    color: var(--usyd-grey-600);
+  }
+  
+  .stat-icon--success {
+    color: #28a745;
+  }
+  
+  .stat-icon--warning {
+    color: #ffc107;
+  }
+  
+  .stat-icon--info {
+    color: #17a2b8;
+  }
+  
+  .stat-content {
+    flex: 1;
+  }
+  
+  .stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--usyd-grey-800);
+    margin: 0 0 4px 0;
+    line-height: 1;
+  }
+  
+  .stat-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--usyd-grey-600);
+    margin: 0;
+  }
+  
