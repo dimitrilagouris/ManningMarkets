@@ -377,4 +377,217 @@
     margin: 0;
   }
 
+    
+  .modal-content--warning .modal-header {
+    background: #fff3cd;
+    border-bottom-color: #ffc107;
+  }
   
+  .modal-content--danger .modal-header {
+    background: #f8d7da;
+    border-bottom-color: #f5c6cb;
+  }
+  
+  .modal-warning {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: #fff3cd;
+    border: 2px solid #ffc107;
+    border-radius: var(--border-rad-main);
+    margin-bottom: 20px;
+  }
+  
+  .modal-warning--danger {
+    background: #f8d7da;
+    border-color: #f5c6cb;
+  }
+  
+  .warning-icon {
+    font-size: 24px;
+    color: #856404;
+    flex-shrink: 0;
+  }
+  
+  .modal-warning--danger .warning-icon {
+    color: #721c24;
+  }
+  
+  .modal-warning p {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--usyd-grey-800);
+  }
+  
+  .modal-user-info {
+    padding: 16px;
+    background: var(--usyd-grey-100);
+    border-radius: var(--border-rad-main);
+    margin-bottom: 16px;
+  }
+  
+  .modal-user-info p {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: var(--usyd-grey-800);
+  }
+  
+  .modal-user-info p:last-child {
+    margin-bottom: 0;
+  }
+  
+  .modal-note {
+    font-size: 14px;
+    color: var(--usyd-grey-700);
+    margin: 0 0 24px 0;
+    line-height: 1.5;
+  }
+  
+  .modal-note--danger {
+    color: #721c24;
+  }
+  
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+  }
+  
+  .modal-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--border-rad-main);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-base);
+    font-family: inherit;
+  }
+  
+  .modal-btn--cancel {
+    background: var(--usyd-grey-200);
+    color: var(--usyd-grey-800);
+  }
+  
+  .modal-btn--cancel:hover {
+    background: var(--usyd-grey-300);
+  }
+  
+  .modal-btn--confirm-suspend {
+    background: #ffc107;
+    color: #856404;
+  }
+  
+  .modal-btn--confirm-suspend:hover {
+    background: #e0a800;
+  }
+  
+  .modal-btn--confirm-delete {
+    background: var(--usyd-red-dark);
+    color: white;
+  }
+  
+  .modal-btn--confirm-delete:hover {
+    background: #a00000;
+    box-shadow: 0 4px 12px rgba(178, 0, 0, 0.3);
+  }
+  
+  .modal-btn--confirm-unsuspend {
+    background: #28a745;
+    color: white;
+  }
+  
+  .modal-btn--confirm-unsuspend:hover {
+    background: #218838;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+  }
+  
+  /* Modal styles from user.css */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .modal-content {
+    background: white;
+    border-radius: var(--border-rad-main);
+    max-width: 550px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease;
+    overflow: hidden;
+  }
+  
+  @keyframes slideUp {
+    from {
+      transform: translateY(30px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 28px;
+    border-bottom: 2px solid var(--usyd-grey-200);
+    background: var(--usyd-grey-100);
+  }
+  
+  .modal-title {
+    font-family: 'LyonDisplay', Apercu, sans-serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--usyd-grey-800);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .modal-close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: var(--usyd-grey-600);
+    cursor: pointer;
+    transition: var(--transition-base);
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+  
+  .modal-close-btn:hover {
+    background: var(--usyd-grey-200);
+    color: var(--usyd-grey-800);
+  }
+  
+  .modal-body {
+    padding: 28px;
+  }
