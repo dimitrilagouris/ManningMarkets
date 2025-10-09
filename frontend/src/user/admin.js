@@ -51,4 +51,105 @@ function Admin() {
   const suspendedUsers = users.filter(u => u.status === 'suspended').length;
   const totalMarkets = markets.length;
   const activeMarkets = markets.filter(m => m.status === 'active').length;
+
+  // Handlers
+  const handleSuspendClick = (user) => {
+    setSelectedUser(user);
+    setShowSuspendModal(true);
+  };
+
+  const handleUnsuspendClick = (user) => {
+    setSelectedUser(user);
+    setShowUnsuspendModal(true);
+  };
+
+  const handleDeleteClick = (user) => {
+    setSelectedUser(user);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmSuspend = () => {
+    if (selectedUser) {
+      // Update user status
+      setUsers(users.map(u => 
+        u.id === selectedUser.id ? { ...u, status: 'suspended' } : u
+      ));
+      
+      // Add audit log
+      const newLog = {
+        id: auditLogs.length + 1,
+        admin: 'Admin User',
+        action: 'Suspended user account',
+        target: selectedUser.name,
+        timestamp: new Date().toLocaleString('en-US', { 
+          year: 'numeric', 
+          month: '2-digit', 
+          day: '2-digit', 
+          hour: '2-digit', 
+          minute: '2-digit', 
+          second: '2-digit',
+          hour12: false 
+        })
+      };
+      setAuditLogs([newLog, ...auditLogs]);
+    }
+    setShowSuspendModal(false);
+    setSelectedUser(null);
+  };
+
+  const handleConfirmUnsuspend = () => {
+    if (selectedUser) {
+      // Update user status to active
+      setUsers(users.map(u => 
+        u.id === selectedUser.id ? { ...u, status: 'active' } : u
+      ));
+      
+      // Add audit log
+      const newLog = {
+        id: auditLogs.length + 1,
+        admin: 'Admin User',
+        action: 'Unsuspended user account',
+        target: selectedUser.name,
+        timestamp: new Date().toLocaleString('en-US', { 
+          year: 'numeric', 
+          month: '2-digit', 
+          day: '2-digit', 
+          hour: '2-digit', 
+          minute: '2-digit', 
+          second: '2-digit',
+          hour12: false 
+        })
+      };
+      setAuditLogs([newLog, ...auditLogs]);
+    }
+    setShowUnsuspendModal(false);
+    setSelectedUser(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (selectedUser) {
+      // Remove user
+      setUsers(users.filter(u => u.id !== selectedUser.id));
+      
+      // Add audit log
+      const newLog = {
+        id: auditLogs.length + 1,
+        admin: 'Admin User',
+        action: 'Deleted user account',
+        target: selectedUser.name,
+        timestamp: new Date().toLocaleString('en-US', { 
+          year: 'numeric', 
+          month: '2-digit', 
+          day: '2-digit', 
+          hour: '2-digit', 
+          minute: '2-digit', 
+          second: '2-digit',
+          hour12: false 
+        })
+      };
+      setAuditLogs([newLog, ...auditLogs]);
+    }
+    setShowDeleteModal(false);
+    setSelectedUser(null);
+  };
 }
