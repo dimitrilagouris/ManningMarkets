@@ -591,3 +591,19 @@
   .modal-body {
     padding: 28px;
   }
+  
+  .modal-content--success .modal-header {
+    background: #d4edda;
+    border-bottom-color: #c3e6cb;
+  }
+  
+  .modal-warning--success {
+    background: #d4edda;
+    border: 2px solid #28a745;
+  }
+  
+  .success-icon {
+    font-size: 24px;
+    color: #155724;
+    flex-shrink: 0;
+  }
