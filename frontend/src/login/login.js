@@ -60,8 +60,9 @@ function Login() {
               </div>
             </label>
 
-            <button type="submit" className="login-cta">Sign in</button>
+            <button type="submit" className="login-cta">Log In</button>
           </form>
+            <button className="signup-cta">Sign Up</button>
 
           <a className="info-link" href="#partner">Forgot password?</a>
         </div>
