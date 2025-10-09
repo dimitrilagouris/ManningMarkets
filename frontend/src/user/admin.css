@@ -1,0 +1,43 @@
+.admin-page {
+  min-height: calc(100vh - 80px);
+  background: white;
+  font-family: -apple-system, 'Apercu', "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: var(--usyd-grey-800);
+}
+
+.admin-content {
+  padding: 32px;
+}
+
+.admin-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.admin-container__header {
+  margin-bottom: 32px;
+}
+
+.admin-container__title {
+  font-family: 'LyonDisplay', Apercu, sans-serif;
+  font-size: 42px;
+  font-weight: 400;
+  color: var(--usyd-grey-800);
+  margin: 0 0 8px 0;
+  line-height: 1.1;
+}
+
+.admin-container__subtitle {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--usyd-grey-600);
+  margin: 0;
+}
+
+.admin-container__section {
+  margin-bottom: 40px;
+  background: var(--usyd-grey-100);
+  border-radius: var(--border-rad-main);
+  padding: 32px;
+}
