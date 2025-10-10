@@ -1,0 +1,6 @@
+Hi {{ username }},
+
+Your ManningMarkets OTP is: {{ otp }}
+
+Thanks,
+ManningMarkets Team.

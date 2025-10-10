@@ -5,13 +5,52 @@ import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import './login.css';
 import '../base.css';
 
+import { DJANGO_API_BASE } from '../config';
+import {getCSRFToken} from '../session_management/csrfToken';
+import { useNavigate } from 'react-router-dom';
+
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
-  const onSubmit = e => {
+  const onSubmit = async e => {
     e.preventDefault();
-    console.log('sign in', { email, password });
+
+    try {
+      const csrfToken = await getCSRFToken();
+      console.log(csrfToken);
+
+      const res = await fetch(`${DJANGO_API_BASE}/login/`, {
+        method: "POST",
+        credentials: "include",
+        headers:
+        {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken,
+        },
+        body: JSON.stringify({
+          username: email,
+          password: password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        console.log("Login successful", data);
+        navigate("/verify-otp", {state: { email }});
+      }
+      else 
+      {
+        alert(data.error || "Login failed.");
+      }
+    }
+    catch(err)
+    {
+      console.error("Login error: ", err);
+      alert("Error occured during login");
+    }
   };
 
   return (

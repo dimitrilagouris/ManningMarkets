@@ -1,0 +1,9 @@
+Hi {{ username }},
+
+Welcome to ManningMarkets!
+
+Please click the link within 30 minutes to activate your account:
+{{ activation_link }}
+
+Thanks,
+ManningMarkets Team.
