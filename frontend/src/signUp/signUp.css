@@ -1,4 +1,4 @@
-.login-page {
+.sign_up-page {
   position: relative;
   min-height: 100vh;
   display: grid;
@@ -21,21 +21,21 @@
   z-index: 0;
 }
 
-.login-image {
+.sign_up-image {
   grid-column: 1 / 2;
   width: 100%;
   height: calc(80vh);
   max-height: 980px;
   align-self: start;
   transform: translateY(56px);
-  background-image: url('../../public/images/login-hero.jpg');
+  background-image: url('../../public/images/sign_up-hero.jpeg');
   background-size: cover;
   background-position: center 30%;
   z-index: 1;
   margin: 0;
 }
 
-.login-side {
+.sign_up-side {
   grid-column: 2 / 3;
   background: var(--usyd-red-light);
   padding: 40px 80px;
@@ -44,17 +44,18 @@
   justify-content: flex-start;
   box-sizing: border-box;
   align-self: start;
+  /*max-height: calc(80vh - 48px);*/
   overflow: visible;
   z-index: 0;
 }
 
-.login-side__content {
+.sign_up-side__content {
   max-width: 520px;
   width: 100%;
   margin-top: 8px;
 }
 
-.login-side__title {
+.sign_up-side__title {
   font-family: LyonDisplay, Apercu, sans-serif;
   font-size: 40px;
   margin: 0 0 16px 0;
@@ -63,7 +64,7 @@
   line-height: 1.02;
 }
 
-.login-side__lead {
+.sign_up-side__lead {
   margin: 0 0 24px 0;
   color: var(--usyd-grey-800);
   font-family: -apple-system, 'Apercu', "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -72,14 +73,14 @@
   font-size: 16px;
 }
 
-.login-list {
+.sign_up-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin: 0 0 20px 0;
 }
 
-.login-list__item {
+.sign_up-list__item {
   background: transparent;
   border-bottom: 1px solid rgba(20, 20, 20, 0.07);
   padding: 12px 0;
@@ -89,7 +90,7 @@
   box-sizing: border-box;
 }
 
-.login-field__control {
+.sign_up-field__control {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -101,7 +102,7 @@
   transition: var(--transition-base);
 }
 
-.login-field__control:focus-within {
+.sign_up-field__control:focus-within {
   border-color: var(--select-blue);
   box-shadow: 0 8px 22px rgba(0, 122, 255, 0.06);
 }
@@ -112,7 +113,7 @@
   flex-shrink: 0;
 }
 
-.login-field__control input {
+.sign_up-field__control input {
   border: none;
   outline: none;
   font-size: 15px;
@@ -123,8 +124,8 @@
   padding: 6px 0;
 }
 
-.login-cta {
-  margin-top: 12px;
+.sign_up-cta {
+  margin-top: 0px;
   width: 100%;
   padding: 14px 16px;
   border-radius: var(--border-rad-main);
@@ -139,19 +140,14 @@
   font-family: Apercu;
 }
 
-.login-cta:hover {
-  background: var(--usyd-red);
-  box-shadow: 0 8px 20px rgba(178, 34, 52, 0.15);
-}
-
-.signup-cta {
-  margin-top: 1px;
+.sign_up-cta:disabled {
+  margin-top: 0px;
   width: 100%;
   padding: 14px 16px;
   border-radius: var(--border-rad-main);
-  background: white;
-  color: var(--usyd-red-dark);
-  border: 2px solid var(--usyd-red-dark);
+  background: var(--usyd-grey-600);
+  color: white;
+  border: none;
   font-weight: 600;
   font-size: 16px;
   cursor: pointer;
@@ -160,19 +156,14 @@
   font-family: Apercu;
 }
 
-.signup-cta:hover {
-  background: var(--usyd-grey-100);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-}
-
-.login-links {
+.sign_up-links {
   display: flex;
   flex-direction: column;
   gap: 14px;
   margin-top: 20px;
 }
 
-.login-link {
+.sign_up-link {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -183,7 +174,7 @@
   font-size: 15px;
 }
 
-.login-link .svg-inline--fa {
+.sign_up-link .svg-inline--fa {
   color: var(--usyd-red);
 }
 
@@ -199,13 +190,24 @@
   transition: var(--transition-base);
 }
 
+.info-text {
+  display: inline-block;
+  margin-top: 0px;
+  opacity: 80%;
+  color: var(--usyd-red-dark);
+  font-weight: 900;
+  font-size: 14px;
+  text-decoration: none;
+  padding-bottom: 0px;
+}
+
 .info-link:hover {
   color: black;
   border-bottom: 1px solid black;
 }
 
 @media (max-width: 1000px) {
-  .login-page {
+  .sign_up-page {
     grid-template-columns: 1fr;
   }
 
@@ -213,7 +215,7 @@
     display: none;
   }
 
-  .login-side {
+  .sign_up-side {
     grid-column: 1 / -1;
     grid-row: 1;
     background: var(--usyd-red-light);
@@ -223,18 +225,18 @@
     margin-top: 0;
   }
 
-  .login-side__content {
+  .sign_up-side__content {
     margin: 0 auto;
     max-width: 520px;
     width: 100%;
   }
 
-  .login-side__title {
+  .sign_up-side__title {
     font-size: 34px;
     margin-top: 8px;
   }
 
-  .login-image {
+  .sign_up-image {
     grid-column: 1 / -1;
     grid-row: 2;
     width: 100%;
@@ -251,30 +253,30 @@
 
 /* small phones */
 @media (max-width: 520px) {
-  .login-image {
+  .sign_up-image {
     height: 260px;
   }
 
-  .login-side {
+  .sign_up-side {
     padding: 40px 16px 20px 16px;
   }
 
-  .login-side__title {
+  .sign_up-side__title {
     font-size: 28px;
   }
 
-  .login-field__control {
+  .sign_up-field__control {
     padding: 10px 12px;
     gap: 10px;
   }
 
-  .login-cta {
+  .sign_up-cta {
     padding: 13px 14px;
     font-size: 15px;
     height: 44px;
   }
 
-  .login-list__item {
+  .sign_up-list__item {
     padding: 10px 0;
   }
 }
