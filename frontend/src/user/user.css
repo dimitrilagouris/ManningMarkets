@@ -1,0 +1,257 @@
+.user-page {
+  min-height: calc(100vh - 80px);
+  background: white;
+  font-family: -apple-system, 'Apercu', "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: var(--usyd-grey-800);
+}
+
+.user-content {
+  padding: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.user-container {
+  width: 100%;
+  max-width: 800px;
+  background: var(--usyd-grey-100);
+  border-radius: var(--border-rad-main);
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.user-container__header {
+  margin-bottom: 32px;
+}
+
+.user-container__title {
+  font-family: 'LyonDisplay', Apercu, sans-serif;
+  font-size: 36px;
+  font-weight: 400;
+  color: var(--usyd-grey-800);
+  margin: 0 0 12px 0;
+  line-height: 1.1;
+}
+
+.user-container__username {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--usyd-grey-700);
+  margin: 0 0 8px 0;
+}
+
+.user-container__userid {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--usyd-grey-600);
+  margin: 0 0 8px 0;
+}
+
+.user-container__joined {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--usyd-grey-500);
+  margin: 0;
+}
+
+.user-container__section {
+  margin-bottom: 32px;
+}
+
+.user-container__section:last-child {
+  margin-bottom: 0;
+}
+
+.user-section__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--usyd-grey-600);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 16px 0;
+}
+
+.user-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.user-button-item {
+  background: white;
+  border: 2px solid var(--usyd-grey-200);
+  border-radius: var(--border-rad-main);
+  padding: 18px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--usyd-grey-800);
+  cursor: pointer;
+  transition: var(--transition-base);
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: inherit;
+}
+
+.user-button-item:hover {
+  background: var(--usyd-red-light);
+  border-color: var(--usyd-red);
+  color: var(--usyd-red-dark);
+}
+
+.user-button-item:active {
+  transform: translateY(1px);
+}
+
+.user-button-item .button-icon {
+  font-size: 18px;
+  color: var(--usyd-red-dark);
+  flex-shrink: 0;
+}
+
+/* account settings section */
+.user-settings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: white;
+  border-radius: var(--border-rad-main);
+  overflow: hidden;
+  border: 2px solid var(--usyd-grey-200);
+}
+
+.user-settings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--usyd-grey-200);
+  cursor: pointer;
+  transition: var(--transition-base);
+  background: white;
+  text-decoration: none;
+  color: var(--usyd-grey-800);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.user-settings-item:last-child {
+  border-bottom: none;
+}
+
+.user-settings-item:hover {
+  background: var(--usyd-red-light);
+  color: var(--usyd-red-dark);
+}
+
+.user-settings-item .settings-icon {
+  color: var(--usyd-grey-500);
+  font-size: 16px;
+  transition: var(--transition-base);
+}
+
+.user-settings-item:hover .settings-icon {
+  color: var(--usyd-red-dark);
+}
+
+.user-settings-item__content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-settings-item__arrow {
+  color: var(--usyd-grey-500);
+  font-size: 14px;
+}
+
+/* Delete Account Button */
+.user-delete-account {
+  width: 100%;
+  background: var(--usyd-red-dark);
+  border: none;
+  border-radius: var(--border-rad-main);
+  padding: 18px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  color: white;
+  cursor: pointer;
+  transition: var(--transition-base);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-family: inherit;
+  box-shadow: 0 4px 12px rgba(178, 0, 0, 0.3);
+}
+
+.user-delete-account:hover {
+  background: #a00000;
+  box-shadow: 0 6px 16px rgba(178, 0, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+.user-delete-account:active {
+  transform: translateY(0px);
+  box-shadow: 0 2px 8px rgba(178, 0, 0, 0.3);
+}
+
+.user-delete-account .delete-icon {
+  font-size: 18px;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .user-content {
+    padding: 24px 16px;
+  }
+
+  .user-container {
+    padding: 28px 24px;
+  }
+
+  .user-container__title {
+    font-size: 30px;
+  }
+
+  .user-buttons {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-container {
+    padding: 24px 20px;
+  }
+
+  .user-container__title {
+    font-size: 26px;
+  }
+
+  .user-container__joined {
+    font-size: 14px;
+  }
+
+  .user-button-item {
+    padding: 16px 18px;
+    font-size: 14px;
+  }
+
+  .user-submit-reports {
+    padding: 18px;
+    font-size: 15px;
+  }
+
+  .user-settings-item {
+    padding: 16px 18px;
+    font-size: 14px;
+  }
+
+  .user-delete-account {
+    padding: 16px 20px;
+    font-size: 15px;
+  }
+}
+

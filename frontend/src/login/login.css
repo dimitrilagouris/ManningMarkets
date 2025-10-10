@@ -140,6 +140,32 @@
   font-family: Apercu;
 }
 
+.login-cta:hover {
+  background: var(--usyd-red);
+  box-shadow: 0 8px 20px rgba(178, 34, 52, 0.15);
+}
+
+.signup-cta {
+  margin-top: 1px;
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: var(--border-rad-main);
+  background: white;
+  color: var(--usyd-red-dark);
+  border: 2px solid var(--usyd-red-dark);
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: var(--transition-base);
+  height: 48px;
+  font-family: Apercu;
+}
+
+.signup-cta:hover {
+  background: var(--usyd-grey-100);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
 .login-links {
   display: flex;
   flex-direction: column;
