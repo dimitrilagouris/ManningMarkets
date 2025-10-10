@@ -16,16 +16,38 @@ class MatchingEngine:
         self.ask_orders = []
 
         self.lock = threading.Lock()
+        
+        # Load existing orders from database
+        self.load_existing_orders()
 
-
+    def load_existing_orders(self):
+        from .models import Events
+        
+        try:
+            event = Events.objects.get(id=self.event_id)
+            
+            # Get all active orders for this event
+            active_orders = Orders.objects.filter(
+                event=event, 
+                remaining_quantity__gt=0,
+                status__in=['ACTIVE', 'PARTIALLY_FILLED']
+            ).order_by('created_at')
+            
+            for order in active_orders:
+                # Insert orders into the appropriate side based on matching engine logic
+                if order.order_type.upper() == "BUY" and order.share_type.upper() == "YES":
+                    self.insert_order(order, self.bid_orders)
+                elif order.order_type.upper() == "BUY" and order.share_type.upper() == "NO":
+                    self.insert_order(order, self.ask_orders)
+                elif order.order_type.upper() == "SELL" and order.share_type.upper() == "YES":
+                    self.insert_order(order, self.ask_orders)
+                elif order.order_type.upper() == "SELL" and order.share_type.upper() == "NO":
+                    self.insert_order(order, self.bid_orders)
+                    
+        except Events.DoesNotExist:
+            pass  # Event doesn't exist yet
 
     def add_order(self, order: Orders) -> Tuple[List[Trades], List[Orders]]:
-        """
-        Processes an incoming order.
-
-        Returns:
-            Tuple[List[Trades], List[Orders]]: (Trades executed, Orders that were modified/created)
-        """
 
         # Orders to be returned to the Orderbooks manager for database saving
         # This prevents I/O from occurring under the lock.
@@ -77,16 +99,26 @@ class MatchingEngine:
             best_opposite_order = opposite_side_orders[0]  # First order is best price
             
             # Check if we can trade (BID >= ASK)
+            # For binary options, we need to convert NO prices to YES prices for comparison
+            def get_effective_yes_price(order):
+                if order.share_type.upper() == "YES":
+                    return float(order.price)
+                else:  # NO
+                    return 1.0 - float(order.price)
+            
+            incoming_effective_price = get_effective_yes_price(order)
+            opposite_effective_price = get_effective_yes_price(best_opposite_order)
+            
             is_incoming_bid = (order.order_type.upper() == "BUY" and order.share_type.upper() == "YES") or \
                              (order.order_type.upper() == "SELL" and order.share_type.upper() == "NO")
             
             if is_incoming_bid:
                 # Incoming is bid, opposite is ask - trade if bid >= ask
-                if order.price < best_opposite_order.price:
+                if incoming_effective_price < opposite_effective_price:
                     break  # Can't trade anymore
             else:
                 # Incoming is ask, opposite is bid - trade if bid >= ask
-                if best_opposite_order.price < order.price:
+                if opposite_effective_price < incoming_effective_price:
                     break  # Can't trade anymore
             
             # Calculate trade quantity
@@ -136,26 +168,36 @@ class MatchingEngine:
     def insert_order(self, order: Orders, side_orders: List[Orders]):
         # The performance issue with O(N) insertion remains but is accepted for minimal change.
         
+        def get_effective_yes_price(order):
+            if order.share_type.upper() == "YES":
+                return float(order.price)
+            else:  # NO
+                return 1.0 - float(order.price)
+        
         for i, existing_order in enumerate(side_orders):
             is_bid_order = (order.order_type.upper() == "BUY" and order.share_type.upper() == "YES") or \
                            (order.order_type.upper() == "SELL" and order.share_type.upper() == "NO")
             
+            # Use effective YES prices for proper sorting
+            order_effective_price = get_effective_yes_price(order)
+            existing_effective_price = get_effective_yes_price(existing_order)
+            
             if is_bid_order:
-                # These are buy orders - insert by highest price first, then FIFO
-                if order.price > existing_order.price:
+                # These are buy orders - insert by highest effective YES price first, then FIFO
+                if order_effective_price > existing_effective_price:
                     side_orders.insert(i, order)
                     return
-                elif order.price == existing_order.price and order.created_at < existing_order.created_at:
-                    # Same price, insert by FIFO (earlier time first)
+                elif order_effective_price == existing_effective_price and order.created_at < existing_order.created_at:
+                    # Same effective price, insert by FIFO (earlier time first)
                     side_orders.insert(i, order)
                     return
             else:
-                # These are sell orders - insert by lowest price first, then FIFO
-                if order.price < existing_order.price:
+                # These are sell orders - insert by lowest effective YES price first, then FIFO
+                if order_effective_price < existing_effective_price:
                     side_orders.insert(i, order)
                     return
-                elif order.price == existing_order.price and order.created_at < existing_order.created_at:
-                    # Same price, insert by FIFO (earlier time first)
+                elif order_effective_price == existing_effective_price and order.created_at < existing_order.created_at:
+                    # Same effective price, insert by FIFO (earlier time first)
                     side_orders.insert(i, order)
                     return
         

@@ -21,6 +21,7 @@ from .views.authentication_views import activate_user, get_csrf_token, get_user_
 from .views.gmail_api_views import authorise_gmail, oauth2callback
 from .views.market_views import fetch_markets
 from .views.user_views import get_wallet, get_profile
+from .views.order_view import create_order
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -44,4 +45,8 @@ urlpatterns = [
     # GMAIL API URLS
     path('oauth2callback/', oauth2callback, name='oauth2callback'),
     path('authorise-gmail/', authorise_gmail, name='authorise-gmail'),
+
+    # ORDER / TRADE URLS
+    path('api/orders/', create_order)
+
 ]
