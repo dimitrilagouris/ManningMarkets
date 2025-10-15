@@ -1,9 +1,10 @@
 .place-position {
-  background-color: #ffffff;
+  background-color: white;
   display: flex;
-  justify-content: flex-end;
-  min-height: 100vh;
   font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  min-height: calc(100vh - 80px);
+  color: var(--usyd-grey-800);
+  overflow-x: hidden;
 }
 
 .place-position__left {
@@ -13,7 +14,8 @@
   flex: 1;
   flex-grow: 1;
   gap: 5px;
-  padding: 20px 10px 10px 140px;
+  padding: 40px 40px 40px 140px;
+  flex-direction: column;
 }
 
 .place-position__left-content {
@@ -23,13 +25,11 @@
   flex: 0 0 auto;
   flex-direction: column;
   gap: 10px;
-  width: 100%;
+  justify-content: flex-start;
 }
 
 .place-position__title {
-  color: var(--usyd-grey-800);
-  font-weight: 300;
-  line-height: 1.15;
+  font-weight: 600;
 }
 
 .place-position__title--market {
@@ -37,14 +37,12 @@
 }
 
 .place-position__title--position {
-  font-size: 36px;
+  font-size: 24px;
 }
 
 .place-position__subtitle {
   color: var(--usyd-grey-800);
   font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 0;
   line-height: normal;
   white-space: nowrap;
   width: fit-content;
@@ -54,7 +52,6 @@
   color: #707070;
   font-size: 14px;
   font-weight: 500;
-  letter-spacing: 0;
   line-height: normal;
   width: fit-content;
 }
@@ -66,10 +63,9 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 40px;
   width: 500px;
-  height: 100%;
 }
 
 .place-position__right-header {
@@ -92,15 +88,13 @@
   padding: 13px 20px;
   transition: var(--transition-base);
   width: 150px;
+  font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 .place-position__button--buy-sell:hover {
   background-color: var(--usyd-grey-100);
 }
 
-.place-position__button--buy-sell:active {
-  transform: scale(0.98);
-}
 
 .place-position__icon {
   display: flex;
@@ -113,7 +107,7 @@
 .place-position__info-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
   width: 100%;
 }
 
@@ -128,6 +122,7 @@
   display: flex;
   gap: 20px;
   width: 100%;
+
 }
 
 .place-position__choice-button {
@@ -144,6 +139,7 @@
   line-height: normal;
   transition: var(--transition-base);
   white-space: nowrap;
+  font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 .place-position__choice-button:hover {
@@ -173,7 +169,7 @@
 
 .place-position__balance-text {
   color: var(--usyd-red-dark);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   letter-spacing: 0;
   line-height: normal;
@@ -186,10 +182,9 @@
   background-color: var(--usyd-grey-100);
   border-radius: 10px;
   display: flex;
-  gap: 150px;
+  gap: 12px;
   overflow: hidden;
   padding: 12px 19px;
-  width: 100%;
 }
 
 .place-position__input-button {
@@ -211,9 +206,6 @@
   color: white;
 }
 
-.place-position__input-button:active {
-  transform: scale(0.95);
-}
 
 .place-position__input-button .iconify {
   font-size: 16px;
@@ -229,25 +221,37 @@
   font-weight: 500;
   line-height: normal;
   padding: 0;
+  justify-content: center;
 }
 
-.place-position__input-field::before {
-  content: '$';
-  margin-right: 4px;
+.place-position__input-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 160px; /* fixed width gives consistent centring, tune as required */
+  max-width: 60%;
+  box-sizing: border-box;
+}
+
+.place-position__currency {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--usyd-grey-800);
   white-space: nowrap;
 }
 
-.place-position__input-field input {
+.place-position__input-center input {
   background: none;
   border: none;
   color: inherit;
   font-family: inherit;
   font-size: inherit;
   font-weight: inherit;
-  flex: 1;
   outline: none;
   padding: 0;
-  width: 100%;
+  width: 80px;
+  text-align: center;
 }
 
 .place-position__button--buy {
@@ -266,15 +270,13 @@
   line-height: normal;
   transition: var(--transition-base);
   width: 100%;
+  font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 .place-position__button--buy:hover {
-  opacity: 0.9;
+  background-color: var(--usyd-red);
 }
 
-.place-position__button--buy:active {
-  transform: scale(0.98);
-}
 
 .place-position__stat-row {
   align-items: center;
@@ -305,4 +307,72 @@
 
 .place-position__stat-value--positive {
   color: #28a745;
+}
+
+/* ------------------------   Market events table ------ */
+.market-events {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.market-events__table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+}
+
+.market-events__th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--usyd-grey-600);
+  background: var(--usyd-grey-100);
+  border-bottom: 1px solid var(--usyd-grey-100);
+}
+
+.market-events__tr:nth-child(even) {
+  background: white
+}
+
+.market-events__td {
+  padding: 12px 16px;
+  vertical-align: middle;
+  font-size: 14px;
+  color: var(--usyd-grey-800);
+}
+
+.market-events__outcome-name {
+  font-weight: 600;
+}
+
+.market-events__outcome-price {
+  font-size: 13px;
+  color: var(--usyd-grey-300);
+  margin-top: 4px;
+}
+
+.market-events__chance {
+  width: 110px;
+}
+
+.market-events__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  width: 160px;
+}
+
+.market-events__btn {
+  flex: initial;
+  min-width: 72px;
+  height: 36px;
+}
+
+
+.place-position__choice-button--selected {
+  background-color: var(--usyd-grey-600);
 }
