@@ -34,6 +34,8 @@
 
 .place-position__title--market {
   font-size: 40px;
+  font-family: LyonDisplay, Apercu, sans-serif;
+  font-weight: 300;
 }
 
 .place-position__title--position {

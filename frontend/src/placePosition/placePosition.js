@@ -95,13 +95,36 @@ export const PlacePositionPage = () => {
     setSelectedChoice(choice);
   };
 
+  // Calculate yes and no prices from event's price
+  const getYesNoPrice = () => {
+    if (!selectedEvent || !selectedEvent.price) {
+      return { yesPrice: '50c', noPrice: '50c' };
+    }
+
+    // Extract numeric value from price string (e.g., "50c" -> 50)
+    const priceMatch = selectedEvent.price.match(/(\d+)/);
+    if (!priceMatch) {
+      return { yesPrice: '50c', noPrice: '50c' };
+    }
+
+    const yesCents = parseInt(priceMatch[1], 10);
+    const noCents = 100 - yesCents;
+
+    return {
+      yesPrice: `${yesCents}c`,
+      noPrice: `${noCents}c`
+    };
+  };
+
+  const { yesPrice, noPrice } = getYesNoPrice();
+
   return (
     <div className="place-position">
       <div className="place-position__left">
         <div className="place-position__left-content">
           <div className="place-position__title place-position__title--market">Market Name Goes Here</div>
           <div className="place-position__subtitle">$423,015.31</div>
-          <div className="place-position__timestamp">Oct 14, 2025</div>
+          <div className="place-position__timestamp">October 14, 2025</div>
 
           {/* Market events table component — pass events here */}
           <MarketEventsTable events={sampleEvents} onSelectEvent={handleSelectEvent} />
@@ -137,14 +160,14 @@ export const PlacePositionPage = () => {
               className={`place-position__choice-button place-position__choice-button--yes ${selectedChoice === 'yes' ? 'place-position__choice-button--selected' : ''}`}
               onClick={() => handleChoiceButtonClick('yes')}
             >
-              Yes {selectedEvent ? selectedEvent.price : '50c'}
+              Yes {yesPrice}
             </button>
 
             <button
               className={`place-position__choice-button place-position__choice-button--no ${selectedChoice === 'no' ? 'place-position__choice-button--selected' : ''}`}
               onClick={() => handleChoiceButtonClick('no')}
             >
-              No {selectedEvent ? selectedEvent.price : '50c'}
+              No {noPrice}
             </button>
           </div>
 
