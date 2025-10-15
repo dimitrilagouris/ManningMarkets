@@ -1,3 +1,4 @@
+// placePosition.jsx
 import React, { useState } from "react";
 import './placePosition.css';
 import '../base.css';
@@ -53,6 +54,7 @@ export const MarketEventsTable = ({ events = [], onSelectEvent }) => {
 
 export const PlacePositionPage = () => {
   const [amount, setAmount] = useState('');
+  const [shares, setShares] = useState('');
   const [tradeType, setTradeType] = useState('buy'); // 'buy' or 'sell'
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedChoice, setSelectedChoice] = useState(null); // 'yes' or 'no'
@@ -69,6 +71,14 @@ export const PlacePositionPage = () => {
     // Only allow numbers and decimal point
     if (value === '' || /^\d*\.?\d*$/.test(value)) {
       setAmount(value);
+    }
+  };
+
+  const handleSharesChange = (e) => {
+    const value = e.target.value;
+    // Only allow integers
+    if (value === '' || /^\d*$/.test(value)) {
+      setShares(value);
     }
   };
 
@@ -179,36 +189,54 @@ export const PlacePositionPage = () => {
             </div>
           </div>
 
-          <div className="place-position__input">
-            <button
-              className="place-position__input-button"
-              aria-label="Decrease amount"
-              onClick={handleDecrease}
-            >
-              <span className="iconify" data-icon="ri:subtract-line" data-inline="false"></span>
-            </button>
+          {/* New form rows: Limit Price and Shares - labels on left, inputs on right */}
+          <div className="place-position__form-row">
+            <div className="place-position__form-label">Limit Price</div>
 
-            {/* centred currency + input wrapper */}
-            <label className="place-position__input-field" aria-hidden="false">
-              <div className="place-position__input-center">
-                <span className="place-position__currency">$</span>
-                <input
-                  type="text"
-                  placeholder="0.00"
-                  value={amount}
-                  onChange={handleInputChange}
-                  aria-label="Enter amount"
-                />
-              </div>
-            </label>
+            <div className="place-position__input place-position__input--compact" aria-label="Limit price input">
+              <button
+                className="place-position__input-button"
+                aria-label="Decrease amount"
+                onClick={handleDecrease}
+              >
+                <span className="iconify" data-icon="ri:subtract-line" data-inline="false"></span>
+              </button>
 
-            <button
-              className="place-position__input-button"
-              aria-label="Increase amount"
-              onClick={handleIncrease}
-            >
-              <span className="iconify" data-icon="ri:add-large-fill" data-inline="false"></span>
-            </button>
+              <label className="place-position__input-field" aria-hidden="false">
+                <div className="place-position__input-center">
+                  <span className="place-position__currency">$</span>
+                  <input
+                    type="text"
+                    placeholder="0.00"
+                    value={amount}
+                    onChange={handleInputChange}
+                    aria-label="Enter limit price"
+                  />
+                </div>
+              </label>
+
+              <button
+                className="place-position__input-button"
+                aria-label="Increase amount"
+                onClick={handleIncrease}
+              >
+                <span className="iconify" data-icon="ri:add-large-fill" data-inline="false"></span>
+              </button>
+            </div>
+          </div>
+
+          <div className="place-position__form-row">
+            <div className="place-position__form-label">Shares</div>
+
+            <div className="place-position__simple-input" aria-label="Shares input">
+              <input
+                type="text"
+                placeholder="0"
+                value={shares}
+                onChange={handleSharesChange}
+                aria-label="Enter number of shares"
+              />
+            </div>
           </div>
 
           <button className="place-position__button--buy">
@@ -222,7 +250,7 @@ export const PlacePositionPage = () => {
 
           <div className="place-position__stat-row place-position__stat-row--shares">
             <div className="place-position__stat-label">Shares</div>
-            <div className="place-position__stat-label">0¢</div>
+            <div className="place-position__stat-label">{shares || 0}</div>
           </div>
 
           <div className="place-position__stat-row place-position__stat-row--return">
@@ -234,3 +262,5 @@ export const PlacePositionPage = () => {
     </div>
   );
 };
+
+

@@ -51,7 +51,7 @@
 }
 
 .place-position__timestamp {
-  color: #707070;
+  color: var(--usyd-grey-300);
   font-size: 14px;
   font-weight: 500;
   line-height: normal;
@@ -179,6 +179,23 @@
   width: fit-content;
 }
 
+
+.place-position__form-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.place-position__form-label {
+  color: var(--usyd-grey-800);
+  font-size: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+  width: 120px;
+}
+
 .place-position__input {
   align-items: center;
   background-color: var(--usyd-grey-100);
@@ -187,6 +204,11 @@
   gap: 12px;
   overflow: hidden;
   padding: 12px 19px;
+}
+
+.place-position__input--compact .place-position__input-center {
+  width: 80px;
+  max-width: 50%;
 }
 
 .place-position__input-button {
@@ -231,7 +253,7 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  width: 160px; /* fixed width gives consistent centring, tune as required */
+  width: 160px; /* default width for non compact */
   max-width: 60%;
   box-sizing: border-box;
 }
@@ -252,6 +274,27 @@
   font-weight: inherit;
   outline: none;
   padding: 0;
+  width: 80px;
+  text-align: center;
+}
+
+.place-position__simple-input {
+  align-items: center;
+  background-color: var(--usyd-grey-100);
+  border-radius: 10px;
+  display: inline-flex;
+  padding: 10px 12px;
+  justify-content: center;
+  min-width: 120px;
+}
+
+.place-position__simple-input input {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  outline: none;
   width: 80px;
   text-align: center;
 }
@@ -278,7 +321,6 @@
 .place-position__button--buy:hover {
   background-color: var(--usyd-red);
 }
-
 
 .place-position__stat-row {
   align-items: center;
