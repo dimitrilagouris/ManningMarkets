@@ -240,5 +240,4 @@ Wallet.propTypes = {
       })
   ).isRequired,
 };
-
 export default Wallet;
