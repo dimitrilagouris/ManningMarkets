@@ -19,8 +19,8 @@ from django.urls import path
 
 from .views.authentication_views import activate_user, get_csrf_token, get_user_data, initiate_login, logout_view, register_user, verify_otp
 from .views.gmail_api_views import authorise_gmail, oauth2callback
-from .views.market_views import fetch_markets
-from .views.user_views import get_wallet, get_profile
+from .views.market_views import fetch_markets, fetch_leaderboard
+from .views.user_views import get_wallet, get_profile, change_username, change_password
 from .views.order_view import create_order
 
 urlpatterns = [
@@ -37,10 +37,13 @@ urlpatterns = [
 
     # MARKET URLS
     path('fetch_markets/', fetch_markets, name="fetch markets"),
+    path('fetch_leaderboard/', fetch_leaderboard, name="fetch leaderboard"),
 
     # USER URLS
     path('wallet/', get_wallet, name="wallet"),
     path('profile/', get_profile, name="profile"),
+    path('change-username/', change_username, name="change-username"),
+    path('change-password/', change_password, name="change-password" ),
 
     # GMAIL API URLS
     path('oauth2callback/', oauth2callback, name='oauth2callback'),

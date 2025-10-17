@@ -11,7 +11,7 @@ from googleapiclient.discovery import build
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CREDENTIALS_FILE = os.path.join(BASE_DIR, 'credentials.json')
 TOKEN_FILE = os.path.join(BASE_DIR, 'token.json')
-REDIRECT_URI = 'http://127.0.0.1:8000/oauth2callback/' # CHANGE
+REDIRECT_URI = 'http://localhost:3000/oauth2callback/' # CHANGE
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
 def authorise_gmail(request):
@@ -27,7 +27,7 @@ def authorise_gmail(request):
         )
         return redirect(auth_url)
     except Exception as error:
-        return HttpResponse("Authorisation initiation failed", status = 500)
+        return HttpResponse(f"Authorisation initiation failed {error}", status = 500)
 
 def oauth2callback(request):
     code = request.GET.get('code')

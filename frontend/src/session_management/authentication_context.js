@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
-import {getCSRFToken} from '../session_management/csrfToken';
+import Cookies from 'js-cookie';
 
 import { DJANGO_API_BASE } from "../config";
 
@@ -13,15 +13,12 @@ export const AuthProvider = ({ children }) => {
 
     const checkAuthStatus = async () => {
         try {
-            const csrfToken = await getCSRFToken();
-            console.log(csrfToken)
-            
             const res = await fetch(`${DJANGO_API_BASE}/user/`, 
             {
                 method: 'GET',
                 credentials: 'include',
                 headers: {
-                    "X-CSRFToken": csrfToken,
+                    "X-CSRFToken": Cookies.get("csrftoken"),
                 }
             });
 
