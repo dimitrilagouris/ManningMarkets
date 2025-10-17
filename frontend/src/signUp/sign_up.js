@@ -8,7 +8,7 @@ import '../base.css';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { DJANGO_API_BASE } from '../config';
-import {getCSRFToken} from '../session_management/csrfToken';
+import Cookies from 'js-cookie';
 
 function SignUp() {
 
@@ -22,15 +22,13 @@ function SignUp() {
   const onSubmit = async e => {
     e.preventDefault();
     try {
-      const csrfToken = await getCSRFToken();
-      console.log(csrfToken);
 
 
       const res = await fetch(`${DJANGO_API_BASE}/register/`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          'X-CSRFToken': csrfToken,
+          'X-CSRFToken': Cookies.get("csrftoken"),
         },
         body: JSON.stringify({ username, email, password })
       });
@@ -179,7 +177,6 @@ function SignUp() {
             
             <button type="submit" className="sign_up-cta" disabled={!validForm}>Sign Up</button>
           </form>
-
           <Link className="info-link" to="/login">Login here.</Link>
         </div>
       </aside>

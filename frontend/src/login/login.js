@@ -6,8 +6,8 @@ import './login.css';
 import '../base.css';
 
 import { DJANGO_API_BASE } from '../config';
-import {getCSRFToken} from '../session_management/csrfToken';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -17,17 +17,16 @@ function Login() {
   const onSubmit = async e => {
     e.preventDefault();
 
-    try {
-      const csrfToken = await getCSRFToken();
-      console.log(csrfToken);
+    console.log("CSRF Token: ", Cookies.get("csrftoken"));
 
+    try {
       const res = await fetch(`${DJANGO_API_BASE}/login/`, {
         method: "POST",
         credentials: "include",
         headers:
         {
           "Content-Type": "application/json",
-          "X-CSRFToken": csrfToken,
+          "X-CSRFToken": Cookies.get("csrftoken"),
         },
         body: JSON.stringify({
           username: email,

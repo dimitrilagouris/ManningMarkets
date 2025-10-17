@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 
 import { DJANGO_API_BASE } from '../config';
-import {getCSRFToken} from '../session_management/csrfToken';
+import Cookies from 'js-cookie';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../session_management/authentication_context';
 
@@ -15,14 +15,12 @@ function VerifyOTP() {
     const onSubmit = async e => {
         e.preventDefault()
 
-        const csrfToken = await getCSRFToken();
-
         const res = await fetch(`${DJANGO_API_BASE}/verify-otp/`, {
             method: "POST",
             credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                "X-CSRFToken": csrfToken
+                "X-CSRFToken": Cookies.get("csrftoken"),
             },
             body: JSON.stringify({ username: email, otp: otp}),
         });

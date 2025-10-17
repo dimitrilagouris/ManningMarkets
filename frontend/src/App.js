@@ -2,6 +2,7 @@ import Header from './base/header';
 import Login from './login/login';
 import Markets from './markets/markets';
 import Wallet from './wallet/wallet';
+import Leaderboard from './leaderboard/leaderboard';
 import VerifyOTP from './otp/verifyOTP'
 import Profile from './profile/profile';
 import { AuthProvider } from './session_management/authentication_context';
@@ -22,6 +23,7 @@ function App() {
             <Route path="/" element={<Markets/>} />
             <Route path="activate/:token" element={<Activate/ >} />
             <Route path="/login" element={<Login />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/verify-otp" element={<VerifyOTP />} />

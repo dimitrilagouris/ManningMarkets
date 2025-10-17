@@ -2,8 +2,10 @@ import React, { useContext } from 'react';
 
 import { useNavigate } from "react-router-dom";
 import { DJANGO_API_BASE } from "../config";
-import { getCSRFToken } from "../session_management/csrfToken";
+import Cookies from 'js-cookie';
 import { AuthContext } from "../session_management/authentication_context";
+
+import './login.css'
 
 function LogoutButton() {
     const navigate = useNavigate();
@@ -11,16 +13,13 @@ function LogoutButton() {
 
     const logout = async () => {
         try {
-            const csrfToken = await getCSRFToken();
-            console.log(csrfToken);
-
             const res = await fetch(`${DJANGO_API_BASE}/logout/`, {
                 method: 'POST',
                 credentials: 'include',
                 headers:
                 {
                     "Content-Type": "application/json",
-                    "X-CSRFToken": csrfToken,
+                    "X-CSRFToken": Cookies.get("csrftoken"),
                 },
             })
 
@@ -38,7 +37,7 @@ function LogoutButton() {
         }
     }
     return (
-        <button onClick={logout}>
+        <button onClick={logout} className='login-cta'>
             Logout
         </button>
     );
