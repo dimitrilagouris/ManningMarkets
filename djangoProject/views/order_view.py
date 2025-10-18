@@ -1,8 +1,9 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 import json
 from ..orderbooks import Orderbooks  # if your Orderbooks class is in the same app
-from django.contrib.auth.models import User
 from ..models import Events, Profiles  # or whatever your Event model is actually called
 
 
@@ -12,8 +13,7 @@ def create_order(request):
         data = json.loads(request.body)
 
         try:
-            user = User.objects.get(id=data['user_id'])
-            profile = Profiles.objects.get(user=user)
+            profile = Profiles.objects.get(id=data['user_id'])
             event = Events.objects.get(id=data['event_id'])
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
@@ -31,3 +31,23 @@ def create_order(request):
         return JsonResponse(result)
 
     return JsonResponse({"error": "Use POST"}, status=405)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_orderbook(request, event_id):
+
+    try:
+        # Verify the event exists
+        event = Events.objects.get(id=event_id, open=True)
+    except Events.DoesNotExist:
+        return JsonResponse({"error": "Event not found or closed"}, status=404)
+    
+    try:
+        # Use the shared orderbook logic from Orderbooks class
+        orderbooks = Orderbooks()
+        orderbook_data = orderbooks.get_orderbook_snapshot(event)
+        return JsonResponse(orderbook_data)
+        
+    except Exception as e:
+        return JsonResponse({"error": f"Failed to fetch orderbook: {str(e)}"}, status=500)
