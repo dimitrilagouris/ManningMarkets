@@ -259,12 +259,12 @@ export const PlacePositionPage = () => {
 
   const handleIncrease = () => {
     const num = amount ? parseFloat(amount) : 0;
-    setAmount((num + 1).toFixed(2));
+    setAmount((num + 0.01).toFixed(2));
   };
 
   const handleDecrease = () => {
     const num = amount ? parseFloat(amount) : 0;
-    setAmount(Math.max(0, num - 1).toFixed(2));
+    setAmount(Math.max(0, num - 0.01).toFixed(2));
   };
 
   const toggleTradeType = () => {
@@ -278,7 +278,42 @@ export const PlacePositionPage = () => {
 
   const handleChoiceButtonClick = useCallback((choice) => {
     setSelectedChoice(choice);
-  }, []);
+    
+    // Auto-populate limit price based on current market price
+    if (selectedEvent) {
+      let marketPrice;
+      
+      // Try to get live orderbook data first
+      if (selectedEvent.eventId) {
+        const orderbookData = eventOrderbookData[selectedEvent.eventId];
+        if (orderbookData && orderbookData.bestBid && orderbookData.bestAsk) {
+          if (choice === 'yes') {
+            marketPrice = tradeType === 'buy' ? orderbookData.bestAsk : orderbookData.bestBid;
+          } else { // no
+            marketPrice = tradeType === 'buy' ? (1 - orderbookData.bestBid) : (1 - orderbookData.bestAsk);
+          }
+        }
+      }
+      
+      // Fallback to static price if no live data
+      if (marketPrice === undefined && selectedEvent.price) {
+        const priceMatch = selectedEvent.price.match(/(\d+)c/);
+        if (priceMatch) {
+          const yesCents = parseInt(priceMatch[1], 10);
+          if (choice === 'yes') {
+            marketPrice = yesCents / 100;
+          } else { // no
+            marketPrice = (100 - yesCents) / 100;
+          }
+        }
+      }
+      
+      // Set the limit price if we have a market price
+      if (marketPrice !== undefined) {
+        setAmount(marketPrice.toFixed(2));
+      }
+    }
+  }, [selectedEvent, tradeType, eventOrderbookData]);
 
   // Helper function to determine if a message is an error
   const isErrorMessage = (message) => {
@@ -355,7 +390,12 @@ export const PlacePositionPage = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to submit order');
+        console.error('Order submission failed:', {
+          status: response.status,
+          statusText: response.statusText,
+          errorData: errorData
+        });
+        throw new Error(errorData.error || errorData.message || 'Failed to submit order');
       }
 
       const result = await response.json();

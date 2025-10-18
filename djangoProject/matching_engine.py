@@ -96,7 +96,8 @@ class MatchingEngine:
         
         # Execute trades - orderbook is already sorted by price-time priority
         while order.remaining_quantity > 0 and opposite_side_orders:
-            best_opposite_order = opposite_side_orders[0]  # First order is best price
+            best_opposite_order = opposite_side_orders[0]
+            best_opposite_index = 0
             
             # Check if we can trade (BID >= ASK)
             # For binary options, we need to convert NO prices to YES prices for comparison
@@ -153,7 +154,7 @@ class MatchingEngine:
             
             # Remove completely filled orders from the book
             if best_opposite_order.remaining_quantity <= 0:
-                opposite_side_orders.pop(0)  # Remove first order
+                opposite_side_orders.pop(best_opposite_index)  # Remove the specific order
                 best_opposite_order.status = "FILLED"
                 orders_to_update.append(best_opposite_order)
             elif trade_quantity > 0:

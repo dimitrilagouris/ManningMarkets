@@ -20,17 +20,23 @@ def create_order(request):
     except Exception as e:
         return Response({"error": str(e)}, status=400)
 
-    orderbooks = Orderbooks()
-    result = orderbooks.submit_order(
-        user=user,  # Use authenticated user, not from request data
-        event=event,
-        order_type=data['order_type'],
-        share_type=data['share_type'],
-        quantity=data['quantity'],
-        price=data['price'],
-    )
-
-    return Response(result)
+    # try catch block handles the cases where the order itself might be valid but it's presence in the orderbook isn't
+    # i.e. a user tries to sell positions they dont have
+    # or a user trades with themselves
+    try:
+        orderbooks = Orderbooks()
+        result = orderbooks.submit_order(
+            user=user,  # Use authenticated user, not from request data
+            event=event,
+            order_type=data['order_type'],
+            share_type=data['share_type'],
+            quantity=data['quantity'],
+            price=data['price'],
+        )
+        return Response(result)
+    except ValueError as e:
+        # Handle validation errors (including position validation)
+        return Response({"error": str(e)}, status=400)
 
 
 @api_view(['GET'])

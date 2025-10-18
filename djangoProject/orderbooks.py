@@ -37,6 +37,14 @@ class Orderbooks:
         if quantity <= 0:
             raise ValueError("Quantity must be greater than 0")
 
+        # --- Position validation for sell orders - making sure a user actually has the posisions they want to sell ---
+        if order_type.upper() == 'SELL':
+            self._validate_sell_position(user, event, share_type, quantity)
+
+        # --- Wallet balance validation for buy orders - making sure user has sufficient funds ---
+        if order_type.upper() == 'BUY':
+            self._validate_wallet_balance(user, event, share_type, quantity, price)
+
         orderbook_key = str(event.id)
         orderbook = self.get_orderbook(orderbook_key)
 
@@ -66,8 +74,14 @@ class Orderbooks:
         for modified_order in modified_orders:
             modified_order.save(update_fields=['status', 'remaining_quantity'])
 
+        # --- Update Market Volume ---
+        self.update_market_volume_from_trades(trades, event)
+
         # --- Update Positions ---
         self.update_positions_from_trades(trades)
+
+        # --- Update Wallet Balances ---
+        self.update_wallet_balances_from_trades(trades)
 
         # --- Broadcast Full Orderbook Snapshot ---
         self.broadcast_full_orderbook(event)
@@ -312,4 +326,139 @@ class Orderbooks:
                 position.avg_price = Decimal('0')
 
         position.save()
-        print(f"DEBUG: Updated position for user {user.id} - {share_type} shares: {position.quantity} @ {position.avg_price}")
+
+    def _validate_sell_position(self, user, event, share_type, quantity):
+
+        try:
+            # Get the user's current position for this event and share type
+            position = Positions.objects.get(
+                user=user,
+                event=event,
+                side=share_type.upper()
+            )
+            available_quantity = position.quantity
+        except Positions.DoesNotExist:
+            # User has no position in this share type
+            available_quantity = 0
+        
+        # Check if user has enough shares to sell
+        if available_quantity < quantity:
+            error_msg = f"Insufficient position to sell {quantity} {share_type} shares. Available: {available_quantity} shares"
+            raise ValueError(error_msg)
+        
+        print(f"DEBUG: Position validation passed - User {user.id} has {available_quantity} {share_type} shares, attempting to sell {quantity}")
+
+    def _validate_wallet_balance(self, user, event, share_type, quantity, price):
+        """
+        Validate that a user has sufficient wallet balance to place a buy order.
+        Raises ValueError if the user doesn't have enough funds.
+        """
+        print(f"DEBUG: _validate_wallet_balance called - user: {user.id}, event: {event.id}, share_type: {share_type}, quantity: {quantity}, price: {price}")
+        
+        # Calculate the cost based on share type
+        price_decimal = Decimal(str(price))  # Convert price to Decimal
+        if share_type.upper() == "YES":
+            cost_per_share = price_decimal
+        else:  # NO
+            cost_per_share = Decimal('1') - price_decimal
+        
+        total_cost = cost_per_share * quantity
+        print(f"DEBUG: Calculated cost - cost_per_share: {cost_per_share}, total_cost: {total_cost}")
+        
+        # Get user's wallet balance
+        try:
+            from .models import Wallet
+            wallet = Wallet.objects.get(profile=user)
+            current_balance = wallet.points_balance
+            print(f"DEBUG: Current wallet balance: {current_balance}")
+        except Wallet.DoesNotExist:
+            raise ValueError("User wallet not found. Please contact support.")
+        
+        # Check if user has enough funds
+        if current_balance < total_cost:
+            raise ValueError(
+                f"Insufficient wallet balance. Order cost: ${total_cost:.2f}, Available: ${current_balance:.2f}"
+            )
+        
+        print(f"DEBUG: Wallet validation passed - User {user.id} has ${current_balance:.2f}, order cost: ${total_cost:.2f}")
+
+    def update_wallet_balances_from_trades(self, trades):
+        """
+        Update wallet balances for all users involved in trades.
+        Deducts money from buyers and adds money to sellers.
+        """
+        print(f"DEBUG: update_wallet_balances_from_trades called with {len(trades)} trades")
+        
+        for trade in trades:
+            print(f"DEBUG: Processing wallet update for trade {trade.id}")
+            
+            # Update taker wallet
+            self._update_user_wallet(
+                user=trade.taker_order_id.user,
+                event=trade.taker_order_id.event,
+                share_type=trade.taker_order_id.share_type,
+                quantity=trade.quantity_filled,
+                price=trade.price,
+                is_buy=trade.taker_order_id.order_type == 'BUY'
+            )
+            
+            # Update maker wallet
+            self._update_user_wallet(
+                user=trade.maker_order_id.user,
+                event=trade.maker_order_id.event,
+                share_type=trade.maker_order_id.share_type,
+                quantity=trade.quantity_filled,
+                price=trade.price,
+                is_buy=trade.maker_order_id.order_type == 'BUY'
+            )
+
+    def _update_user_wallet(self, user, event, share_type, quantity, price, is_buy):
+        """
+        Update a single user's wallet balance for a trade.
+        """
+        # Calculate the cost based on share type
+        price_decimal = Decimal(str(price))  # Convert price to Decimal
+        if share_type == "YES":
+            cost_per_share = price_decimal  # Trade price is already YES price
+        else:  # NO
+            cost_per_share = Decimal('1') - price_decimal  # Convert YES price to NO price
+        
+        total_cost = cost_per_share * quantity
+        
+        print(f"DEBUG: _update_user_wallet called - user: {user.id}, event: {event.id}, share_type: {share_type}, quantity: {quantity}, cost_per_share: {cost_per_share}, total_cost: {total_cost}, is_buy: {is_buy}")
+        
+        # Get user's wallet
+        try:
+            from .models import Wallet
+            wallet = Wallet.objects.get(profile=user)
+        except Wallet.DoesNotExist:
+            print(f"ERROR: Wallet not found for user {user.id}")
+            return
+        
+        # Update wallet balance
+        if is_buy:
+            # Buying shares - deduct money
+            wallet.points_balance -= total_cost
+            print(f"DEBUG: Deducting ${total_cost:.2f} from user {user.id} wallet. New balance: ${wallet.points_balance:.2f}")
+        else:
+            # Selling shares - add money
+            wallet.points_balance += total_cost
+            print(f"DEBUG: Adding ${total_cost:.2f} to user {user.id} wallet. New balance: ${wallet.points_balance:.2f}")
+        
+        wallet.save()
+        print(f"DEBUG: Updated wallet for user {user.id} - new balance: ${wallet.points_balance:.2f}")
+
+    def update_market_volume_from_trades(self, trades, event):
+        if not trades:
+            return
+                
+        total_volume = 0
+        for trade in trades:
+            volume_added = trade.quantity_filled
+            total_volume += volume_added
+            print(f"DEBUG: Trade {trade.id} adds {volume_added} to volume")
+        
+        # Update the market's volume
+        market = event.market
+        market.volume += total_volume
+        market.save()
