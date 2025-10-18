@@ -218,4 +218,4 @@ class Positions(models.Model):
     avg_price = models.DecimalField(max_digits=20, decimal_places=8, validators=[MinValueValidator(Decimal("0.0"))])
 
     class Meta:
-        unique_together = ('event', 'user')
+        unique_together = ('event', 'user', 'side')  # Allow both YES and NO positions per user per event

@@ -1,0 +1,539 @@
+.place-position {
+    background-color: white;
+    display: flex;
+    font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    min-height: calc(100vh - 80px);
+    color: var(--usyd-grey-800);
+    overflow-x: hidden;
+  }
+  
+  .place-position__left {
+    align-items: flex-start;
+    align-self: stretch;
+    display: flex;
+    flex: 1;
+    flex-grow: 1;
+    gap: 5px;
+    padding: 40px 40px 40px 140px;
+    flex-direction: column;
+  }
+  
+  .place-position__left-content {
+    align-items: flex-start;
+    align-self: stretch;
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: flex-start;
+  }
+  
+  .place-position__title {
+    font-weight: 600;
+  }
+  
+  .place-position__title--market {
+    font-size: 40px;
+    font-family: LyonDisplay, Apercu, sans-serif;
+    font-weight: 300;
+  }
+  
+  .place-position__title--position {
+    font-size: 24px;
+  }
+  
+  .place-position__subtitle {
+    color: var(--usyd-grey-800);
+    font-size: 16px;
+    line-height: normal;
+    white-space: nowrap;
+    width: fit-content;
+  }
+  
+  .place-position__timestamp {
+    color: var(--usyd-grey-300);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: normal;
+    width: fit-content;
+  }
+  
+  .place-position__right {
+    align-items: center;
+    align-self: stretch;
+    background-color: var(--usyd-red-light);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: flex-start;
+    padding: 40px;
+    width: 500px;
+  }
+  
+  .place-position__right-header {
+    align-items: center;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  .place-position__button--buy-sell {
+    align-items: center;
+    background-color: white;
+    border: 1px solid var(--usyd-grey-200);
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+    padding: 13px 20px;
+    transition: var(--transition-base);
+    width: 150px;
+    font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  
+  .place-position__button--buy-sell:hover {
+    background-color: var(--usyd-grey-100);
+  }
+  
+  
+  .place-position__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 26px;
+    width: 26px;
+  }
+  
+  .place-position__info-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+  
+  .place-position__outcome {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+  }
+  
+  .place-position__choice-buttons {
+    align-items: center;
+    display: flex;
+    gap: 20px;
+    width: 100%;
+  
+  }
+  
+  .place-position__choice-button {
+    background-color: var(--usyd-grey-500);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    flex: 1;
+    font-size: 16px;
+    font-weight: 500;
+    height: 60px;
+    letter-spacing: 0;
+    line-height: normal;
+    transition: var(--transition-base);
+    white-space: nowrap;
+    font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  
+  .place-position__choice-button:hover {
+    opacity: 0.9;
+  }
+  
+  .place-position__choice-button:active {
+    transform: scale(0.98);
+  }
+  
+  .place-position__amount {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .place-position__balance {
+    align-items: center;
+    background-color: white;
+    border-radius: 999px;
+    display: inline-flex;
+    gap: 10px;
+    justify-content: center;
+    padding: 10px;
+  }
+  
+  .place-position__balance-text {
+    color: var(--usyd-red-dark);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+    width: fit-content;
+  }
+  
+  
+  .place-position__form-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+  }
+  
+  .place-position__form-label {
+    color: var(--usyd-grey-800);
+    font-size: 16px;
+    font-weight: 500;
+    white-space: nowrap;
+    width: 120px;
+  }
+  
+  .place-position__input {
+    align-items: center;
+    background-color: var(--usyd-grey-100);
+    border-radius: 10px;
+    display: flex;
+    gap: 12px;
+    overflow: hidden;
+    padding: 12px 19px;
+  }
+  
+  .place-position__input--compact .place-position__input-center {
+    width: 80px;
+    max-width: 50%;
+  }
+  
+  .place-position__input-button {
+    background-color: var(--usyd-grey-200);
+    border: none;
+    border-radius: var(--border-rad-main);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    height: 45px;
+    transition: var(--transition-base);
+    width: 45px;
+  }
+  
+  .place-position__input-button:hover {
+    background-color: var(--usyd-grey-500);
+    color: white;
+  }
+  
+  
+  .place-position__input-button .iconify {
+    font-size: 16px;
+  }
+  
+  .place-position__input-field {
+    align-items: center;
+    border: none;
+    color: var(--usyd-grey-800);
+    display: flex;
+    flex: 1;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: normal;
+    padding: 0;
+    justify-content: center;
+  }
+  
+  .place-position__input-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 160px; /* default width for non compact */
+    max-width: 60%;
+    box-sizing: border-box;
+  }
+  
+  .place-position__currency {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--usyd-grey-800);
+    white-space: nowrap;
+  }
+  
+  .place-position__input-center input {
+    background: none;
+    border: none;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    outline: none;
+    padding: 0;
+    width: 80px;
+    text-align: center;
+  }
+  
+  .place-position__simple-input {
+    align-items: center;
+    background-color: var(--usyd-grey-100);
+    border-radius: 10px;
+    display: inline-flex;
+    padding: 10px 12px;
+    justify-content: center;
+    min-width: 120px;
+  }
+  
+  .place-position__simple-input input {
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    outline: none;
+    width: 80px;
+    text-align: center;
+  }
+  
+  .place-position__button--buy {
+    align-items: center;
+    background-color: var(--usyd-red-dark);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    font-size: 16px;
+    font-weight: 500;
+    height: 60px;
+    justify-content: center;
+    letter-spacing: 0;
+    line-height: normal;
+    transition: var(--transition-base);
+    width: 100%;
+    font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  
+  .place-position__button--buy:hover {
+    background-color: var(--usyd-red);
+  }
+  
+  .place-position__stat-row {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .place-position__stat-label {
+    color: var(--usyd-grey-800);
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+    width: fit-content;
+  }
+  
+  .place-position__stat-value {
+    color: var(--select-blue);
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+    width: fit-content;
+  }
+  
+  .place-position__stat-value--positive {
+    color: #28a745;
+  }
+  
+  /* ------------------------   Market events table ------ */
+  .market-events {
+    width: 100%;
+    margin-top: 8px;
+  }
+  
+  .market-events__table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+  }
+  
+  .market-events__th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--usyd-grey-600);
+    background: var(--usyd-grey-100);
+    border-bottom: 1px solid var(--usyd-grey-100);
+  }
+  
+  .market-events__tr:nth-child(even) {
+    background: white
+  }
+  
+  .market-events__td {
+    padding: 12px 16px;
+    vertical-align: middle;
+    font-size: 14px;
+    color: var(--usyd-grey-800);
+  }
+  
+  .market-events__outcome-name {
+    font-weight: 600;
+  }
+  
+  .market-events__outcome-price {
+    font-size: 13px;
+    color: var(--usyd-grey-300);
+    margin-top: 4px;
+  }
+  
+  .market-events__chance {
+    width: 100px;
+  }
+  
+  .market-events__actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  
+  .market-events__btn {
+    flex: initial;
+    min-width: 72px;
+    height: 36px;
+  }
+
+.market-events__orderbook {
+  width: 120px;
+  text-align: left;
+}
+
+.orderbook-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+  .orderbook-btn-yes {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+    font-size: 11px;
+    padding: 4px 8px;
+    width: 150px;
+    min-width: 150px;
+    max-width: 150px;
+  }
+
+  .orderbook-btn-yes:hover {
+    background-color: #c3e6cb;
+    border-color: #b8dacc;
+  }
+
+  .orderbook-btn-no {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+    font-size: 11px;
+    padding: 4px 8px;
+    width: 150px;
+    min-width: 150px;
+    max-width: 150px;
+  }
+
+  .orderbook-btn-no:hover {
+    background-color: #f5c6cb;
+    border-color: #f1b0b7;
+  }
+  
+  
+  .place-position__choice-button--selected {
+    background-color: var(--usyd-grey-600);
+  }
+
+/* Live data indicators */
+.market-events__chance {
+  position: relative;
+  text-align: left;
+}
+
+.market-events__chance .live-chance {
+  color: #28a745;
+  font-weight: 700;
+}
+
+.market-events__chance .static-chance {
+  color: #6c757d;
+}
+
+.market-events__chance .live-indicator {
+  color: #28a745;
+  font-size: 8px;
+  animation: pulse 2s infinite;
+  margin-left: 4px;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+/* Table row height for consistent vertical centering */
+.market-events__tr {
+  border-bottom: 1px solid #dee2e6;
+}
+
+.market-events__tr:last-child {
+  border-bottom: none;
+}
+
+/* Table cell alignment */
+.market-events__td {
+  text-align: left;
+  vertical-align: middle;
+  padding-left: 16px;
+}
+
+/* Yes/No buttons layout */
+.market-events__td.market-events__actions {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Order message styling */
+.order-message {
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.order-message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.order-message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}

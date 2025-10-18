@@ -1,0 +1,452 @@
+/* OrderBook Overlay - Only for modal mode */
+.orderbook-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+/* OrderBook Container */
+.orderbook-container {
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  max-width: 600px;
+  width: 100%;
+  max-height: 70vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Inline OrderBook Container */
+.orderbook-container--inline {
+  max-width: none;
+  max-height: 500px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+}
+
+/* OrderBook Header */
+.orderbook-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #e9ecef;
+  position: relative;
+}
+
+/* Inline OrderBook Header */
+.orderbook-header--inline {
+  padding: 16px 20px 12px;
+}
+
+.orderbook-title h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #212529;
+  margin: 0 0 4px 0;
+  font-family: 'Apercu-Medium', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.orderbook-subtitle {
+  font-size: 14px;
+  color: #6c757d;
+  margin-bottom: 12px;
+}
+
+.orderbook-status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #dc3545;
+}
+
+.status-indicator.connected .status-dot {
+  background-color: #28a745;
+}
+
+.status-text {
+  text-transform: lowercase;
+  color: #6c757d;
+}
+
+.last-updated {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.orderbook-summary {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.orderbook-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  color: #6c757d;
+  transition: background-color 0.2s ease;
+}
+
+.orderbook-close:hover {
+  background-color: #e9ecef;
+  color: #495057;
+}
+
+/* OrderBook Content */
+.orderbook-content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* Important for flex child to shrink */
+}
+
+.orderbook-table {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0;
+  max-height: 400px; /* Maximum height before scrolling kicks in */
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f7fafc;
+}
+
+/* Custom scrollbar styling for webkit browsers */
+.orderbook-table::-webkit-scrollbar {
+  width: 6px;
+}
+
+.orderbook-table::-webkit-scrollbar-track {
+  background: #f7fafc;
+  border-radius: 3px;
+}
+
+.orderbook-table::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 3px;
+}
+
+.orderbook-table::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+.orderbook-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 12px 24px;
+  background-color: #f1f3f4;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 12px;
+  font-weight: 600;
+  color: #495057;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.orderbook-column:first-child {
+  text-align: left;
+}
+
+.orderbook-column:nth-child(2) {
+  text-align: center;
+}
+
+.orderbook-column:last-child {
+  text-align: right;
+}
+
+/* OrderBook Sections */
+.orderbook-section {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Divider between asks and bids */
+.orderbook-divider {
+  position: relative;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #dee2e6, transparent);
+  margin: 15px 0px 15px 0px;
+  border-radius: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.orderbook-divider-text {
+  background: #f8f9fa;
+  padding: 2px 8px;
+  font-size: 10px;
+  color: #6c757d;
+  font-weight: 500;
+  border-radius: 3px;
+  white-space: nowrap;
+  border: 1px solid #e9ecef;
+}
+
+/* OrderBook Rows */
+.orderbook-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 8px 24px;
+  position: relative;
+  border-bottom: 1px solid #f1f3f4;
+  font-size: 14px;
+  font-weight: 500;
+  min-height: 40px;
+  align-items: center;
+}
+
+.orderbook-row:last-child {
+  border-bottom: none;
+}
+
+/* Ask Rows (Red) */
+.ask-row {
+  color: #dc3545;
+}
+
+.ask-row .orderbook-cell {
+  color: #dc3545;
+}
+
+/* Bid Rows (Green) */
+.bid-row {
+  color: #28a745;
+}
+
+.bid-row .orderbook-cell {
+  color: #28a745;
+}
+
+/* OrderBook Cells */
+.orderbook-cell {
+  font-family: 'Apercu-Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  font-weight: 500;
+  z-index: 2;
+  position: relative;
+}
+
+.orderbook-cell:first-child {
+  text-align: left;
+}
+
+.orderbook-cell:nth-child(2) {
+  text-align: center;
+}
+
+.orderbook-cell:last-child {
+  text-align: right;
+}
+
+/* OrderBook Bars */
+.orderbook-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  opacity: 0.15;
+  z-index: 1;
+}
+
+.ask-bar {
+  background-color: #dc3545;
+  left: 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.bid-bar {
+  background-color: #28a745;
+  left: 0;
+  border-radius: 4px 0 0 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .orderbook-overlay {
+    padding: 10px;
+  }
+  
+  .orderbook-container {
+    max-height: 90vh;
+  }
+  
+  .orderbook-container--inline {
+    max-height: 400px;
+  }
+  
+  .orderbook-table {
+    max-height: 300px; /* Smaller max height on mobile */
+  }
+  
+  .orderbook-header {
+    padding: 16px 20px 12px;
+  }
+  
+  .orderbook-header--inline {
+    padding: 12px 16px 8px;
+  }
+  
+  .orderbook-title h2 {
+    font-size: 20px;
+  }
+  
+  .orderbook-columns,
+  .orderbook-row {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  
+  .orderbook-status {
+    gap: 12px;
+  }
+  
+  .orderbook-summary {
+    font-size: 11px;
+  }
+  
+  .orderbook-dropdown-content {
+    min-width: 300px;
+    max-width: 90vw;
+  }
+}
+
+/* Empty State */
+.orderbook-section:empty::after {
+  content: "No orders available";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  color: #6c757d;
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* Loading State */
+.orderbook-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  color: #6c757d;
+  font-size: 14px;
+}
+
+/* Animation for new data */
+.orderbook-row {
+  transition: background-color 0.3s ease;
+}
+
+.orderbook-row.new-data {
+  background-color: rgba(0, 123, 255, 0.1);
+  animation: highlight 1s ease-out;
+}
+
+@keyframes highlight {
+  0% {
+    background-color: rgba(0, 123, 255, 0.2);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+/* OrderBook Dropdown Container - Removed inline dropdown styles */
+
+/* OrderBook Dropdown Button */
+.orderbook-dropdown-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: #495057;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.orderbook-dropdown-button:hover {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+  color: #212529;
+}
+
+.orderbook-dropdown-button:active {
+  background-color: #dee2e6;
+  transform: translateY(1px);
+}
+
+
+.orderbook-dropdown-icon {
+  display: flex;
+  align-items: center;
+  color: #6c757d;
+  font-size: 16px;
+}
+
+.orderbook-dropdown-text {
+  font-family: 'Apercu-Medium', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.orderbook-dropdown-arrow {
+  display: flex;
+  align-items: center;
+  color: #6c757d;
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+.orderbook-dropdown-button:hover .orderbook-dropdown-arrow {
+  transform: translateY(1px);
+}
+
+/* Integration with existing placePosition styles */
+.market-events__btn.orderbook-dropdown-button {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  color: #495057;
+  font-size: 12px;
+  padding: 6px 10px;
+  margin-left: 8px;
+}
+
+.market-events__btn.orderbook-dropdown-button:hover {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}

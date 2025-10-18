@@ -5,7 +5,7 @@ from decimal import Decimal
 from typing import Dict
 from django.conf import settings
 from django.db import transaction
-from .models import Orders, Trades
+from .models import Orders, Trades, Positions
 from .matching_engine import MatchingEngine
 from .notifier import broadcast_orderbook_snapshot
 
@@ -65,6 +65,9 @@ class Orderbooks:
         # Save modified orders (taker and maker)
         for modified_order in modified_orders:
             modified_order.save(update_fields=['status', 'remaining_quantity'])
+
+        # --- Update Positions ---
+        self.update_positions_from_trades(trades)
 
         # --- Broadcast Full Orderbook Snapshot ---
         self.broadcast_full_orderbook(event)
@@ -220,3 +223,93 @@ class Orderbooks:
 
         # Assuming broadcast_orderbook_snapshot is defined elsewhere
         broadcast_orderbook_snapshot(event.id, snapshot)
+
+    def update_positions_from_trades(self, trades):
+        print(f"DEBUG: update_positions_from_trades called with {len(trades)} trades")
+        
+        for trade in trades:
+            print(f"DEBUG: Processing trade {trade.id} - taker: {trade.taker_order_id.user.id} {trade.taker_order_id.order_type} {trade.taker_order_id.share_type}, maker: {trade.maker_order_id.user.id} {trade.maker_order_id.order_type} {trade.maker_order_id.share_type}, quantity: {trade.quantity_filled}, price: {trade.price}")
+            
+            # Update taker position
+            print(f"DEBUG: Updating taker position...")
+            self._update_user_position(
+                user=trade.taker_order_id.user,
+                event=trade.taker_order_id.event,
+                share_type=trade.taker_order_id.share_type,
+                quantity=trade.quantity_filled,
+                price=trade.price,
+                is_buy=trade.taker_order_id.order_type == 'BUY'
+            )
+            
+            # Update maker position
+            print(f"DEBUG: Updating maker position...")
+            self._update_user_position(
+                user=trade.maker_order_id.user,
+                event=trade.maker_order_id.event,
+                share_type=trade.maker_order_id.share_type,
+                quantity=trade.quantity_filled,
+                price=trade.price,
+                is_buy=trade.maker_order_id.order_type == 'BUY'
+            )
+
+    def _update_user_position(self, user, event, share_type, quantity, price, is_buy):
+        # Update a single user's position for a specific event and share type
+        
+        # Convert trade price (always YES price) to the correct price for this share type
+        if share_type == "YES":
+            share_price = price  # Trade price is already YES price
+        else:  # NO
+            share_price = Decimal('1') - price  # Convert YES price to NO price
+        
+        print(f"DEBUG: _update_user_position called - user: {user.id}, event: {event.id}, share_type: {share_type}, quantity: {quantity}, trade_yes_price: {price}, share_price: {share_price}, is_buy: {is_buy}")
+        
+        # Determine the position side and quantity change
+        if is_buy:
+            # Buying shares - add to position
+            quantity_change = quantity
+        else:
+            # Selling shares - subtract from position
+            quantity_change = -quantity
+
+        # Get or create position
+        position, created = Positions.objects.get_or_create(
+            user=user,
+            event=event,
+            side=share_type,
+            defaults={'quantity': 0, 'avg_price': Decimal('0')}
+        )
+
+        if created:
+            # New position
+            print(f"DEBUG: Creating new position - quantity: {quantity_change}, share_price: {share_price}")
+            position.quantity = quantity_change
+            position.avg_price = share_price
+        else:
+            # Existing position - update with weighted average
+            print(f"DEBUG: Updating existing position - current: {position.quantity} @ {position.avg_price}")
+            if position.quantity + quantity_change == 0:
+                # Position closed
+                print(f"DEBUG: Position closed")
+                position.quantity = 0
+                position.avg_price = 0
+            elif position.quantity + quantity_change > 0:
+                # Position increased or maintained
+                if is_buy:
+                    # Calculate weighted average price
+                    total_cost = (position.quantity * position.avg_price) + (Decimal(quantity) * share_price)
+                    position.quantity += quantity_change
+                    position.avg_price = total_cost / position.quantity
+                    print(f"DEBUG: Buy - new quantity: {position.quantity}, new avg_price: {position.avg_price}")
+                else:
+                    # Selling - just reduce quantity, keep avg price
+                    position.quantity += quantity_change
+                    print(f"DEBUG: Sell - new quantity: {position.quantity}, keeping avg_price: {position.avg_price}")
+            else:
+                # Position went negative - this shouldn't happen in a proper system
+                # But we'll handle it by setting to 0
+                print(f"DEBUG: Position went negative, setting to 0")
+                position.quantity = 0
+                position.avg_price = Decimal('0')
+
+        position.save()
+        print(f"DEBUG: Updated position for user {user.id} - {share_type} shares: {position.quantity} @ {position.avg_price}")

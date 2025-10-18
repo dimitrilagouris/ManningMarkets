@@ -128,12 +128,22 @@ class MatchingEngine:
             )
             
             # Create trade object (NOTE: The database save is now outside this function)
+            # Standardize price to always be the YES price
+            def get_yes_price(order):
+                if order.share_type.upper() == "YES":
+                    return order.price
+                else:  # NO
+                    return Decimal('1') - order.price
+            
+            # Use the maker's YES price for the trade
+            trade_yes_price = get_yes_price(best_opposite_order)
+            
             trade = Trades(
                 maker_order_id=best_opposite_order,
                 taker_order_id=order,
                 quantity_filled=int(trade_quantity),
-                # Trade occurs at the resting order's price
-                price=float(best_opposite_order.price)
+                # Trade price is always the YES price
+                price=trade_yes_price
             )
             trades.append(trade)
             

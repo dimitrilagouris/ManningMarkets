@@ -9,6 +9,7 @@ import { AuthProvider } from './session_management/authentication_context';
 import './App.css';
 
 import SignUp from './signUp/sign_up';
+import { PlacePositionPage } from './placePosition/placePosition';
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Activate from './activation/activate';
@@ -21,6 +22,8 @@ function App() {
           <Header />
           <Routes>
             <Route path="/" element={<Markets/>} />
+            <Route path="/markets" element={<Markets/>} />
+            <Route path="/market/:marketId" element={<PlacePositionPage />} />
             <Route path="activate/:token" element={<Activate/ >} />
             <Route path="/login" element={<Login />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
