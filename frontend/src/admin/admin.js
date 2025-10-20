@@ -206,31 +206,41 @@ function Admin() {
     }
   };
 
-  const handleConfirmDelete = () => {
-    if (selectedUser) {
-      // Remove user
-      setUsers(users.filter(u => u.id !== selectedUser.id));
-      
-      // Add audit log
-      const newLog = {
-        id: auditLogs.length + 1,
-        admin: 'Admin User',
-        action: 'Deleted user account',
-        target: selectedUser.name,
-        timestamp: new Date().toLocaleString('en-US', { 
-          year: 'numeric', 
-          month: '2-digit', 
-          day: '2-digit', 
-          hour: '2-digit', 
-          minute: '2-digit', 
-          second: '2-digit',
-          hour12: false 
-        })
-      };
-      setAuditLogs([newLog, ...auditLogs]);
+  const handleConfirmDelete = async () => {
+    if (!selectedUser) return;
+    
+    if (!window.confirm('Are you absolutely sure? This cannot be undone!')) {
+      return;
     }
-    setShowDeleteModal(false);
-    setSelectedUser(null);
+    
+    setActionLoading(true);
+    try {
+      const csrfToken = await getCSRFToken();
+      const res = await fetch(`${DJANGO_API_BASE}/api/admin/users/${selectedUser.id}/delete/`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,
+        },
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert('User deleted successfully');
+        await Promise.all([fetchUsers(), fetchStats(), fetchAuditLogs()]);
+      } else {
+        alert(data.error || 'Failed to delete user');
+      }
+    } catch (err) {
+      console.error('Error deleting user:', err);
+      alert('An error occurred');
+    } finally {
+      setActionLoading(false);
+      setShowDeleteModal(false);
+      setSelectedUser(null);
+    }
   };
 
   // Filter users
