@@ -117,7 +117,7 @@ function Admin() {
       console.error('Error fetching audit logs:', err);
     }
   };
-  
+
   useEffect(() => {
     if (!loading) {
       fetchUsers();
@@ -140,33 +140,37 @@ function Admin() {
     setShowDeleteModal(true);
   };
 
-  const handleConfirmSuspend = () => {
-    if (selectedUser) {
-      // Update user status
-      setUsers(users.map(u => 
-        u.id === selectedUser.id ? { ...u, status: 'suspended' } : u
-      ));
-      
-      // Add audit log
-      const newLog = {
-        id: auditLogs.length + 1,
-        admin: 'Admin User',
-        action: 'Suspended user account',
-        target: selectedUser.name,
-        timestamp: new Date().toLocaleString('en-US', { 
-          year: 'numeric', 
-          month: '2-digit', 
-          day: '2-digit', 
-          hour: '2-digit', 
-          minute: '2-digit', 
-          second: '2-digit',
-          hour12: false 
-        })
-      };
-      setAuditLogs([newLog, ...auditLogs]);
+  const handleConfirmSuspend = async () => {
+    if (!selectedUser) return;
+    
+    setActionLoading(true);
+    try {
+      const csrfToken = await getCSRFToken();
+      const res = await fetch(`${DJANGO_API_BASE}/api/admin/users/${selectedUser.id}/suspend/`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,
+        },
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert('User suspended successfully');
+        await Promise.all([fetchUsers(), fetchStats(), fetchAuditLogs()]);
+      } else {
+        alert(data.error || 'Failed to suspend user');
+      }
+    } catch (err) {
+      console.error('Error suspending user:', err);
+      alert('An error occurred');
+    } finally {
+      setActionLoading(false);
+      setShowSuspendModal(false);
+      setSelectedUser(null);
     }
-    setShowSuspendModal(false);
-    setSelectedUser(null);
   };
 
   const handleConfirmUnsuspend = () => {
