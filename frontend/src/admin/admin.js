@@ -41,13 +41,84 @@ function Admin() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
 
-  // Stats
-  const totalUsers = users.length;
-  const activeUsers = users.filter(u => u.status === 'active').length;
-  const suspendedUsers = users.filter(u => u.status === 'suspended').length;
-  const totalMarkets = markets.length;
-  const activeMarkets = markets.filter(m => m.status === 'active').length;
+  // Fetch all data on mount
+  useEffect(() => {
+    fetchAllData();
+  }, []);
 
+  const fetchAllData = async () => {
+    setLoading(true);
+    try {
+      await Promise.all([
+        fetchUsers(),
+        fetchStats(),
+        fetchMarkets(),
+        fetchAuditLogs()
+      ]);
+    } catch (err) {
+      console.error('Error fetching admin data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const res = await fetch(`${DJANGO_API_BASE}/api/admin/users/?search=${searchTerm}&status=${filterStatus}`, {
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setUsers(data.users);
+      }
+    } catch (err) {
+      console.error('Error fetching users:', err);
+    }
+  };
+
+  const fetchStats = async () => {
+    try {
+      const res = await fetch(`${DJANGO_API_BASE}/api/admin/stats/`, {
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setStats(data);
+      }
+    } catch (err) {
+      console.error('Error fetching stats:', err);
+    }
+  };
+
+  onst fetchMarkets = async () => {
+    try {
+      const res = await fetch(`${DJANGO_API_BASE}/api/admin/markets/`, {
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMarkets(data.markets);
+      }
+    } catch (err) {
+      console.error('Error fetching markets:', err);
+    }
+  };
+
+  const fetchAuditLogs = async () => {
+    try {
+      const res = await fetch(`${DJANGO_API_BASE}/api/admin/audit-logs/`, {
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setAuditLogs(data.auditLogs);
+      }
+    } catch (err) {
+      console.error('Error fetching audit logs:', err);
+    }
+  };
+
+  
   // Handlers
   const handleSuspendClick = (user) => {
     setSelectedUser(user);
