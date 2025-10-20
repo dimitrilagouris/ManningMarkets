@@ -90,7 +90,7 @@ function Admin() {
     }
   };
 
-  onst fetchMarkets = async () => {
+  const fetchMarkets = async () => {
     try {
       const res = await fetch(`${DJANGO_API_BASE}/api/admin/markets/`, {
         credentials: 'include',
@@ -243,13 +243,17 @@ function Admin() {
     }
   };
 
-  // Filter users
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterStatus === 'all' || user.status === filterStatus;
-    return matchesSearch && matchesFilter;
-  });
+  if (loading) {
+    return (
+      <div className="admin-page">
+        <main className="admin-content">
+          <div className="admin-container">
+            <h1>Loading admin dashboard...</h1>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -268,25 +272,25 @@ function Admin() {
               <div className="admin-stats">
                 <div className="stat-card">
                   <div className="stat-content">
-                    <p className="stat-value">{totalUsers}</p>
+                    <p className="stat-value">{stats.totalUsers}</p>
                     <p className="stat-label">Total Users</p>
                   </div>
                 </div>
                 <div className="stat-card">
                   <div className="stat-content">
-                    <p className="stat-value">{activeUsers}</p>
+                    <p className="stat-value">{stats.activeUsers}</p>
                     <p className="stat-label">Active Users</p>
                   </div>
                 </div>
                 <div className="stat-card">
                   <div className="stat-content">
-                    <p className="stat-value">{suspendedUsers}</p>
+                    <p className="stat-value">{stats.suspendedUsers}</p>
                     <p className="stat-label">Suspended</p>
                   </div>
                 </div>
                 <div className="stat-card">
                   <div className="stat-content">
-                    <p className="stat-value">{activeMarkets}/{totalMarkets}</p>
+                    <p className="stat-value">{stats.activeMarkets}/{stats.totalMarkets}</p>
                     <p className="stat-label">Active Markets</p>
                   </div>
                 </div>
@@ -336,7 +340,7 @@ function Admin() {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredUsers.map(user => (
+                    {users.map(user => (
                       <tr key={user.id}>
                         <td>{user.id}</td>
                         <td className="user-name">{user.name}</td>
