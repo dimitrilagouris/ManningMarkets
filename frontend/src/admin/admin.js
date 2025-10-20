@@ -117,7 +117,12 @@ function Admin() {
       console.error('Error fetching audit logs:', err);
     }
   };
-
+  
+  useEffect(() => {
+    if (!loading) {
+      fetchUsers();
+    }
+  }, [searchTerm, filterStatus]);
   
   // Handlers
   const handleSuspendClick = (user) => {
