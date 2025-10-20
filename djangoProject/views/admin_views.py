@@ -121,3 +121,27 @@ def get_system_stats(request):
         'activeOrders': Orders.objects.filter(status='ACTIVE').count(),
     }, status=200)
 
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@admin_required
+def get_markets_overview(request):
+    markets = Markets.objects.prefetch_related('events').all()
+    
+    markets_data = []
+    for market in markets:
+        events = market.events.all()
+        participants = Orders.objects.filter(event__in=events).values('user').distinct().count()
+        avg_price = sum(float(e.price) for e in events) / len(events) if events else 0
+        
+        markets_data.append({
+            'id': market.id,
+            'title': market.market_name,
+            'status': 'active' if market.open else 'closed',
+            'participants': participants,
+            'price': round(avg_price, 2),
+            'volume': market.volume,
+        })
+    
+    return Response({'markets': markets_data}, status=200)
+
