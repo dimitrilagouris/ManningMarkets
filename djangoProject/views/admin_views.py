@@ -106,3 +106,18 @@ def delete_user(request, user_id):
     
     return Response({'message': 'User deleted successfully'}, status=200)
 
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@admin_required
+def get_system_stats(request):
+    return Response({
+        'totalUsers': Profiles.objects.count(),
+        'activeUsers': Profiles.objects.filter(is_active=True).count(),
+        'suspendedUsers': Profiles.objects.filter(is_active=False).count(),
+        'totalMarkets': Markets.objects.count(),
+        'activeMarkets': Markets.objects.filter(open=True).count(),
+        'totalOrders': Orders.objects.count(),
+        'activeOrders': Orders.objects.filter(status='ACTIVE').count(),
+    }, status=200)
+
