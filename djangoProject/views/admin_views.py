@@ -86,3 +86,23 @@ def unsuspend_user(request, user_id):
     
     return Response({'message': 'User reactivated successfully'}, status=200)
 
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+@admin_required
+def delete_user(request, user_id):
+    try:
+        user = Profiles.objects.get(pk=user_id)
+    except Profiles.DoesNotExist:
+        return Response({'error': 'User not found'}, status=404)
+    
+    if user.id == request.user.id:
+        return Response({'error': 'Cannot delete your own account'}, status=400)
+    
+    AdminActions.objects.create(user=request.user,
+        description=f"Deleted: {user.username} ({user.email})")
+    
+    user.delete()
+    
+    return Response({'message': 'User deleted successfully'}, status=200)
+
