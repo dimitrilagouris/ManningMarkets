@@ -432,6 +432,15 @@ function Admin() {
                               Unsuspend
                             </button>
                           )}
+                          {user.status === 'active' && (
+                            <button 
+                              className="action-btn action-btn--give-points"
+                              onClick={() => handleGivePointsClick(user)}
+                              aria-label="Give points"
+                            >
+                              Give Points
+                            </button>
+                          )}
                           <button 
                             className="action-btn action-btn--delete"
                             onClick={() => handleDeleteClick(user)}
