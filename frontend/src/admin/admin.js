@@ -246,6 +246,65 @@ function Admin() {
     }
   };
 
+  const handleGivePointsClick = (user) => {
+    setSelectedUser(user);
+    setPointsAmount('');
+    setPointsError('');
+    setShowGivePointsModal(true);
+  };
+
+  const handleCancelGivePoints = () => {
+    setShowGivePointsModal(false);
+    setSelectedUser(null);
+    setPointsAmount('');
+    setPointsError('');
+  };
+
+  const handleConfirmGivePoints = async () => {
+    if (!selectedUser) return;
+    
+    const amount = parseFloat(pointsAmount);
+    
+    if (!pointsAmount || isNaN(amount)) {
+      setPointsError('Please enter a valid number');
+      return;
+    }
+    
+    if (amount <= 0) {
+      setPointsError('Amount must be greater than 0');
+      return;
+    }
+
+    setActionLoading(true);
+    try {
+      const csrfToken = await getCSRFToken();
+      const res = await fetch(`${DJANGO_API_BASE}/api/admin/users/${selectedUser.id}/give-points/`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify({ amount: amount }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert(`Successfully added ${amount} campus credits to ${selectedUser.name}'s wallet!`);
+        await fetchAuditLogs();
+        handleCancelGivePoints();
+      } else {
+        setPointsError(data.error || 'Failed to add points');
+      }
+    } catch (err) {
+      console.error('Error adding points:', err);
+      setPointsError('An error occurred');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="admin-page">
