@@ -40,6 +40,9 @@ function Admin() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
+  const [showGivePointsModal, setShowGivePointsModal] = useState(false);
+  const [pointsAmount, setPointsAmount] = useState('');
+  const [pointsError, setPointsError] = useState('');
 
   // Fetch all data on mount
   useEffect(() => {
