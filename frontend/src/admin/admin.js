@@ -173,33 +173,37 @@ function Admin() {
     }
   };
 
-  const handleConfirmUnsuspend = () => {
-    if (selectedUser) {
-      // Update user status to active
-      setUsers(users.map(u => 
-        u.id === selectedUser.id ? { ...u, status: 'active' } : u
-      ));
-      
-      // Add audit log
-      const newLog = {
-        id: auditLogs.length + 1,
-        admin: 'Admin User',
-        action: 'Unsuspended user account',
-        target: selectedUser.name,
-        timestamp: new Date().toLocaleString('en-US', { 
-          year: 'numeric', 
-          month: '2-digit', 
-          day: '2-digit', 
-          hour: '2-digit', 
-          minute: '2-digit', 
-          second: '2-digit',
-          hour12: false 
-        })
-      };
-      setAuditLogs([newLog, ...auditLogs]);
+  const handleConfirmUnsuspend = async () => {
+    if (!selectedUser) return;
+    
+    setActionLoading(true);
+    try {
+      const csrfToken = await getCSRFToken();
+      const res = await fetch(`${DJANGO_API_BASE}/api/admin/users/${selectedUser.id}/unsuspend/`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,
+        },
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert('User reactivated successfully');
+        await Promise.all([fetchUsers(), fetchStats(), fetchAuditLogs()]);
+      } else {
+        alert(data.error || 'Failed to reactivate user');
+      }
+    } catch (err) {
+      console.error('Error reactivating user:', err);
+      alert('An error occurred');
+    } finally {
+      setActionLoading(false);
+      setShowUnsuspendModal(false);
+      setSelectedUser(null);
     }
-    setShowUnsuspendModal(false);
-    setSelectedUser(null);
   };
 
   const handleConfirmDelete = () => {
