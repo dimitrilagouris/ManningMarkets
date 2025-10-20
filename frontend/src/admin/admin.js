@@ -614,6 +614,73 @@ function Admin() {
         </div>
       )}
 
+          {/* Give Points Modal */}
+          {showGivePointsModal && selectedUser && (
+        <div className="modal-overlay" onClick={() => !actionLoading && handleCancelGivePoints()}>
+          <div className="modal-content modal-content--success" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">
+                💰 Give Campus Credits
+              </h2>
+              <button 
+                className="modal-close-btn"
+                onClick={handleCancelGivePoints}
+                aria-label="Close modal"
+                disabled={actionLoading}
+              >
+                <FontAwesomeIcon icon={faTimes} />
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="modal-user-info">
+                <p><strong>User:</strong> {selectedUser.name}</p>
+                <p><strong>Email:</strong> {selectedUser.email}</p>
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="points-amount" className="form-label">
+                  Amount (Campus Credits)
+                </label>
+                <input
+                  id="points-amount"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={pointsAmount}
+                  onChange={(e) => setPointsAmount(e.target.value)}
+                  placeholder="Enter amount"
+                  className="form-input"
+                  disabled={actionLoading}
+                />
+              </div>
+
+              {pointsError && (
+                <div className="error-message">
+                  {pointsError}
+                </div>
+              )}
+
+              <div className="modal-actions">
+                <button 
+                  className="modal-btn modal-btn--cancel"
+                  onClick={handleCancelGivePoints}
+                  disabled={actionLoading}
+                >
+                  Cancel
+                </button>
+                <button 
+                  className="modal-btn modal-btn--confirm-give-points"
+                  onClick={handleConfirmGivePoints}
+                  disabled={!pointsAmount || actionLoading}
+                >
+                  {actionLoading ? 'Adding...' : 'Give Points'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Delete Modal */}
       {showDeleteModal && selectedUser && (
         <div className="modal-overlay" onClick={() => setShowDeleteModal(false)}>
