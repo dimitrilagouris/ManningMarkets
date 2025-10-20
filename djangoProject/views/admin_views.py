@@ -161,3 +161,36 @@ def get_audit_logs(request):
         'timestamp': log.occured_at.strftime('%Y-%m-%d %H:%M:%S'),
     } for log in logs]}, status=200)
 
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@admin_required
+def get_user_details(request, user_id):
+    try:
+        user = Profiles.objects.select_related('role').get(pk=user_id)
+    except Profiles.DoesNotExist:
+        return Response({'error': 'User not found'}, status=404)
+    
+    try:
+        wallet = Wallet.objects.get(profile=user)
+        wallet_data = {'id': wallet.id, 'balance': str(wallet.points_balance)}
+    except Wallet.DoesNotExist:
+        wallet_data = None
+    
+    return Response({
+        'id': user.id,
+        'username': user.username,
+        'email': user.email,
+        'role': user.role.role_name if user.role else 'No Role',
+        'status': 'active' if user.is_active else 'suspended',
+        'emailVerified': user.email_verified,
+        'dateJoined': user.date_joined.strftime('%Y-%m-%d %H:%M:%S'),
+        'lastLogin': user.last_login.strftime('%Y-%m-%d %H:%M:%S') if user.last_login else None,
+        'wallet': wallet_data,
+        'orderStats': {
+            'total': Orders.objects.filter(user=user).count(),
+            'active': Orders.objects.filter(user=user, status='ACTIVE').count(),
+            'filled': Orders.objects.filter(user=user, status='FILLED').count(),
+        }
+    }, status=200)
+
