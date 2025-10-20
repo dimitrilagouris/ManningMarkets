@@ -145,3 +145,19 @@ def get_markets_overview(request):
     
     return Response({'markets': markets_data}, status=200)
 
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@admin_required
+def get_audit_logs(request):
+    limit = int(request.GET.get('limit', 50))
+    logs = AdminActions.objects.select_related('user').order_by('-occured_at')[:limit]
+    
+    return Response({'auditLogs': [{
+        'id': log.id,
+        'admin': log.user.username,
+        'adminEmail': log.user.email,
+        'action': log.description,
+        'timestamp': log.occured_at.strftime('%Y-%m-%d %H:%M:%S'),
+    } for log in logs]}, status=200)
+
