@@ -44,4 +44,27 @@ def get_all_users(request):
         'role': u.role.role_name if u.role else 'No Role'
     } for u in users]}, status=200)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@admin_required
+def suspend_user(request, user_id):
+    try:
+        user = Profiles.objects.get(pk=user_id)
+    except Profiles.DoesNotExist:
+        return Response({'error': 'User not found'}, status=404)
+    
+    if user.id == request.user.id:
+        return Response({'error': 'Cannot suspend your own account'}, status=400)
+    if not user.is_active:
+        return Response({'error': 'User already suspended'}, status=400)
+    
+    user.is_active = False
+    user.save()
+    
+    AdminActions.objects.create(user=request.user, 
+        description=f"Suspended: {user.username} ({user.email})")
+    
+    return Response({'message': 'User suspended successfully'}, status=200)
+
+
 
