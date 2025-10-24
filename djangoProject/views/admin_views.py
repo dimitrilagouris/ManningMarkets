@@ -7,7 +7,6 @@ from django.utils import timezone
 from decimal import Decimal
 
 from ..models import Markets, Events, Orders, Trades, Positions, Wallet
-from ..settlement_service import settle_event, get_settlement_status, get_user_settlement_history
 
 User = get_user_model()
 
@@ -304,80 +303,6 @@ def get_admin_audit_logs(request):
             'audit_logs': [],
             'total_count': 0
         })
-        
-    except Exception as e:
-        return Response({'error': str(e)}, status=500)
-
-
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def settle_market(request):
-    """
-    Settle a market event with the winning outcome.
-    """
-    try:
-        event_id = request.data.get('event_id')
-        winning_outcome = request.data.get('winning_outcome')
-        
-        if not event_id or not winning_outcome:
-            return Response({'error': 'event_id and winning_outcome are required'}, status=400)
-        
-        if winning_outcome not in ['YES', 'NO']:
-            return Response({'error': 'winning_outcome must be YES or NO'}, status=400)
-        
-        # Settle the event
-        result = settle_event(event_id, winning_outcome)
-        
-        if 'error' in result:
-            return Response(result, status=400)
-        
-        return Response(result)
-        
-    except Exception as e:
-        return Response({'error': str(e)}, status=500)
-
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def get_settlement_info(request):
-    """
-    Get settlement information for an event.
-    """
-    try:
-        event_id = request.GET.get('event_id')
-        
-        if not event_id:
-            return Response({'error': 'event_id is required'}, status=400)
-        
-        result = get_settlement_status(event_id)
-        
-        if 'error' in result:
-            return Response(result, status=400)
-        
-        return Response(result)
-        
-    except Exception as e:
-        return Response({'error': str(e)}, status=500)
-
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def get_user_settlements(request):
-    """
-    Get settlement history for a user.
-    """
-    try:
-        user_id = request.GET.get('user_id')
-        
-        if not user_id:
-            return Response({'error': 'user_id is required'}, status=400)
-        
-        result = get_user_settlement_history(user_id)
-        
-        if 'error' in result:
-            return Response(result, status=400)
-        
-        return Response(result)
         
     except Exception as e:
         return Response({'error': str(e)}, status=500)
