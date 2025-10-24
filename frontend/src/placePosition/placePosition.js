@@ -38,7 +38,9 @@ const useEventOrderbookData = (eventId) => {
 const EventRow = ({ event, index, onSelectEvent, onEventDataUpdate }) => {
   const eventId = event.eventId || index + 1;
   const { orderbookData, connectionStatus, lastUpdated, bestAsk } = useEventOrderbookData(eventId);
-  
+
+
+
   const hasLiveData = bestAsk !== null && bestAsk !== undefined;
   const liveChance = hasLiveData ? `${(bestAsk * 100).toFixed(1)}%` : '-';
 
@@ -84,20 +86,22 @@ const EventRow = ({ event, index, onSelectEvent, onEventDataUpdate }) => {
       </td>
 
       <td className="market-events__td market-events__actions">
-        <button
-          type="button"
-          className="place-position__choice-button place-position__choice-button--yes market-events__btn"
-          onClick={() => onSelectEvent(event, 'yes')}
-        >
-          Yes
-        </button>
-        <button
-          type="button"
-          className="place-position__choice-button place-position__choice-button--no market-events__btn"
-          onClick={() => onSelectEvent(event, 'no')}
-        >
-          No
-        </button>
+        <div className="market-events__actions-inner">
+          <button
+            type="button"
+            className="place-position__choice-button place-position__choice-button--yes market-events__btn"
+            onClick={() => onSelectEvent(event, 'yes')}
+          >
+            Yes
+          </button>
+          <button
+            type="button"
+            className="place-position__choice-button place-position__choice-button--no market-events__btn"
+            onClick={() => onSelectEvent(event, 'no')}
+          >
+            No
+          </button>
+        </div>
       </td>
 
       <td className="market-events__td market-events__orderbook">
@@ -168,7 +172,7 @@ export const PlacePositionPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [eventOrderbookData, setEventOrderbookData] = useState({}); // Store live orderbook data by eventId
-  
+
   const [submittingOrder, setSubmittingOrder] = useState(false);
   const [orderMessage, setOrderMessage] = useState('');
   const [walletBalance, setWalletBalance] = useState(0);
@@ -187,7 +191,7 @@ export const PlacePositionPage = () => {
 
         const data = await res.json();
         setMarket(data.market);
-        
+
         // Auto-select the first event if available
         if (data.market.events && data.market.events.length > 0) {
           const firstEvent = data.market.events[0];
@@ -278,11 +282,11 @@ export const PlacePositionPage = () => {
 
   const handleChoiceButtonClick = useCallback((choice) => {
     setSelectedChoice(choice);
-    
+
     // Auto-populate limit price based on current market price
     if (selectedEvent) {
       let marketPrice;
-      
+
       // Try to get live orderbook data first
       if (selectedEvent.eventId) {
         const orderbookData = eventOrderbookData[selectedEvent.eventId];
@@ -294,7 +298,7 @@ export const PlacePositionPage = () => {
           }
         }
       }
-      
+
       // Fallback to static price if no live data
       if (marketPrice === undefined && selectedEvent.price) {
         const priceMatch = selectedEvent.price.match(/(\d+)c/);
@@ -307,7 +311,7 @@ export const PlacePositionPage = () => {
           }
         }
       }
-      
+
       // Set the limit price if we have a market price
       if (marketPrice !== undefined) {
         setAmount(marketPrice.toFixed(2));
@@ -400,13 +404,13 @@ export const PlacePositionPage = () => {
 
       const result = await response.json();
       console.log('Order submitted successfully:', result);
-      
+
       setOrderMessage(`Order submitted successfully! ${result.trades_executed} trades executed.`);
-      
+
       // Clear form
       setAmount('');
       setShares('');
-      
+
       // Refresh wallet balance after successful order
       const refreshWalletBalance = async () => {
         try {
@@ -427,7 +431,7 @@ export const PlacePositionPage = () => {
         }
       };
       refreshWalletBalance();
-      
+
     } catch (err) {
       console.error('Order submission error:', err);
       setOrderMessage(`Error: ${err.message}`);
@@ -536,9 +540,6 @@ export const PlacePositionPage = () => {
             <span className="place-position__subtitle">
               {tradeType === 'buy' ? 'Buy' : 'Sell'}
             </span>
-            <div className="place-position__icon">
-              <span className="iconify" data-icon="mdi:chevron-down" data-inline="false"></span>
-            </div>
           </button>
         </div>
 
@@ -624,7 +625,7 @@ export const PlacePositionPage = () => {
             </div>
           </div>
 
-          <button 
+          <button
             className="place-position__button--buy"
             onClick={handleSubmitOrder}
             disabled={submittingOrder}
@@ -660,4 +661,3 @@ export const PlacePositionPage = () => {
     </div>
   );
 };
-
