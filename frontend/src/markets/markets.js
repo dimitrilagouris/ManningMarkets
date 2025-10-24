@@ -46,14 +46,14 @@ function Markets() {
 
   if (error)
   {
-    return <main className="main-content"> <div>Error Loading Markets: {error} </div> </main>
+    return <main className="main-content"> <div>Error Loading Markets: {error.message || 'Unknown error occurred'} </div> </main>
   }
 
   return (
     <main className="main-content">
       <div className="markets-container">
           {markets.map((market) => (
-            <Market market={market} />
+            <Market key={market.id} market={market} />
           ))}
           {markets.length === 0 && <div>No Markets avaliable.</div>}
       </div>

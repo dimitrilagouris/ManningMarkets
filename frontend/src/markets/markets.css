@@ -1,4 +1,5 @@
 .markets-container {
+  margin-top: 24px; /* added this here just for that tiny spacing above the first market - you can tweak if you want*/
   width: 100%;
   max-width: 1200px;
   display: grid;

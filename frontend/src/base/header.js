@@ -1,6 +1,6 @@
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMagnifyingGlass, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faUser } from '@fortawesome/free-solid-svg-icons'
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -50,7 +50,7 @@ function Header() {
                             )}
                             
                             <li className="main-nav__item">
-                                <Link className="main-nav__link" to={isAuthenticated ? "/markets" : "/sign-up"}>Leaderboard</Link>
+                                <Link className="main-nav__link" to={isAuthenticated ? "/leaderboard" : "/sign-up"}>Leaderboard</Link>
                             </li>
                             <li className="main-nav__item">
                                 <Link className="main-nav__link" to={isAuthenticated ? "/wallet" : "/sign-up"}>Wallet</Link>

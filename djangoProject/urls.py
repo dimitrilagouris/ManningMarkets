@@ -19,10 +19,11 @@ from django.urls import path
 
 from .views.authentication_views import activate_user, get_csrf_token, get_user_data, initiate_login, logout_view, register_user, verify_otp
 from .views.gmail_api_views import authorise_gmail, oauth2callback
-from .views.market_views import fetch_markets
-from .views.user_views import get_wallet, get_profile
-from .views.order_view import create_order
-from .views import admin_views 
+
+from .views.market_views import fetch_markets, fetch_leaderboard, fetch_market
+from .views.user_views import get_wallet, get_profile, change_username, change_password
+from .views.order_view import create_order, get_orderbook
+from .views import admin_views
 
 
 urlpatterns = [
@@ -48,16 +49,21 @@ urlpatterns = [
 
     # MARKET URLS
     path('fetch_markets/', fetch_markets, name="fetch markets"),
+    path('fetch_market/<int:market_id>/', fetch_market, name="fetch market"),
+    path('fetch_leaderboard/', fetch_leaderboard, name="fetch leaderboard"),
 
     # USER URLS
     path('wallet/', get_wallet, name="wallet"),
     path('profile/', get_profile, name="profile"),
+    path('change-username/', change_username, name="change-username"),
+    path('change-password/', change_password, name="change-password" ),
 
     # GMAIL API URLS
     path('oauth2callback/', oauth2callback, name='oauth2callback'),
     path('authorise-gmail/', authorise_gmail, name='authorise-gmail'),
 
     # ORDER / TRADE URLS
-    path('api/orders/', create_order)
+    path('api/orders/', create_order),
+    path('api/orderbook/<int:event_id>/', get_orderbook),
 
 ]

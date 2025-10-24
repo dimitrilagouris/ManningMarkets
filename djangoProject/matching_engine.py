@@ -96,7 +96,8 @@ class MatchingEngine:
         
         # Execute trades - orderbook is already sorted by price-time priority
         while order.remaining_quantity > 0 and opposite_side_orders:
-            best_opposite_order = opposite_side_orders[0]  # First order is best price
+            best_opposite_order = opposite_side_orders[0]
+            best_opposite_index = 0
             
             # Check if we can trade (BID >= ASK)
             # For binary options, we need to convert NO prices to YES prices for comparison
@@ -128,12 +129,22 @@ class MatchingEngine:
             )
             
             # Create trade object (NOTE: The database save is now outside this function)
+            # Standardize price to always be the YES price
+            def get_yes_price(order):
+                if order.share_type.upper() == "YES":
+                    return order.price
+                else:  # NO
+                    return Decimal('1') - order.price
+            
+            # Use the maker's YES price for the trade
+            trade_yes_price = get_yes_price(best_opposite_order)
+            
             trade = Trades(
                 maker_order_id=best_opposite_order,
                 taker_order_id=order,
                 quantity_filled=int(trade_quantity),
-                # Trade occurs at the resting order's price
-                price=float(best_opposite_order.price)
+                # Trade price is always the YES price
+                price=trade_yes_price
             )
             trades.append(trade)
             
@@ -143,7 +154,7 @@ class MatchingEngine:
             
             # Remove completely filled orders from the book
             if best_opposite_order.remaining_quantity <= 0:
-                opposite_side_orders.pop(0)  # Remove first order
+                opposite_side_orders.pop(best_opposite_index)  # Remove the specific order
                 best_opposite_order.status = "FILLED"
                 orders_to_update.append(best_opposite_order)
             elif trade_quantity > 0:

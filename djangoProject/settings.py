@@ -144,22 +144,24 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://127.0.0.1:3000",
+    "http://localhost:8000",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
-    "http://127.0.0.1:3000",
-
+    "http://localhost:8000",
 ]
 
 # CSRF
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_DOMAIN = 'localhost'
 
 
 # SESSION COOKIE
 SESSION_COOKIE_SECURE = True
+
 SESSION_COOKIE_SAMESITE = 'None'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 60 * 60 * 1

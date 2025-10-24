@@ -29,5 +29,5 @@ class UserSerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = Profiles
-        fields = ('email', 'is_admin', 'permissions')
+        fields = ('id', 'email', 'is_admin', 'permissions')
         read_only_fields = fields

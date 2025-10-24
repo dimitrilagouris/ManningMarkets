@@ -1,4 +1,4 @@
-
+from django.contrib.auth import update_session_auth_hash
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -28,10 +28,40 @@ def get_profile(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def change_username(request):
+    new_username = request.data.get("newUsername");
+    if not new_username:
+        return Response({'error': 'New username required'}, status = 400)
+
     try:
-        user = Profiles.objects.select_related('role').get(pk = request.user.pk);
+        user = Profiles.objects.select_related('role').get(pk = request.user.pk)
+
+        user.username = new_username
+        user.save()
+
+        return Response({'message': 'Username successfully changed'}, status=200)
+
     except Profiles.DoesNotExist:
-        return Response({'error': 'User does not exist'}, status=404);
+        return Response({'error': 'User does not exist'}, status=404)
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def change_password(request): 
+    user = request.user;
+    old_password = request.data.get("oldPassword")
+    new_password = request.data.get("newPassword")
+    
+    if not old_password or not new_password:
+        return Response({'error': "Both old and new passwords required."}, status=400)
+    
+    if not user.check_password(old_password):
+        return Response({'error': "Old password is incorrect."}, status=400)
+    
+    user.set_password(new_password)
+    user.save()
+
+    update_session_auth_hash(request, user)
+
+    return Response({'message': 'Password changed successfully.'}, status=200)
 
 
 

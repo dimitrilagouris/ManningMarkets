@@ -165,6 +165,11 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
+.signup-cta:disabled {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  background: var(--usyd-grey-200);
+}
+
 .login-links {
   display: flex;
   flex-direction: column;
@@ -248,6 +253,18 @@
     margin: 0;
   }
 }
+
+.horisontal-stack {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.horisontal-stack .login-field__control {
+  flex-grow: 1;
+}
+
 
 /* small phones */
 @media (max-width: 520px) {

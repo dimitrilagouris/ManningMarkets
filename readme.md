@@ -9,3 +9,5 @@ npm install chart.js react-chartjs-2
 
 source .venv/bin/activate 
 pip install -r requirements
+
+npm install js-cookie
