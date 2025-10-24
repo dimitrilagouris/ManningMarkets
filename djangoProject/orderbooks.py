@@ -61,9 +61,7 @@ class Orderbooks:
         order.save()  # Save to DB before passing to matching engine
 
         # --- Pass order into matching engine ---
-        print(f"DEBUG: About to call orderbook.add_order for {order.order_type} {order.share_type} {order.price:.4f}")
         trades, modified_orders = orderbook.add_order(order)
-        print(f"DEBUG: orderbook.add_order returned {len(trades)} trades")
 
         # --- Database Persistence ---
         # Save executed trades
@@ -80,7 +78,7 @@ class Orderbooks:
         # --- Update Positions ---
         self.update_positions_from_trades(trades)
 
-        # --- Update Wallet Balances ---
+        # --- Update Wallet Balances and Cancel Unfunded Orders ---
         self.update_wallet_balances_from_trades(trades)
 
         # --- Broadcast Full Orderbook Snapshot ---
@@ -239,13 +237,10 @@ class Orderbooks:
         broadcast_orderbook_snapshot(event.id, snapshot)
 
     def update_positions_from_trades(self, trades):
-        print(f"DEBUG: update_positions_from_trades called with {len(trades)} trades")
         
         for trade in trades:
-            print(f"DEBUG: Processing trade {trade.id} - taker: {trade.taker_order_id.user.id} {trade.taker_order_id.order_type} {trade.taker_order_id.share_type}, maker: {trade.maker_order_id.user.id} {trade.maker_order_id.order_type} {trade.maker_order_id.share_type}, quantity: {trade.quantity_filled}, price: {trade.price}")
             
             # Update taker position
-            print(f"DEBUG: Updating taker position...")
             self._update_user_position(
                 user=trade.taker_order_id.user,
                 event=trade.taker_order_id.event,
@@ -256,7 +251,6 @@ class Orderbooks:
             )
             
             # Update maker position
-            print(f"DEBUG: Updating maker position...")
             self._update_user_position(
                 user=trade.maker_order_id.user,
                 event=trade.maker_order_id.event,
@@ -274,9 +268,7 @@ class Orderbooks:
             share_price = price  # Trade price is already YES price
         else:  # NO
             share_price = Decimal('1') - price  # Convert YES price to NO price
-        
-        print(f"DEBUG: _update_user_position called - user: {user.id}, event: {event.id}, share_type: {share_type}, quantity: {quantity}, trade_yes_price: {price}, share_price: {share_price}, is_buy: {is_buy}")
-        
+                
         # Determine the position side and quantity change
         if is_buy:
             # Buying shares - add to position
@@ -295,15 +287,12 @@ class Orderbooks:
 
         if created:
             # New position
-            print(f"DEBUG: Creating new position - quantity: {quantity_change}, share_price: {share_price}")
             position.quantity = quantity_change
             position.avg_price = share_price
         else:
             # Existing position - update with weighted average
-            print(f"DEBUG: Updating existing position - current: {position.quantity} @ {position.avg_price}")
             if position.quantity + quantity_change == 0:
                 # Position closed
-                print(f"DEBUG: Position closed")
                 position.quantity = 0
                 position.avg_price = 0
             elif position.quantity + quantity_change > 0:
@@ -313,15 +302,12 @@ class Orderbooks:
                     total_cost = (position.quantity * position.avg_price) + (Decimal(quantity) * share_price)
                     position.quantity += quantity_change
                     position.avg_price = total_cost / position.quantity
-                    print(f"DEBUG: Buy - new quantity: {position.quantity}, new avg_price: {position.avg_price}")
                 else:
                     # Selling - just reduce quantity, keep avg price
                     position.quantity += quantity_change
-                    print(f"DEBUG: Sell - new quantity: {position.quantity}, keeping avg_price: {position.avg_price}")
             else:
                 # Position went negative - this shouldn't happen in a proper system
                 # But we'll handle it by setting to 0
-                print(f"DEBUG: Position went negative, setting to 0")
                 position.quantity = 0
                 position.avg_price = Decimal('0')
 
@@ -346,14 +332,13 @@ class Orderbooks:
             error_msg = f"Insufficient position to sell {quantity} {share_type} shares. Available: {available_quantity} shares"
             raise ValueError(error_msg)
         
-        print(f"DEBUG: Position validation passed - User {user.id} has {available_quantity} {share_type} shares, attempting to sell {quantity}")
 
     def _validate_wallet_balance(self, user, event, share_type, quantity, price):
         """
         Validate that a user has sufficient wallet balance to place a buy order.
+        This includes checking against existing active orders to prevent over-commitment.
         Raises ValueError if the user doesn't have enough funds.
         """
-        print(f"DEBUG: _validate_wallet_balance called - user: {user.id}, event: {event.id}, share_type: {share_type}, quantity: {quantity}, price: {price}")
         
         # Calculate the cost based on share type
         price_decimal = Decimal(str(price))  # Convert price to Decimal
@@ -363,7 +348,6 @@ class Orderbooks:
             cost_per_share = Decimal('1') - price_decimal
         
         total_cost = cost_per_share * quantity
-        print(f"DEBUG: Calculated cost - cost_per_share: {cost_per_share}, total_cost: {total_cost}")
         
         # Get user's wallet balance
         try:
@@ -374,23 +358,128 @@ class Orderbooks:
         except Wallet.DoesNotExist:
             raise ValueError("User wallet not found. Please contact support.")
         
-        # Check if user has enough funds
-        if current_balance < total_cost:
-            raise ValueError(
-                f"Insufficient wallet balance. Order cost: ${total_cost:.2f}, Available: ${current_balance:.2f}"
-            )
+        # Calculate total committed funds from existing active buy orders
+        committed_funds = self._calculate_committed_funds(user)
+        available_balance = current_balance - committed_funds
         
-        print(f"DEBUG: Wallet validation passed - User {user.id} has ${current_balance:.2f}, order cost: ${total_cost:.2f}")
+        print(f"DEBUG: Committed funds from active orders: {committed_funds}")
+        print(f"DEBUG: Available balance: {available_balance}")
+        print(f"DEBUG: New order cost: {total_cost}")
+        
+        # Check if user has enough funds (considering existing commitments)
+        if available_balance < total_cost:
+            raise ValueError(
+                f"Insufficient available balance. Order cost: ${total_cost:.2f}, "
+                f"Available: ${available_balance:.2f} (Total balance: ${current_balance:.2f}, "
+                f"Committed: ${committed_funds:.2f})"
+            )
+
+    def _calculate_committed_funds(self, user):
+        """
+        Calculate the total funds committed to active buy orders for a user.
+        Returns the total amount of money that would be spent if all active buy orders were filled.
+        """
+        from .models import Orders
+        
+        # Get all active buy orders for this user
+        active_buy_orders = Orders.objects.filter(
+            user=user,
+            order_type='BUY',
+            status__in=['ACTIVE', 'PARTIALLY_FILLED'],
+            remaining_quantity__gt=0
+        )
+        
+        total_committed = Decimal('0')
+        
+        for order in active_buy_orders:
+            # Calculate cost per share based on share type
+            if order.share_type == 'YES':
+                cost_per_share = order.price
+            else:  # NO
+                cost_per_share = Decimal('1') - order.price
+            
+            # Calculate total cost for remaining quantity
+            order_cost = cost_per_share * order.remaining_quantity
+            total_committed += order_cost
+            
+        return total_committed
+
+    def cancel_unfunded_orders(self, user):
+        """
+        Cancel all active buy orders for a user that can no longer be funded
+        due to insufficient wallet balance. This should be called after trades execute
+        to ensure users don't have unfunded orders.
+        """
+        from .models import Orders, Wallet
+        
+        try:
+            wallet = Wallet.objects.get(profile=user)
+            current_balance = wallet.points_balance
+        except Wallet.DoesNotExist:
+            print(f"WARNING: No wallet found for user {user.id}, cannot cancel unfunded orders")
+            return
+        
+        # Get all active buy orders for this user
+        active_buy_orders = Orders.objects.filter(
+            user=user,
+            order_type='BUY',
+            status__in=['ACTIVE', 'PARTIALLY_FILLED'],
+            remaining_quantity__gt=0
+        ).order_by('created_at')  # Cancel oldest orders first
+        
+        cancelled_orders = []
+        running_balance = current_balance
+        
+        for order in active_buy_orders:
+            # Calculate cost for this order
+            if order.share_type == 'YES':
+                cost_per_share = order.price
+            else:  # NO
+                cost_per_share = Decimal('1') - order.price
+            
+            order_cost = cost_per_share * order.remaining_quantity
+            
+            # Check if we can afford this order
+            if running_balance >= order_cost:
+                # We can afford this order, subtract from running balance
+                running_balance -= order_cost
+            else:
+                # We can't afford this order, cancel it
+                print(f"CANCELLING UNFUNDED ORDER: Order {order.id} - Cost: ${order_cost:.2f}, Available: ${running_balance:.2f}")
+                
+                # Remove from orderbook
+                self.remove_order_from_orderbook(order)
+                
+                # Mark as cancelled
+                order.status = 'CANCELLED'
+                order.save(update_fields=['status'])
+                
+                cancelled_orders.append({
+                    'order_id': order.id,
+                    'cost': float(order_cost),
+                    'reason': 'Insufficient funds after trade execution'
+                })
+        
+        if cancelled_orders:
+            print(f"CANCELLED {len(cancelled_orders)} unfunded orders for user {user.id}")
+            # Broadcast updated orderbooks for affected events
+            affected_events = set(order.event for order in active_buy_orders if order.id in [co['order_id'] for co in cancelled_orders])
+            for event in affected_events:
+                self.broadcast_full_orderbook(event)
+        
+        return cancelled_orders
 
     def update_wallet_balances_from_trades(self, trades):
         """
         Update wallet balances for all users involved in trades.
         Deducts money from buyers and adds money to sellers.
+        Also cancels any unfunded orders after wallet updates.
         """
-        print(f"DEBUG: update_wallet_balances_from_trades called with {len(trades)} trades")
+        
+        # Track all users involved in trades
+        users_involved = set()
         
         for trade in trades:
-            print(f"DEBUG: Processing wallet update for trade {trade.id}")
             
             # Update taker wallet
             self._update_user_wallet(
@@ -401,6 +490,7 @@ class Orderbooks:
                 price=trade.price,
                 is_buy=trade.taker_order_id.order_type == 'BUY'
             )
+            users_involved.add(trade.taker_order_id.user)
             
             # Update maker wallet
             self._update_user_wallet(
@@ -411,21 +501,32 @@ class Orderbooks:
                 price=trade.price,
                 is_buy=trade.maker_order_id.order_type == 'BUY'
             )
+            users_involved.add(trade.maker_order_id.user)
+        
+        # Cancel unfunded orders for all users involved in trades
+        for user in users_involved:
+            cancelled_orders = self.cancel_unfunded_orders(user)
+            if cancelled_orders:
+                print(f"User {user.id} had {len(cancelled_orders)} orders cancelled due to insufficient funds")
 
     def _update_user_wallet(self, user, event, share_type, quantity, price, is_buy):
         """
-        Update a single user's wallet balance for a trade.
+        Update user's wallet balance based on trade.
+        The trade price is always the YES price, so we need to calculate
+        the actual amount received/paid based on the share type.
         """
-        # Calculate the cost based on share type
-        price_decimal = Decimal(str(price))  # Convert price to Decimal
+        # The trade price is always the YES price
+        price_decimal = Decimal(str(price))
+        
         if share_type == "YES":
-            cost_per_share = price_decimal  # Trade price is already YES price
+            # For YES shares, the trade price is the actual amount per share
+            amount_per_share = price_decimal
         else:  # NO
-            cost_per_share = Decimal('1') - price_decimal  # Convert YES price to NO price
+            # For NO shares, the amount received is (1 - YES_price)
+            # because NO price = 1 - YES price
+            amount_per_share = Decimal('1') - price_decimal
         
-        total_cost = cost_per_share * quantity
-        
-        print(f"DEBUG: _update_user_wallet called - user: {user.id}, event: {event.id}, share_type: {share_type}, quantity: {quantity}, cost_per_share: {cost_per_share}, total_cost: {total_cost}, is_buy: {is_buy}")
+        total_amount = amount_per_share * quantity
         
         # Get user's wallet
         try:
@@ -438,15 +539,12 @@ class Orderbooks:
         # Update wallet balance
         if is_buy:
             # Buying shares - deduct money
-            wallet.points_balance -= total_cost
-            print(f"DEBUG: Deducting ${total_cost:.2f} from user {user.id} wallet. New balance: ${wallet.points_balance:.2f}")
+            wallet.points_balance -= total_amount
         else:
             # Selling shares - add money
-            wallet.points_balance += total_cost
-            print(f"DEBUG: Adding ${total_cost:.2f} to user {user.id} wallet. New balance: ${wallet.points_balance:.2f}")
+            wallet.points_balance += total_amount
         
         wallet.save()
-        print(f"DEBUG: Updated wallet for user {user.id} - new balance: ${wallet.points_balance:.2f}")
 
     def update_market_volume_from_trades(self, trades, event):
         if not trades:
@@ -456,7 +554,6 @@ class Orderbooks:
         for trade in trades:
             volume_added = trade.quantity_filled
             total_volume += volume_added
-            print(f"DEBUG: Trade {trade.id} adds {volume_added} to volume")
         
         # Update the market's volume
         market = event.market

@@ -38,9 +38,7 @@ const useEventOrderbookData = (eventId) => {
 const EventRow = ({ event, index, onSelectEvent, onEventDataUpdate }) => {
   const eventId = event.eventId || index + 1;
   const { orderbookData, connectionStatus, lastUpdated, bestAsk } = useEventOrderbookData(eventId);
-
-
-
+  
   const hasLiveData = bestAsk !== null && bestAsk !== undefined;
   const liveChance = hasLiveData ? `${(bestAsk * 100).toFixed(1)}%` : '-';
 
@@ -86,22 +84,20 @@ const EventRow = ({ event, index, onSelectEvent, onEventDataUpdate }) => {
       </td>
 
       <td className="market-events__td market-events__actions">
-        <div className="market-events__actions-inner">
-          <button
-            type="button"
-            className="place-position__choice-button place-position__choice-button--yes market-events__btn"
-            onClick={() => onSelectEvent(event, 'yes')}
-          >
-            Yes
-          </button>
-          <button
-            type="button"
-            className="place-position__choice-button place-position__choice-button--no market-events__btn"
-            onClick={() => onSelectEvent(event, 'no')}
-          >
-            No
-          </button>
-        </div>
+        <button
+          type="button"
+          className="place-position__choice-button place-position__choice-button--yes market-events__btn"
+          onClick={() => onSelectEvent(event, 'yes')}
+        >
+          Yes
+        </button>
+        <button
+          type="button"
+          className="place-position__choice-button place-position__choice-button--no market-events__btn"
+          onClick={() => onSelectEvent(event, 'no')}
+        >
+          No
+        </button>
       </td>
 
       <td className="market-events__td market-events__orderbook">
@@ -172,7 +168,7 @@ export const PlacePositionPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [eventOrderbookData, setEventOrderbookData] = useState({}); // Store live orderbook data by eventId
-
+  
   const [submittingOrder, setSubmittingOrder] = useState(false);
   const [orderMessage, setOrderMessage] = useState('');
   const [walletBalance, setWalletBalance] = useState(0);
@@ -191,7 +187,7 @@ export const PlacePositionPage = () => {
 
         const data = await res.json();
         setMarket(data.market);
-
+        
         // Auto-select the first event if available
         if (data.market.events && data.market.events.length > 0) {
           const firstEvent = data.market.events[0];
@@ -282,23 +278,28 @@ export const PlacePositionPage = () => {
 
   const handleChoiceButtonClick = useCallback((choice) => {
     setSelectedChoice(choice);
-
+    
     // Auto-populate limit price based on current market price
     if (selectedEvent) {
       let marketPrice;
-
+      
       // Try to get live orderbook data first
       if (selectedEvent.eventId) {
         const orderbookData = eventOrderbookData[selectedEvent.eventId];
-        if (orderbookData && orderbookData.bestBid && orderbookData.bestAsk) {
+        if (orderbookData && orderbookData.bestBid !== null && orderbookData.bestAsk !== null) {
           if (choice === 'yes') {
             marketPrice = tradeType === 'buy' ? orderbookData.bestAsk : orderbookData.bestBid;
           } else { // no
             marketPrice = tradeType === 'buy' ? (1 - orderbookData.bestBid) : (1 - orderbookData.bestAsk);
           }
+          
+          // Only clamp if the price is truly invalid (negative or > 1)
+          if (marketPrice !== undefined && (marketPrice < 0 || marketPrice > 1)) {
+            marketPrice = Math.max(0.01, Math.min(0.99, marketPrice));
+          }
         }
       }
-
+      
       // Fallback to static price if no live data
       if (marketPrice === undefined && selectedEvent.price) {
         const priceMatch = selectedEvent.price.match(/(\d+)c/);
@@ -311,10 +312,13 @@ export const PlacePositionPage = () => {
           }
         }
       }
-
+      
       // Set the limit price if we have a market price
-      if (marketPrice !== undefined) {
+      if (marketPrice !== undefined && !isNaN(marketPrice) && isFinite(marketPrice)) {
         setAmount(marketPrice.toFixed(2));
+      } else {
+        // Fallback to reasonable default
+        setAmount('0.50');
       }
     }
   }, [selectedEvent, tradeType, eventOrderbookData]);
@@ -404,13 +408,13 @@ export const PlacePositionPage = () => {
 
       const result = await response.json();
       console.log('Order submitted successfully:', result);
-
+      
       setOrderMessage(`Order submitted successfully! ${result.trades_executed} trades executed.`);
-
+      
       // Clear form
       setAmount('');
       setShares('');
-
+      
       // Refresh wallet balance after successful order
       const refreshWalletBalance = async () => {
         try {
@@ -431,7 +435,7 @@ export const PlacePositionPage = () => {
         }
       };
       refreshWalletBalance();
-
+      
     } catch (err) {
       console.error('Order submission error:', err);
       setOrderMessage(`Error: ${err.message}`);
@@ -457,7 +461,7 @@ export const PlacePositionPage = () => {
     // Try to get live orderbook data first
     if (selectedEvent.eventId) {
       const orderbookData = eventOrderbookData[selectedEvent.eventId];
-      if (orderbookData && orderbookData.bestBid && orderbookData.bestAsk) {
+      if (orderbookData && orderbookData.bestBid !== null && orderbookData.bestAsk !== null) {
         let yesPrice, noPrice;
 
         if (tradeType === 'buy') {
@@ -468,6 +472,16 @@ export const PlacePositionPage = () => {
           // When selling: YES price = best bid for YES, NO price = best bid for NO (1 - best ask for YES)
           yesPrice = orderbookData.bestBid;
           noPrice = 1 - orderbookData.bestAsk;
+        }
+
+        // Ensure prices are within valid bounds and handle edge cases
+        // Don't clamp the prices - they should reflect the actual market values
+        // Only clamp if they're truly invalid (negative or > 1)
+        if (yesPrice < 0 || yesPrice > 1) {
+          yesPrice = Math.max(0.01, Math.min(0.99, yesPrice));
+        }
+        if (noPrice < 0 || noPrice > 1) {
+          noPrice = Math.max(0.01, Math.min(0.99, noPrice));
         }
 
         return {
@@ -483,6 +497,7 @@ export const PlacePositionPage = () => {
       if (priceMatch) {
         const yesCents = parseInt(priceMatch[1], 10);
         const noCents = 100 - yesCents;
+        
         return {
           yesPrice: `${yesCents}c`,
           noPrice: `${noCents}c`
@@ -523,7 +538,16 @@ export const PlacePositionPage = () => {
         <div className="place-position__left-content">
           <div className="place-position__title place-position__title--market">{market.name}</div>
           <div className="place-position__subtitle">Volume: ${market.market_volume.toLocaleString()}</div>
-          <div className="place-position__timestamp">October 14, 2025</div>
+          <div className="place-position__timestamp">
+            {market.events && market.events.length > 0 && market.events[0].expiration_date 
+              ? new Date(market.events[0].expiration_date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })
+              : 'No expiration date'
+            }
+          </div>
 
           {/* Market events table component — pass events here */}
           <MarketEventsTable events={events} onSelectEvent={handleSelectEvent} marketId={marketId} onEventDataUpdate={handleEventDataUpdate} />
@@ -540,6 +564,9 @@ export const PlacePositionPage = () => {
             <span className="place-position__subtitle">
               {tradeType === 'buy' ? 'Buy' : 'Sell'}
             </span>
+            <div className="place-position__icon">
+              <span className="iconify" data-icon="mdi:chevron-down" data-inline="false"></span>
+            </div>
           </button>
         </div>
 
@@ -554,14 +581,14 @@ export const PlacePositionPage = () => {
           <div className="place-position__choice-buttons">
             <button
               className={`place-position__choice-button place-position__choice-button--yes ${selectedChoice === 'yes' ? 'place-position__choice-button--selected' : ''}`}
-              onClick={() => handleChoiceButtonClick('yes')}
+              onClick={() => handleSelectEvent(selectedEvent, 'yes')}
             >
               Yes {yesPrice}
             </button>
 
             <button
               className={`place-position__choice-button place-position__choice-button--no ${selectedChoice === 'no' ? 'place-position__choice-button--selected' : ''}`}
-              onClick={() => handleChoiceButtonClick('no')}
+              onClick={() => handleSelectEvent(selectedEvent, 'no')}
             >
               No {noPrice}
             </button>

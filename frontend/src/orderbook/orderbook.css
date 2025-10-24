@@ -236,7 +236,7 @@
 }
 
 .ask-row .orderbook-cell {
-  color: var(--usyd-red-light);
+  color: var(--usyd-red-dark);
 }
 
 .bid-row {

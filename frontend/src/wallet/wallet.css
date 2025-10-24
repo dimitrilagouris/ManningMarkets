@@ -191,12 +191,40 @@
 
 .wallet-transactions-header {
   display: grid;
-  grid-template-columns: 180px 1fr 120px;
   gap: 0;
   background: white;
   align-items: center;
   border-bottom: 2px solid var(--usyd-grey-200);
   box-sizing: border-box;
+}
+
+/* Transactions table - 6 columns */
+.transactions-table .wallet-transactions-header {
+  grid-template-columns: 140px 200px 80px 80px 80px 100px 100px;
+}
+
+.transactions-table .wallet-transactions-row {
+  grid-template-columns: 140px 200px 80px 80px 80px 100px 100px;
+}
+
+
+/* Positions table - 5 columns */
+.positions-table .wallet-transactions-header {
+  grid-template-columns: 200px 100px 100px 100px 100px;
+}
+
+.positions-table .wallet-transactions-row {
+  grid-template-columns: 200px 100px 100px 100px 100px;
+}
+
+
+/* Live orders table - 6 columns */
+.orders-table .wallet-transactions-header {
+  grid-template-columns: 200px 100px 100px 100px 120px 120px 100px;
+}
+
+.orders-table .wallet-transactions-row {
+  grid-template-columns: 200px 100px 100px 100px 120px 120px 100px;
 }
 
 .wallet-table-col {
@@ -223,7 +251,6 @@
 
 .wallet-transactions-row {
   display: grid;
-  grid-template-columns: 180px 1fr 120px;
   gap: 0;
   align-items: center;
   border-bottom: 1px solid var(--usyd-grey-200);
@@ -232,6 +259,7 @@
   font-size: 16px;
   color: var(--usyd-grey-800);
 }
+
 
 .wallet-transactions-row .wallet-table-col {
   padding: 8px;
@@ -269,111 +297,111 @@
   color: var(--usyd-red-dark);
 }
 
-.wallet-positions-table {
-  width: 100%;
-  background: white;
-  border: 1px solid var(--usyd-grey-200);
-  border-radius: var(--border-rad-main);
-  overflow: hidden;
-  font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  color: var(--usyd-grey-800);
-}
-
-.wallet-positions-header {
-  display: grid;
-  grid-template-columns: 320px 180px 120px 140px;
-  gap: 0;
-  background: #fafafa;
-  padding: 8px 0;
-  align-items: center;
-  border-bottom: 1px solid var(--usyd-grey-100);
-  box-sizing: border-box;
-}
-
-.wallet-positions-header > div {
-  padding: 8px;
-  font-weight: 700;
-  color: #444;
-  font-size: 13px;
-}
-
-.header-help {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  margin-left: 8px;
-  border-radius: 50%;
-  background: #e9e9e9;
-  color: #555;
+/* Status badges */
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
   font-size: 12px;
-  font-weight: 700;
-  line-height: 1;
-  text-align: center;
-}
-
-.wallet-positions-body {
-  max-height: 520px;
-  overflow-y: auto;
-}
-
-.wallet-positions-row {
-  display: grid;
-  grid-template-columns: 320px 180px 120px 140px;
-  gap: 0;
-  padding: 8px 0;
-  align-items: center;
-  border-bottom: 1px solid #f2f2f2;
-  box-sizing: border-box;
-  background: var(--usyd-grey-100);
-  font-size: 14px;
-  color: var(--usyd-grey-800);
-}
-
-.wallet-positions-row > div {
-  padding: 10px 20px;
-  box-sizing: border-box;
-}
-
-.wallet-positions-row:nth-child(even),
-.wallet-positions-row.wallet-transactions-row--alt {
-  background: white;
-}
-
-.wallet-positions-row:last-child {
-  border-bottom: none;
-}
-
-.col-market .market-title {
-  font-weight: 700;
-  font-size: 15px;
-  color: #222;
-}
-
-.col-market .market-sub {
-  color: #4d4d4d;
-  font-weight: 400;
-  margin-top: 4px;
-  font-size: 13px;
-}
-
-.col-odds {
   font-weight: 600;
-  color: var(--usyd-red-dark);
-  white-space: nowrap;
+  text-transform: uppercase;
 }
 
-.col-staked {
-  text-align: right;
-  font-weight: 700;
-  color: #444;
+.status-badge.active {
+  background: #e8f5e8;
+  color: #2d5a2d;
 }
 
-.col-return {
-  text-align: right;
-  font-weight: 700;
+.status-badge.partially_filled {
+  background: #fff3cd;
+  color: #856404;
+}
+
+/* Cancel order button */
+.cancel-order-btn {
+  background: var(--usyd-red);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancel-order-btn:hover:not(:disabled) {
+  background: var(--usyd-red-dark);
+}
+
+.cancel-order-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* YES/NO Color Coding */
+.share-type.yes,
+.side-badge.yes,
+.price-amount.yes {
   color: #28a745;
+  font-weight: 600;
+}
+
+.share-type.no,
+.side-badge.no,
+.price-amount.no {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+.side-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.side-badge.yes {
+  background: #d4edda;
+  color: #155724;
+}
+
+.side-badge.no {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.trade-type {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.trade-type.buy {
+  color: #28a745;
+}
+
+.trade-type.sell {
+  color: #dc3545;
+}
+
+.shares-quantity {
+  font-weight: 500;
+  color: #666;
+}
+
+.col-cash-effect {
+  font-weight: 600;
+  text-align: right;
+}
+
+.col-cash--positive {
+  color: #28a745;
+}
+
+.col-cash--negative {
+  color: #dc3545;
 }
 
 /* Responsive behaviour */

@@ -13,7 +13,34 @@ def get_wallet(request):
     except Wallet.DoesNotExist:
         return Response({'error': 'Wallet could not be found.'}, status = 404)
     
-    return Response({'wallet_id': wallet.id, 'balance': wallet.points_balance})
+    # Calculate position values and total net worth
+    from ..models import Positions
+    from decimal import Decimal
+    
+    cash_balance = float(wallet.points_balance)
+    
+    # Calculate position values (allocated funds)
+    positions = Positions.objects.filter(
+        user=request.user,
+        quantity__gt=0
+    )
+    
+    allocated_funds = Decimal('0')
+    for position in positions:
+        # Calculate the current value of the position
+        position_value = position.avg_price * position.quantity
+        allocated_funds += position_value
+    
+    allocated_funds = float(allocated_funds)
+    total_balance = cash_balance + allocated_funds  # Net worth = cash + positions
+    available_funds = cash_balance  # Available = just cash balance
+    
+    return Response({
+        'wallet_id': wallet.id, 
+        'balance': total_balance,
+        'allocated': allocated_funds,
+        'available': available_funds
+    })
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
