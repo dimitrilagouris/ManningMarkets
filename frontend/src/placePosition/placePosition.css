@@ -11,7 +11,6 @@
   align-items: flex-start;
   align-self: stretch;
   display: flex;
-  flex: 1;
   flex-grow: 1;
   gap: 5px;
   padding: 40px 40px 40px 140px;
@@ -94,7 +93,7 @@
 }
 
 .place-position__button--buy-sell:hover {
-  background-color: var(--usyd-grey-100);
+  border: 1px solid var(--usyd-red-dark);
 }
 
 .place-position__icon {
@@ -379,7 +378,7 @@
 }
 
 .market-events__tr {
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 1px solid var(--usyd-grey-200);
   height: 80px;
 }
 
@@ -422,7 +421,7 @@
 }
 
 .market-events__chance .static-chance {
-  color: #6c757d;
+  color: var(--usyd-grey-500);
 }
 
 .market-events__chance .live-indicator {
