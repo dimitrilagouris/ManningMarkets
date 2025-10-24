@@ -259,12 +259,14 @@ export const PlacePositionPage = () => {
 
   const handleIncrease = () => {
     const num = amount ? parseFloat(amount) : 0;
-    setAmount((num + 0.01).toFixed(2));
+    const newAmount = Math.min(0.99, num + 0.01);
+    setAmount(newAmount.toFixed(2));
   };
 
   const handleDecrease = () => {
     const num = amount ? parseFloat(amount) : 0;
-    setAmount(Math.max(0, num - 0.01).toFixed(2));
+    const newAmount = Math.max(0.01, num - 0.01);
+    setAmount(newAmount.toFixed(2));
   };
 
   const toggleTradeType = () => {
@@ -278,42 +280,9 @@ export const PlacePositionPage = () => {
 
   const handleChoiceButtonClick = useCallback((choice) => {
     setSelectedChoice(choice);
-    
-    // Auto-populate limit price based on current market price
-    if (selectedEvent) {
-      let marketPrice;
-      
-      // Try to get live orderbook data first
-      if (selectedEvent.eventId) {
-        const orderbookData = eventOrderbookData[selectedEvent.eventId];
-        if (orderbookData && orderbookData.bestBid && orderbookData.bestAsk) {
-          if (choice === 'yes') {
-            marketPrice = tradeType === 'buy' ? orderbookData.bestAsk : orderbookData.bestBid;
-          } else { // no
-            marketPrice = tradeType === 'buy' ? (1 - orderbookData.bestBid) : (1 - orderbookData.bestAsk);
-          }
-        }
-      }
-      
-      // Fallback to static price if no live data
-      if (marketPrice === undefined && selectedEvent.price) {
-        const priceMatch = selectedEvent.price.match(/(\d+)c/);
-        if (priceMatch) {
-          const yesCents = parseInt(priceMatch[1], 10);
-          if (choice === 'yes') {
-            marketPrice = yesCents / 100;
-          } else { // no
-            marketPrice = (100 - yesCents) / 100;
-          }
-        }
-      }
-      
-      // Set the limit price if we have a market price
-      if (marketPrice !== undefined) {
-        setAmount(marketPrice.toFixed(2));
-      }
-    }
-  }, [selectedEvent, tradeType, eventOrderbookData]);
+    // Don't auto-populate limit price - let user set it manually
+    setAmount('0.00');
+  }, []);
 
   // Helper function to determine if a message is an error
   const isErrorMessage = (message) => {
@@ -519,7 +488,16 @@ export const PlacePositionPage = () => {
         <div className="place-position__left-content">
           <div className="place-position__title place-position__title--market">{market.name}</div>
           <div className="place-position__subtitle">Volume: ${market.market_volume.toLocaleString()}</div>
-          <div className="place-position__timestamp">October 14, 2025</div>
+          <div className="place-position__timestamp">
+            {market.events && market.events.length > 0 
+              ? new Date(market.events[0].expiration_date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })
+              : 'No expiration date'
+            }
+          </div>
 
           {/* Market events table component — pass events here */}
           <MarketEventsTable events={events} onSelectEvent={handleSelectEvent} marketId={marketId} onEventDataUpdate={handleEventDataUpdate} />
