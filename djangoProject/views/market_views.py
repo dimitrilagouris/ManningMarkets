@@ -12,16 +12,32 @@ from ..models import Markets, Events, Profiles
 def fetch_markets(request):
     # AJAX Request
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        # get all markets and associated events
-        markets = Markets.objects.filter(open=True).prefetch_related('events')
+        # accept query param 'q' for searching market_name
+        q = request.GET.get('q', '').strip()
+
+        # base queryset
+        qs = Markets.objects.filter(open=True)
+
+        if q:
+            qs = qs.filter(market_name__icontains=q)
+
+        qs = qs.prefetch_related('events').order_by('market_name')
 
         market_data = []
-        for market in markets: 
+        for market in qs:
             market_data.append({
                 'id': market.id,
                 'name': market.market_name,
                 'market_volume': market.volume,
-                'events': [{'id': event.id, 'name': event.event_name, 'price': event.price, 'volume': event.volume} for event in market.events.all()]
+                'events': [
+                    {
+                        'id': event.id,
+                        'name': event.event_name,
+                        'price': event.price,
+                        'volume': event.volume
+                    }
+                    for event in market.events.all()
+                ]
             })
         return JsonResponse({'markets': market_data})
 
