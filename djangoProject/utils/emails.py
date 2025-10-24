@@ -21,3 +21,13 @@ def send_otp_email(user, otp):
         'otp': otp
     })
     send_email(user.email, subject, body)
+
+def send_otp_email(user, event, price, quantity):
+    subject = "ManningMarkets Trade Placed"
+    body = render_to_string('emails/noticiation.txt', {
+        'username': user.username,
+        'event': event,
+        'price': price,
+        'quantity': quantity,
+    })
+    send_email(user.email, subject, body)

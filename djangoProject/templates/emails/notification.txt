@@ -1,0 +1,6 @@
+Hi {{ username }},
+
+A trade has been executed on {{event}} at {{price}} for {{quantity}}.
+
+Thanks,
+ManningMarkets Team.
