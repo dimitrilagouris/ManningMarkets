@@ -1,30 +1,40 @@
 // Login.jsx
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import './login.css';
 import '../base.css';
+import '../otp/otp_window.css';
+
 
 import { DJANGO_API_BASE } from '../config';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { AuthContext } from '../session_management/authentication_context';
+
+import VerifyOTP from '../otp/verifyOTP';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [otpEmail, setOtpEmail] = useState('');
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [loginError, setLoginError] = useState(null);
+
   const navigate = useNavigate();
+  const { checkAuthStatus } = useContext(AuthContext);
 
   const onSubmit = async e => {
     e.preventDefault();
-
-    console.log("CSRF Token: ", Cookies.get("csrftoken"));
+    setLoginError(null);
+    setLoginLoading(true);
 
     try {
       const res = await fetch(`${DJANGO_API_BASE}/login/`, {
         method: "POST",
         credentials: "include",
-        headers:
-        {
+        headers: {
           "Content-Type": "application/json",
           "X-CSRFToken": Cookies.get("csrftoken"),
         },
@@ -37,18 +47,17 @@ function Login() {
       const data = await res.json();
 
       if (res.ok) {
-        console.log("Login successful", data);
-        navigate("/verify-otp", {state: { email }});
+        // show modal and pass email to verify component
+        setOtpEmail(email);
+        setShowOtpModal(true);
+      } else {
+        setLoginError(data.error || "Login failed.");
       }
-      else 
-      {
-        alert(data.error || "Login failed.");
-      }
-    }
-    catch(err)
-    {
+    } catch (err) {
       console.error("Login error: ", err);
-      alert("Error occured during login");
+      setLoginError("Error occurred during login");
+    } finally {
+      setLoginLoading(false);
     }
   };
 
@@ -67,9 +76,7 @@ function Login() {
 
           <form className="login-list" onSubmit={onSubmit}>
             <label className="login-list__item login-field" htmlFor="email">
-              <div className="login-list__label">
-                <span>Email</span>
-              </div>
+              <div className="login-list__label"><span>Email</span></div>
               <div className="login-field__control">
                 <FontAwesomeIcon icon={faEnvelope} className="field-icon" />
                 <input
@@ -83,9 +90,7 @@ function Login() {
             </label>
 
             <label className="login-list__item login-field" htmlFor="password">
-              <div className="login-list__label">
-                <span>Password</span>
-              </div>
+              <div className="login-list__label"><span>Password</span></div>
               <div className="login-field__control">
                 <FontAwesomeIcon icon={faLock} className="field-icon" />
                 <input
@@ -98,13 +103,35 @@ function Login() {
               </div>
             </label>
 
-            <button type="submit" className="login-cta">Log In</button>
+            <button type="submit" className="login-cta" disabled={loginLoading}>
+              {loginLoading ? 'Logging in...' : 'Log In'}
+            </button>
           </form>
-            <button className="signup-cta">Sign Up</button>
+
+          {loginError && <div className="login-error" role="alert">{loginError}</div>}
+
+          <button className="signup-cta">Sign Up</button>
 
           <a className="info-link" href="#partner">Forgot password?</a>
         </div>
       </aside>
+
+      {showOtpModal && (
+        <VerifyOTP
+          email={otpEmail}
+          onClose={() => setShowOtpModal(false)}
+          onSuccess={async () => {
+            // update auth state then navigate
+            try {
+              await checkAuthStatus();
+            } catch (err) {
+              console.warn("checkAuthStatus failed:", err);
+            }
+            setShowOtpModal(false);
+            navigate('/markets');
+          }}
+        />
+      )}
     </div>
   );
 }
