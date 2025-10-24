@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.db.models import Q
+from decimal import Decimal
 
 from ..models import Profiles, Markets, AdminActions, Wallet, Orders
 
@@ -194,3 +195,40 @@ def get_user_details(request, user_id):
         }
     }, status=200)
 
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@admin_required
+def give_points(request, user_id):
+    try:
+        user = Profiles.objects.get(pk=user_id)
+    except Profiles.DoesNotExist:
+        return Response({'error': 'User not found'}, status=404)
+    
+    amount = request.data.get('amount')
+    
+    if not amount:
+        return Response({'error': 'Amount is required'}, status=400)
+    
+    try:
+        amount = float(amount)
+        if amount <= 0:
+            return Response({'error': 'Amount must be greater than 0'}, status=400)
+    except (ValueError, TypeError):
+        return Response({'error': 'Invalid amount'}, status=400)
+    
+    try:
+        wallet = Wallet.objects.get(profile=user)
+    except Wallet.DoesNotExist:
+        return Response({'error': 'User wallet not found'}, status=404)
+    
+    wallet.points_balance += Decimal(str(amount))
+    wallet.save()
+    
+    AdminActions.objects.create(user=request.user,
+        description=f"Added {amount} credits to {user.username}'s wallet")
+    
+    return Response({
+        'message': 'Points added successfully',
+        'newBalance': str(wallet.points_balance)
+    }, status=200)
