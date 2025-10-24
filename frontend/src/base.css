@@ -11,6 +11,9 @@
     --border-rad-main: 5px;
     --select-blue: #007aff;
     --transition-base: all 0.4s ease;
+
+    --success-light: #c5f6b7;
+    --success-green: #28a745;
 }
 
 
