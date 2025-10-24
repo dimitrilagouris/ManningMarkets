@@ -23,6 +23,7 @@ from .views.market_views import fetch_markets, fetch_leaderboard, fetch_market
 from .views.user_views import get_wallet, get_profile, change_username, change_password
 from .views.wallet_views import get_user_trades, get_user_orders, get_user_positions, cancel_order
 from .views.order_view import create_order, get_orderbook
+from .views.admin_views import get_admin_users, get_admin_markets, get_admin_stats, suspend_user, unsuspend_user, delete_user, get_admin_audit_logs, settle_market, get_settlement_info, get_user_settlements
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -60,5 +61,19 @@ urlpatterns = [
     # ORDER / TRADE URLS
     path('api/orders/', create_order),
     path('api/orderbook/<int:event_id>/', get_orderbook),
+
+    # ADMIN URLS
+    path('api/admin/users/', get_admin_users, name="admin-users"),
+    path('api/admin/markets/', get_admin_markets, name="admin-markets"),
+    path('api/admin/stats/', get_admin_stats, name="admin-stats"),
+    path('api/admin/audit-logs/', get_admin_audit_logs, name="admin-audit-logs"),
+    path('api/admin/suspend-user/', suspend_user, name="admin-suspend-user"),
+    path('api/admin/unsuspend-user/', unsuspend_user, name="admin-unsuspend-user"),
+    path('api/admin/delete-user/', delete_user, name="admin-delete-user"),
+    
+    # SETTLEMENT URLS
+    path('api/admin/settle-market/', settle_market, name="admin-settle-market"),
+    path('api/admin/settlement-info/', get_settlement_info, name="admin-settlement-info"),
+    path('api/admin/user-settlements/', get_user_settlements, name="admin-user-settlements"),
 
 ]

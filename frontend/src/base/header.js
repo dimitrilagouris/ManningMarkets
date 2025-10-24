@@ -56,7 +56,7 @@ function Header() {
                         <ul className="main-nav__list">
                             {isAdmin && (
                                 <li className="main-nav__item">
-                                    <Link className="main-nav__link">Admin Dashboard</Link>
+                                    <Link to='/admin' className="main-nav__link">Admin Dashboard</Link>
                                 </li>
                             )}
                             {isAdmin && (

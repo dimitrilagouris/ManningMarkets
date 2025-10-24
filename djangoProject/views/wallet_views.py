@@ -36,13 +36,23 @@ def get_user_trades(request):
                 user_order = trade.maker_order_id
                 is_buy = user_order.order_type == 'BUY'
                 
-                # Calculate net cash effect
+                # Calculate actual price paid - for NO shares, use 1 - YES price
+                actual_price = float(trade.price)
+                if user_order.share_type == 'NO':
+                    actual_price = 1 - actual_price
+                
+                # Calculate net cash effect using actual price
                 if is_buy:
                     # Buying shares - cash goes out (negative effect)
-                    cash_effect = -float(trade.price * trade.quantity_filled)
+                    cash_effect = -float(actual_price * trade.quantity_filled)
                 else:
                     # Selling shares - cash comes in (positive effect)
-                    cash_effect = float(trade.price * trade.quantity_filled)
+                    cash_effect = float(actual_price * trade.quantity_filled)
+                
+                # Calculate display price - for NO shares, show 1 - YES price
+                display_price = float(trade.price)
+                if user_order.share_type == 'NO':
+                    display_price = 1 - display_price
                 
                 trade_data.append({
                     'id': f"{trade.id}_maker",
@@ -52,7 +62,7 @@ def get_user_trades(request):
                     'share_type': user_order.share_type,
                     'order_type': user_order.order_type,
                     'quantity': int(trade.quantity_filled),
-                    'price': float(trade.price),
+                    'price': display_price,
                     'total_cost': float(trade.price * trade.quantity_filled),
                     'is_buy': is_buy,
                     'cash_effect': cash_effect,
@@ -65,13 +75,23 @@ def get_user_trades(request):
                 user_order = trade.taker_order_id
                 is_buy = user_order.order_type == 'BUY'
                 
-                # Calculate net cash effect
+                # Calculate actual price paid - for NO shares, use 1 - YES price
+                actual_price = float(trade.price)
+                if user_order.share_type == 'NO':
+                    actual_price = 1 - actual_price
+                
+                # Calculate net cash effect using actual price
                 if is_buy:
                     # Buying shares - cash goes out (negative effect)
-                    cash_effect = -float(trade.price * trade.quantity_filled)
+                    cash_effect = -float(actual_price * trade.quantity_filled)
                 else:
                     # Selling shares - cash comes in (positive effect)
-                    cash_effect = float(trade.price * trade.quantity_filled)
+                    cash_effect = float(actual_price * trade.quantity_filled)
+                
+                # Calculate display price - for NO shares, show 1 - YES price
+                display_price = float(trade.price)
+                if user_order.share_type == 'NO':
+                    display_price = 1 - display_price
                 
                 trade_data.append({
                     'id': f"{trade.id}_taker",
@@ -81,7 +101,7 @@ def get_user_trades(request):
                     'share_type': user_order.share_type,
                     'order_type': user_order.order_type,
                     'quantity': int(trade.quantity_filled),
-                    'price': float(trade.price),
+                    'price': display_price,
                     'total_cost': float(trade.price * trade.quantity_filled),
                     'is_buy': is_buy,
                     'cash_effect': cash_effect,
@@ -114,6 +134,11 @@ def get_user_orders(request):
         
         order_data = []
         for order in orders:
+            # Calculate display price - for NO shares, show 1 - YES price
+            display_price = float(order.price)
+            if order.share_type == 'NO':
+                display_price = 1 - display_price
+            
             order_data.append({
                 'id': order.id,
                 'timestamp': order.created_at.strftime('%Y-%m-%d %H:%M:%S'),
@@ -121,7 +146,7 @@ def get_user_orders(request):
                 'market_name': order.event.market.market_name,
                 'share_type': order.share_type,
                 'order_type': order.order_type,
-                'price': float(order.price),
+                'price': display_price,
                 'total_quantity': int(order.amount),
                 'remaining_quantity': int(order.remaining_quantity),
                 'filled_quantity': int(order.amount - order.remaining_quantity),
@@ -154,6 +179,11 @@ def get_user_positions(request):
         
         position_data = []
         for position in positions:
+            # Calculate display price - for NO shares, show 1 - YES price
+            display_price = float(position.avg_price)
+            if position.side == 'NO':
+                display_price = 1 - display_price
+            
             # Calculate current market value (this would need live price data)
             # For now, we'll use the average price as a placeholder
             current_value = float(position.avg_price * position.quantity)
@@ -164,7 +194,7 @@ def get_user_positions(request):
                 'market_name': position.event.market.market_name,
                 'side': position.side,
                 'quantity': int(position.quantity),
-                'avg_price': float(position.avg_price),
+                'avg_price': display_price,
                 'current_value': current_value,
                 'market_value': current_value  # Placeholder - would need live pricing
             })

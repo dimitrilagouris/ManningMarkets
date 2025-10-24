@@ -140,8 +140,12 @@ class Events(models.Model):
     expiration_date = models.DateTimeField(null=True)
     open = models.BooleanField(default=True)
     price = models.DecimalField(max_digits=20, decimal_places=8, validators=[MinValueValidator(Decimal("0.0"))])
-
     volume = models.IntegerField(validators=[MinValueValidator(0)])
+    
+    # Settlement fields
+    settled = models.BooleanField(default=False)
+    winning_outcome = models.CharField(max_length=10, choices=[('YES', 'YES'), ('NO', 'NO')], null=True, blank=True)
+    settled_at = models.DateTimeField(null=True, blank=True)
 
 
 class Orders(models.Model):
@@ -216,6 +220,11 @@ class Positions(models.Model):
         default=OrderSide.YES,
     )
     avg_price = models.DecimalField(max_digits=20, decimal_places=8, validators=[MinValueValidator(Decimal("0.0"))])
+    
+    # Settlement fields
+    settled = models.BooleanField(default=False)
+    winnings_paid = models.DecimalField(max_digits=20, decimal_places=8, default=Decimal('0.0'))
+    settled_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         unique_together = ('event', 'user', 'side')  # Allow both YES and NO positions per user per event

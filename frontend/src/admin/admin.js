@@ -15,7 +15,7 @@ import {
   faUserCheck
 } from '@fortawesome/free-solid-svg-icons';
 import { DJANGO_API_BASE } from '../config';
-import { getCSRFToken } from '../session_management/csrfToken';
+import Cookies from 'js-cookie';
 
 function Admin() {
   //States
@@ -43,6 +43,28 @@ function Admin() {
   const [showGivePointsModal, setShowGivePointsModal] = useState(false);
   const [pointsAmount, setPointsAmount] = useState('');
   const [pointsError, setPointsError] = useState('');
+
+  // Get CSRF token for API requests
+  const getCSRFToken = async () => {
+    try {
+      const response = await fetch(`${DJANGO_API_BASE}/get-csrf-token/`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        return data.csrfToken;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching CSRF token:', error);
+      return null;
+    }
+  };
 
   // Fetch all data on mount
   useEffect(() => {
@@ -73,6 +95,8 @@ function Admin() {
       const data = await res.json();
       if (res.ok) {
         setUsers(data.users);
+      } else {
+        console.error('Error fetching users:', data.error);
       }
     } catch (err) {
       console.error('Error fetching users:', err);
@@ -149,13 +173,14 @@ function Admin() {
     setActionLoading(true);
     try {
       const csrfToken = await getCSRFToken();
-      const res = await fetch(`${DJANGO_API_BASE}/api/admin/users/${selectedUser.id}/suspend/`, {
+      const res = await fetch(`${DJANGO_API_BASE}/api/admin/suspend-user/`, {
         method: 'POST',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           'X-CSRFToken': csrfToken,
         },
+        body: JSON.stringify({ user_id: selectedUser.id }),
       });
 
       const data = await res.json();
@@ -182,13 +207,14 @@ function Admin() {
     setActionLoading(true);
     try {
       const csrfToken = await getCSRFToken();
-      const res = await fetch(`${DJANGO_API_BASE}/api/admin/users/${selectedUser.id}/unsuspend/`, {
+      const res = await fetch(`${DJANGO_API_BASE}/api/admin/unsuspend-user/`, {
         method: 'POST',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           'X-CSRFToken': csrfToken,
         },
+        body: JSON.stringify({ user_id: selectedUser.id }),
       });
 
       const data = await res.json();
@@ -219,13 +245,14 @@ function Admin() {
     setActionLoading(true);
     try {
       const csrfToken = await getCSRFToken();
-      const res = await fetch(`${DJANGO_API_BASE}/api/admin/users/${selectedUser.id}/delete/`, {
-        method: 'DELETE',
+      const res = await fetch(`${DJANGO_API_BASE}/api/admin/delete-user/`, {
+        method: 'POST',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           'X-CSRFToken': csrfToken,
         },
+        body: JSON.stringify({ user_id: selectedUser.id }),
       });
 
       const data = await res.json();
@@ -402,10 +429,10 @@ function Admin() {
                     </tr>
                   </thead>
                   <tbody>
-                    {users.map(user => (
+                    {(users || []).map(user => (
                       <tr key={user.id}>
                         <td>{user.id}</td>
-                        <td className="user-name">{user.name}</td>
+                        <td className="user-name">{user.full_name}</td>
                         <td className="user-email">{user.email}</td>
                         <td>
                           <span className={`status-badge status-badge--${user.status}`}>
@@ -467,23 +494,23 @@ function Admin() {
                       <th>Market Title</th>
                       <th>Status</th>
                       <th>Participants</th>
-                      <th>Price (Campus Credits)</th>
+                      <th>Events</th>
                       <th>Volume (Campus Credits)</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {markets.map(market => (
+                    {(markets || []).map(market => (
                       <tr key={market.id}>
                         <td>{market.id}</td>
-                        <td className="market-title">{market.title}</td>
+                        <td className="market-title">{market.market_name}</td>
                         <td>
                           <span className={`status-badge status-badge--${market.status}`}>
                             {market.status}
                           </span>
                         </td>
                         <td>{market.participants}</td>
-                        <td>{market.price.toLocaleString()}</td>
-                        <td>{market.volume.toLocaleString()}</td>
+                        <td>{market.total_events || 0}</td>
+                        <td>{market.total_volume ? market.total_volume.toLocaleString() : '0'}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -497,7 +524,7 @@ function Admin() {
                 <FontAwesomeIcon icon={faHistory} /> Audit Log
               </h2>
               <div className="audit-log">
-                {auditLogs.map(log => (
+                {(auditLogs || []).map(log => (
                   <div key={log.id} className="audit-log-item">
                     <div className="audit-log-icon">
                       <FontAwesomeIcon icon={faShieldAlt} />

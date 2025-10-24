@@ -220,11 +220,11 @@
 
 /* Live orders table - 6 columns */
 .orders-table .wallet-transactions-header {
-  grid-template-columns: 200px 100px 100px 100px 120px 120px 100px;
+  grid-template-columns: 200px 100px 100px 100px 120px 140px 100px;
 }
 
 .orders-table .wallet-transactions-row {
-  grid-template-columns: 200px 100px 100px 100px 120px 120px 100px;
+  grid-template-columns: 200px 100px 100px 100px 120px 140px 100px;
 }
 
 .wallet-table-col {
