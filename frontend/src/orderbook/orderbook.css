@@ -1,4 +1,3 @@
-/* OrderBook Overlay - Only for modal mode */
 .orderbook-overlay {
   position: fixed;
   top: 0;
@@ -49,7 +48,7 @@
 .orderbook-title h2 {
   font-size: 24px;
   font-weight: 700;
-  color: #212529;
+  color: var(--usyd-grey-800);
   margin: 0 0 4px 0;
   font-family: 'Apercu-Medium', -apple-system, BlinkMacSystemFont, sans-serif;
 }
@@ -125,7 +124,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  min-height: 0; /* Important for flex child to shrink */
+  min-height: 0;
 }
 
 .orderbook-table {
@@ -133,12 +132,11 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding: 0;
-  max-height: 400px; /* Maximum height before scrolling kicks in */
+  max-height: 400px;
   scrollbar-width: thin;
   scrollbar-color: var(--usyd-grey-200) var(--usyd-grey-100);
 }
 
-/* Custom scrollbar styling for webkit browsers */
 .orderbook-table::-webkit-scrollbar {
   width: 6px;
 }
@@ -195,7 +193,8 @@
 .orderbook-divider {
   position: relative;
   height: 2px;
-  background: linear-gradient(90deg, transparent, #dee2e6, transparent);
+  /* #dee2e6 is close to --usyd-grey-200 (#dedede) */
+  background: linear-gradient(90deg, transparent, var(--usyd-grey-200), transparent);
   margin: 15px 0px 15px 0px;
   border-radius: 1px;
   display: flex;
@@ -204,7 +203,7 @@
 }
 
 .orderbook-divider-text {
-  background: #f8f9fa;
+  background: var(--usyd-grey-100);
   padding: 2px 8px;
   font-size: 10px;
   color: var(--usyd-grey-500);
@@ -233,20 +232,19 @@
 
 /* Ask Rows (Red) */
 .ask-row {
-  color: #dc3545;
+  color: var(--usyd-red-light);
 }
 
 .ask-row .orderbook-cell {
-  color: #dc3545;
+  color: var(--usyd-red-light);
 }
 
-/* Bid Rows (Green) */
 .bid-row {
-  color: #28a745;
+  color: #c5f6b7;
 }
 
 .bid-row .orderbook-cell {
-  color: #28a745;
+  color: var(--success-green);
 }
 
 /* OrderBook Cells */
@@ -269,7 +267,6 @@
   text-align: right;
 }
 
-/* OrderBook Bars */
 .orderbook-bar {
   position: absolute;
   top: 0;
@@ -290,7 +287,6 @@
   border-radius: 4px 0 0 4px;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .orderbook-overlay {
     padding: 10px;
@@ -305,7 +301,7 @@
   }
 
   .orderbook-table {
-    max-height: 300px; /* Smaller max height on mobile */
+    max-height: 300px;
   }
 
   .orderbook-header {
@@ -340,7 +336,6 @@
   }
 }
 
-/* Empty State */
 .orderbook-section:empty::after {
   content: "No orders available";
   display: flex;
@@ -352,7 +347,6 @@
   font-style: italic;
 }
 
-/* Loading State */
 .orderbook-loading {
   display: flex;
   align-items: center;
@@ -362,7 +356,6 @@
   font-size: 14px;
 }
 
-/* Animation for new data */
 .orderbook-row {
   transition: background-color 0.3s ease;
 }
@@ -381,14 +374,14 @@
   }
 }
 
-/* OrderBook Dropdown Button */
+
 .orderbook-dropdown-button {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 6px 10px;
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
+  background-color: var(--usyd-grey-100);
+  border: 1px solid var(--usyd-grey-200);
   border-radius: 6px;
   cursor: pointer;
   font-size: 12px;
@@ -400,13 +393,14 @@
 }
 
 .orderbook-dropdown-button:hover {
-  background-color: #e9ecef;
+  background-color: var(--usyd-grey-200);
   border-color: #adb5bd;
   color: var( --usyd-grey-600);
 }
 
 .orderbook-dropdown-button:active {
   background-color: #dee2e6;
+  transform: translateY(1px);
 }
 
 
@@ -429,15 +423,16 @@
   transition: var(--transition-base);
 }
 
-/* Integration with existing placePosition styles */
 .market-events__btn.orderbook-dropdown-button {
   background-color: white;
   border: 1px solid var(--usyd-red-dark);
   color: var(--usyd-red-dark);
+
   font-size: 12px;
   padding: 6px 10px;
 }
 
 .market-events__btn.orderbook-dropdown-button:hover {
   background-color: var(--usyd-red-light);
+/*   border: 1px solid var(--usyd-red-dark); */
 }
