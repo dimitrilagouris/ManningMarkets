@@ -195,6 +195,7 @@ def get_user_details(request, user_id):
         }
     }, status=200)
 
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 @admin_required
