@@ -30,35 +30,63 @@ def get_user_trades(request):
         
         trade_data = []
         for trade in trades:
-            # Determine which order belongs to the current user
-            user_order = trade.maker_order_id if trade.maker_order_id.user == user else trade.taker_order_id
-            other_order = trade.taker_order_id if trade.maker_order_id.user == user else trade.maker_order_id
+            # Check if user was the maker
+            if trade.maker_order_id.user == user:
+                # User was the maker
+                user_order = trade.maker_order_id
+                is_buy = user_order.order_type == 'BUY'
+                
+                # Calculate net cash effect
+                if is_buy:
+                    # Buying shares - cash goes out (negative effect)
+                    cash_effect = -float(trade.price * trade.quantity_filled)
+                else:
+                    # Selling shares - cash comes in (positive effect)
+                    cash_effect = float(trade.price * trade.quantity_filled)
+                
+                trade_data.append({
+                    'id': f"{trade.id}_maker",
+                    'timestamp': trade.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                    'event_name': user_order.event.event_name,
+                    'market_name': user_order.event.market.market_name,
+                    'share_type': user_order.share_type,
+                    'order_type': user_order.order_type,
+                    'quantity': int(trade.quantity_filled),
+                    'price': float(trade.price),
+                    'total_cost': float(trade.price * trade.quantity_filled),
+                    'is_buy': is_buy,
+                    'cash_effect': cash_effect,
+                    'status': 'EXECUTED'
+                })
             
-            # Determine if user was buying or selling
-            is_buy = user_order.order_type == 'BUY'
-            
-            # Calculate net cash effect
-            if is_buy:
-                # Buying shares - cash goes out (negative effect)
-                cash_effect = -float(trade.price * trade.quantity_filled)
-            else:
-                # Selling shares - cash comes in (positive effect)
-                cash_effect = float(trade.price * trade.quantity_filled)
-            
-            trade_data.append({
-                'id': trade.id,
-                'timestamp': trade.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-                'event_name': user_order.event.event_name,
-                'market_name': user_order.event.market.market_name,
-                'share_type': user_order.share_type,
-                'order_type': user_order.order_type,
-                'quantity': int(trade.quantity_filled),
-                'price': float(trade.price),
-                'total_cost': float(trade.price * trade.quantity_filled),
-                'is_buy': is_buy,
-                'cash_effect': cash_effect,
-                'status': 'EXECUTED'
-            })
+            # Check if user was the taker
+            if trade.taker_order_id.user == user:
+                # User was the taker
+                user_order = trade.taker_order_id
+                is_buy = user_order.order_type == 'BUY'
+                
+                # Calculate net cash effect
+                if is_buy:
+                    # Buying shares - cash goes out (negative effect)
+                    cash_effect = -float(trade.price * trade.quantity_filled)
+                else:
+                    # Selling shares - cash comes in (positive effect)
+                    cash_effect = float(trade.price * trade.quantity_filled)
+                
+                trade_data.append({
+                    'id': f"{trade.id}_taker",
+                    'timestamp': trade.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                    'event_name': user_order.event.event_name,
+                    'market_name': user_order.event.market.market_name,
+                    'share_type': user_order.share_type,
+                    'order_type': user_order.order_type,
+                    'quantity': int(trade.quantity_filled),
+                    'price': float(trade.price),
+                    'total_cost': float(trade.price * trade.quantity_filled),
+                    'is_buy': is_buy,
+                    'cash_effect': cash_effect,
+                    'status': 'EXECUTED'
+                })
         
         return Response({'trades': trade_data})
         

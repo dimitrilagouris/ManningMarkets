@@ -224,7 +224,7 @@ export const PlacePositionPage = () => {
 
         if (res.ok) {
           const data = await res.json();
-          setWalletBalance(data.balance || 0);
+          setWalletBalance(data.available || 0);
         } else {
           console.error('Failed to fetch wallet balance');
           setWalletBalance(0);
@@ -286,16 +286,11 @@ export const PlacePositionPage = () => {
       // Try to get live orderbook data first
       if (selectedEvent.eventId) {
         const orderbookData = eventOrderbookData[selectedEvent.eventId];
-        if (orderbookData && orderbookData.bestBid !== null && orderbookData.bestAsk !== null) {
+        if (orderbookData && orderbookData.bestBid && orderbookData.bestAsk) {
           if (choice === 'yes') {
             marketPrice = tradeType === 'buy' ? orderbookData.bestAsk : orderbookData.bestBid;
           } else { // no
             marketPrice = tradeType === 'buy' ? (1 - orderbookData.bestBid) : (1 - orderbookData.bestAsk);
-          }
-          
-          // Only clamp if the price is truly invalid (negative or > 1)
-          if (marketPrice !== undefined && (marketPrice < 0 || marketPrice > 1)) {
-            marketPrice = Math.max(0.01, Math.min(0.99, marketPrice));
           }
         }
       }
@@ -314,11 +309,8 @@ export const PlacePositionPage = () => {
       }
       
       // Set the limit price if we have a market price
-      if (marketPrice !== undefined && !isNaN(marketPrice) && isFinite(marketPrice)) {
+      if (marketPrice !== undefined) {
         setAmount(marketPrice.toFixed(2));
-      } else {
-        // Fallback to reasonable default
-        setAmount('0.50');
       }
     }
   }, [selectedEvent, tradeType, eventOrderbookData]);
@@ -428,7 +420,7 @@ export const PlacePositionPage = () => {
 
           if (res.ok) {
             const data = await res.json();
-            setWalletBalance(data.balance || 0);
+            setWalletBalance(data.available || 0);
           }
         } catch (err) {
           console.error("Error refreshing wallet balance: ", err);
@@ -461,7 +453,7 @@ export const PlacePositionPage = () => {
     // Try to get live orderbook data first
     if (selectedEvent.eventId) {
       const orderbookData = eventOrderbookData[selectedEvent.eventId];
-      if (orderbookData && orderbookData.bestBid !== null && orderbookData.bestAsk !== null) {
+      if (orderbookData && orderbookData.bestBid && orderbookData.bestAsk) {
         let yesPrice, noPrice;
 
         if (tradeType === 'buy') {
@@ -472,16 +464,6 @@ export const PlacePositionPage = () => {
           // When selling: YES price = best bid for YES, NO price = best bid for NO (1 - best ask for YES)
           yesPrice = orderbookData.bestBid;
           noPrice = 1 - orderbookData.bestAsk;
-        }
-
-        // Ensure prices are within valid bounds and handle edge cases
-        // Don't clamp the prices - they should reflect the actual market values
-        // Only clamp if they're truly invalid (negative or > 1)
-        if (yesPrice < 0 || yesPrice > 1) {
-          yesPrice = Math.max(0.01, Math.min(0.99, yesPrice));
-        }
-        if (noPrice < 0 || noPrice > 1) {
-          noPrice = Math.max(0.01, Math.min(0.99, noPrice));
         }
 
         return {
@@ -497,7 +479,6 @@ export const PlacePositionPage = () => {
       if (priceMatch) {
         const yesCents = parseInt(priceMatch[1], 10);
         const noCents = 100 - yesCents;
-        
         return {
           yesPrice: `${yesCents}c`,
           noPrice: `${noCents}c`
@@ -538,16 +519,7 @@ export const PlacePositionPage = () => {
         <div className="place-position__left-content">
           <div className="place-position__title place-position__title--market">{market.name}</div>
           <div className="place-position__subtitle">Volume: ${market.market_volume.toLocaleString()}</div>
-          <div className="place-position__timestamp">
-            {market.events && market.events.length > 0 && market.events[0].expiration_date 
-              ? new Date(market.events[0].expiration_date).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })
-              : 'No expiration date'
-            }
-          </div>
+          <div className="place-position__timestamp">October 14, 2025</div>
 
           {/* Market events table component — pass events here */}
           <MarketEventsTable events={events} onSelectEvent={handleSelectEvent} marketId={marketId} onEventDataUpdate={handleEventDataUpdate} />
@@ -581,14 +553,14 @@ export const PlacePositionPage = () => {
           <div className="place-position__choice-buttons">
             <button
               className={`place-position__choice-button place-position__choice-button--yes ${selectedChoice === 'yes' ? 'place-position__choice-button--selected' : ''}`}
-              onClick={() => handleSelectEvent(selectedEvent, 'yes')}
+              onClick={() => handleChoiceButtonClick('yes')}
             >
               Yes {yesPrice}
             </button>
 
             <button
               className={`place-position__choice-button place-position__choice-button--no ${selectedChoice === 'no' ? 'place-position__choice-button--selected' : ''}`}
-              onClick={() => handleSelectEvent(selectedEvent, 'no')}
+              onClick={() => handleChoiceButtonClick('no')}
             >
               No {noPrice}
             </button>
@@ -652,7 +624,7 @@ export const PlacePositionPage = () => {
             </div>
           </div>
 
-          <button
+          <button 
             className="place-position__button--buy"
             onClick={handleSubmitOrder}
             disabled={submittingOrder}
@@ -688,3 +660,4 @@ export const PlacePositionPage = () => {
     </div>
   );
 };
+
