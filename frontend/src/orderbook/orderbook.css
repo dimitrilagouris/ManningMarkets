@@ -1,5 +1,3 @@
-place-positions-page-update
-=======
 .orderbook-overlay {
   position: fixed;
   top: 0;
@@ -113,19 +111,13 @@ main
   background: none;
   border: none;
   cursor: pointer;
- place-positions-page-update
   border-radius: var(--border-rad-main);
   color: var(--usyd-grey-500);
   transition: var(--transition-base);
   line-height: 0;
   text-align: center;
   padding: 0;
-=======
-  padding: 8px;
-  border-radius: var(--border-rad-main);
-  color: var(--usyd-grey-500);
-  transition: var(--transition-base);
- main
+
 }
 
 
@@ -435,7 +427,6 @@ main
 }
 
 .market-events__btn.orderbook-dropdown-button:hover {
- place-positions-page-update
   border: 1px solid var(--usyd-red-dark);
 }
 
@@ -473,9 +464,5 @@ main
   fill: currentColor !important;
   stroke: currentColor !important;
   vertical-align: middle;
-}
-=======
   background-color: var(--usyd-red-light);
-/*   border: 1px solid var(--usyd-red-dark); */
 }
- main
