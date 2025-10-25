@@ -1,35 +1,9 @@
-.orderbook-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 20px;
-}
-
-/* OrderBook Container */
-.orderbook-container {
-  background-color: white;
-  border-radius: var(--border-rad-main);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  max-width: 600px;
-  width: 100%;
-  max-height: 70vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-main
 
 .orderbook-container--inline {
   max-width: none;
   max-height: 500px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
   border: 1px solid var(--usyd-grey-200);
   border-radius: var(--border-rad-main);
 }
@@ -77,7 +51,7 @@ main
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: var(--usyd-red-dark);
+  background-color: #dc3545;
 }
 
 .status-indicator.connected .status-dot {
@@ -117,7 +91,6 @@ main
   line-height: 0;
   text-align: center;
   padding: 0;
-
 }
 
 
@@ -142,7 +115,7 @@ main
   padding: 0;
   max-height: 400px;
   scrollbar-width: thin;
-  scrollbar-color: var(--usyd-grey-200) var(--usyd-grey-100);
+  scrollbar-color: white var(--usyd-grey-100);
 }
 
 .orderbook-table::-webkit-scrollbar {
@@ -155,7 +128,7 @@ main
 }
 
 .orderbook-table::-webkit-scrollbar-thumb {
-  background: var(--usyd-grey-200);
+  background: #cbd5e0;
   border-radius: 3px;
 }
 
@@ -171,7 +144,7 @@ main
   border-bottom: 1px solid var(--usyd-grey-200);
   font-size: 12px;
   font-weight: 600;
-  color: var(--usyd-grey-500);
+  color: var(--usyd-grey-600);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   position: sticky;
@@ -368,7 +341,6 @@ main
   }
 }
 
-
 .orderbook-dropdown-button {
   display: inline-flex;
   align-items: center;
@@ -389,11 +361,11 @@ main
 .orderbook-dropdown-button:hover {
   background-color: var(--usyd-grey-200);
   border-color: #adb5bd;
-  color: var( --usyd-grey-600);
+  color: var(--usyd-grey-800);
 }
 
 .orderbook-dropdown-button:active {
-  background-color: #dee2e6;
+  background-color: var(--usyd-grey-200);
   transform: translateY(1px);
 }
 
@@ -412,18 +384,22 @@ main
 .orderbook-dropdown-arrow {
   display: flex;
   align-items: center;
-  color: var(--usyd-red-dark);
+  color:var(--usyd-red-dark);
   font-size: 14px;
-  transition: var(--transition-base);
+  transition: transform 0.2s ease;
+}
+
+.orderbook-dropdown-button:hover .orderbook-dropdown-arrow {
+  transform: translateY(1px);
 }
 
 .market-events__btn.orderbook-dropdown-button {
-  background-color: white;
-  border: 1px solid var(--usyd-red-dark);
-  color: var(--usyd-red-dark);
-
+  background-color: transparent;
+  border: 1px solid var(--usyd-grey-200);
+  color: var(--usyd-grey-800);
   font-size: 12px;
   padding: 6px 10px;
+  margin-left: 8px;
 }
 
 .market-events__btn.orderbook-dropdown-button:hover {
@@ -464,5 +440,4 @@ main
   fill: currentColor !important;
   stroke: currentColor !important;
   vertical-align: middle;
-  background-color: var(--usyd-red-light);
 }
