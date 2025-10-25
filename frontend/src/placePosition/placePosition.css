@@ -1,3 +1,4 @@
+/*!placePosition.css !*/
 .place-position {
   background-color: white;
   display: flex;
@@ -60,33 +61,33 @@
 .place-position__right {
   align-items: center;
   align-self: stretch;
-  background-color: var(--usyd-red-light);
+  background-color: var(--usyd-grey-100);
   display: flex;
   flex-direction: column;
   gap: 20px;
-  justify-content: flex-start;
+  justify-content: center;
   padding: 40px;
   width: 500px;
 }
 
 .place-position__right-header {
-  align-items: center;
+  align-items: flex-start;
   display: inline-flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 20px;
-  justify-content: center;
+  justify-content: left;
+  width: 100%;
 }
 
 .place-position__button--buy-sell {
   align-items: center;
   background-color: transparent;
   border: 1px solid var(--usyd-red);
-  border-radius: 10px;
+  border-radius: var(--border-rad-main);
   cursor: pointer;
   display: flex;
   justify-content: center;
   overflow: hidden;
-  padding: 13px 20px;
   transition: var(--transition-base);
   width: 150px;
   font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -109,6 +110,7 @@
   flex-direction: column;
   gap: 10px;
   width: 100%;
+  align-content: center;
 }
 
 .place-position__outcome {
@@ -127,7 +129,7 @@
 .place-position__choice-button {
   background-color: var(--usyd-grey-500);
   border: none;
-  border-radius: 10px;
+  border-radius: var(--border-rad-main);
   color: white;
   cursor: pointer;
   flex: 1;
@@ -199,7 +201,7 @@
 .place-position__input {
   align-items: center;
   background-color: var(--usyd-grey-100);
-  border-radius: 10px;
+  border-radius: var(--border-rad-main);
   display: flex;
   gap: 12px;
   overflow: hidden;
@@ -280,7 +282,7 @@
 .place-position__simple-input {
   align-items: center;
   background-color: var(--usyd-grey-100);
-  border-radius: 10px;
+  border-radius: var(--border-rad-main);
   display: inline-flex;
   padding: 10px 12px;
   justify-content: center;
@@ -302,7 +304,7 @@
   align-items: center;
   background-color: var(--usyd-red-dark);
   border: none;
-  border-radius: 10px;
+  border-radius: var(--border-rad-main);
   color: white;
   cursor: pointer;
   display: flex;
@@ -362,7 +364,7 @@
   width: 100%;
   border-collapse: collapse;
   background: white;
-  border-radius: 8px;
+  border-radius: var(--border-rad-main);
   overflow: hidden;
   box-shadow: 0 1px 0 rgba(0,0,0,0.04);
 }
@@ -470,30 +472,33 @@
   align-items: center;
 }
 
-.orderbook-btn-yes {
 
-  font-size: 11px;
-  padding: 4px 8px;
+
+.orderbook-btn {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 20px;
   width: 150px;
   min-width: 150px;
   max-width: 150px;
+  border-radius: var(--border-rad-main);
+  background-color: transparent;
+  border: 1px solid var(--usyd-grey-200);
+  cursor: pointer;
+  transition: var(--transition-base);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 
-.orderbook-btn-no {
-  font-size: 11px;
-  padding: 4px 8px;
-  width: 150px;
-  min-width: 150px;
-  max-width: 150px;
-}
-
-
-/* Order message styling */
 .order-message {
   margin-top: 12px;
   padding: 8px 12px;
-  border-radius: 4px;
+  border-radius: var(--border-rad-main);
   font-size: 14px;
   text-align: center;
 }
@@ -508,4 +513,214 @@
   background-color: #f8d7da;
   color: #721c24;
   border: 1px solid #f5c6cb;
+}
+
+.orderbook-btn:hover,
+.orderbook-btn.active {
+  border: 1px solid var(--usyd-red-dark);
+}
+
+
+.orderbook-btn .iconify,
+.orderbook-btn .iconify svg {
+  color: var(--usyd-red-dark);
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
+.trade-dropdown {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--usyd-grey-800);
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1;
+  position: relative; /* menu will be absolute relative to this */
+  text-decoration: none;
+}
+
+/* red arrow like orderbook buttons */
+.trade-dropdown .trade-arrow {
+  color: var(--usyd-red-dark);
+  font-size: 14px;
+  line-height: 0;
+  display: inline-block;
+  transition: transform 160ms ease;
+}
+
+/* rotate when open */
+.trade-dropdown.open .trade-arrow {
+  transform: rotate(180deg);
+}
+
+/* dropdown menu */
+.trade-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 120px;
+  background: white;
+  border: 1px solid var(--usyd-grey-200);
+  border-radius: var(--border-rad-main);
+  overflow: hidden;
+  z-index: 2200;
+}
+
+/* menu item */
+.trade-dropdown-item {
+  display: block;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--usyd-grey-800);
+  white-space: nowrap;
+  text-align: center;
+  transition: var(--transition-base);
+
+}
+
+.trade-dropdown-item:hover {
+  background: var(--usyd-grey-100);
+  color: var(--usyd-red-dark);
+}
+
+/* smaller rule: ensure orderbook buttons remain stacked in your column */
+.orderbook-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+/* tidier orderbook button (keeps your look but removes redundant width locks) */
+.orderbook-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 14px;
+  min-width: 140px;
+  height: 36px;
+  border-radius: var(--border-rad-main);
+  border: 1px solid var(--usyd-grey-200);
+  background: transparent;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+/* small helper to ensure the arrow icon is vertically aligned in iconify */
+.orderbook-btn .iconify {
+  line-height: 0;
+  display: inline-block;
+}
+
+
+.trade-dropdown {
+  font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+
+
+
+
+/* reuse orderbook button appearance but remove border/background */
+.trade-dropdown.orderbook-btn {
+  /* keep same sizing/typography as orderbook buttons */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 12px;
+  min-width: auto;
+  height: 36px;
+  border-radius: var(--border-rad-main);
+  font-weight: 600;
+  font-size: 14px;
+
+  /* remove visible chrome */
+  border: none;
+  background: transparent;
+  box-shadow: none;
+
+  cursor: pointer;
+  line-height: 1;
+}
+
+
+
+/* remove any arrow if present elsewhere */
+.trade-dropdown .trade-arrow { display: none !important; }
+
+/* dropdown menu positioning relative to the button wrapper */
+.trade-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 120px;
+  background: white;
+  border: 1px solid var(--usyd-grey-200);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(12, 24, 40, 0.08);
+  z-index: 2200;
+  overflow: hidden;
+}
+
+/* menu items */
+.trade-dropdown-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--usyd-grey-800);
+  white-space: nowrap;
+}
+
+.trade-dropdown-item:hover {
+  background: var(--usyd-grey-100);
+  color: var(--usyd-grey-800);
+}
+
+
+.trade-dropdown .trade-dropdown-icon {
+  display: inline-block;
+  line-height: 0;
+  width: 1em;
+  height: 1em;
+  font-size: 14px;
+  margin-left: 8px;
+  color: var(--usyd-red-dark);
+  vertical-align: middle;
+  transition: transform 180ms ease, color 120ms ease;
+  transform-origin: 50% 50%;
+}
+
+.trade-dropdown.open .trade-dropdown-icon {
+  transform: rotate(180deg);
+}
+
+.trade-dropdown .trade-dropdown-icon svg {
+  width: 1em;
+  height: 1em;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
+
+.trade-dropdown.orderbook-btn {
+  border: none;
+  background: transparent;
+  padding: 6px 12px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
 }

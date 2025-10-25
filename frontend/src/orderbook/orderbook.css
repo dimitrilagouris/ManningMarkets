@@ -1,47 +1,19 @@
-.orderbook-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 20px;
-}
 
-/* OrderBook Container */
-.orderbook-container {
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  max-width: 600px;
-  width: 100%;
-  max-height: 70vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Inline OrderBook Container */
 .orderbook-container--inline {
   max-width: none;
   max-height: 500px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 
   border: 1px solid var(--usyd-grey-200);
+  border-radius: var(--border-rad-main);
 }
 
-/* OrderBook Header */
 .orderbook-header {
   padding: 20px 24px 16px;
   border-bottom: 1px solid var(--usyd-grey-200);
   position: relative;
 }
 
-/* Inline OrderBook Header */
 .orderbook-header--inline {
   padding: 16px 20px 12px;
 }
@@ -105,14 +77,22 @@
   position: absolute;
   top: 16px;
   right: 16px;
+  height: 20px;
+  width: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 8px;
-  border-radius: 6px;
+  border-radius: var(--border-rad-main);
   color: var(--usyd-grey-500);
-  transition: background-color 0.2s ease;
+  transition: var(--transition-base);
+  line-height: 0;
+  text-align: center;
+  padding: 0;
 }
+
 
 .orderbook-close:hover {
   background-color: var(--usyd-grey-200);
@@ -190,19 +170,6 @@
   flex-direction: column;
 }
 
-/* Divider between asks and bids */
-.orderbook-divider {
-  position: relative;
-  height: 2px;
-  /* #dee2e6 is close to --usyd-grey-200 (#dedede) */
-  background: linear-gradient(90deg, transparent, var(--usyd-grey-200), transparent);
-  margin: 15px 0px 15px 0px;
-  border-radius: 1px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .orderbook-divider-text {
   background: var(--usyd-grey-100);
   padding: 2px 8px;
@@ -231,7 +198,6 @@
   border-bottom: none;
 }
 
-/* Ask Rows (Red) */
 .ask-row {
   color: var(--usyd-red-light);
 }
@@ -438,4 +404,40 @@
 
 .market-events__btn.orderbook-dropdown-button:hover {
   border: 1px solid var(--usyd-red-dark);
+}
+
+.orderbook-inline-wrapper {
+  overflow: hidden;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  transition: max-height 320ms ease, padding 220ms linear;
+}
+
+.orderbook-inline-wrapper.open {
+  max-height: 680px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.orderbook-inline-wrapper .orderbook-close {
+  display: block;
+}
+
+
+
+.orderbook-btn .iconify {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 0;
+  color: var(--usyd-red-dark);
+  font-size: 14px;
+}
+
+.orderbook-btn .iconify svg {
+  width: 1em;
+  height: 1em;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+  vertical-align: middle;
 }

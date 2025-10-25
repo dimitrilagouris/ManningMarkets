@@ -2,18 +2,18 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { DJANGO_API_BASE } from '../config';
-import OrderBookDropdown from '../orderbook/OrderBookDropdown';
+import OrderBook from '../orderbook/orderBook';
 import { useWebSocket } from '../websocketHook/useWebsocket';
 import { AuthContext } from '../session_management/authentication_context';
 import Cookies from 'js-cookie';
 import './placePosition.css';
 import '../base.css';
 
-// Custom hook to manage live orderbook data for a single event
+/* ---------- custom hook: live orderbook for one event ---------- */
 const useEventOrderbookData = (eventId) => {
   const [orderbookData, setOrderbookData] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
-  
+
   const wsUrl = `ws://localhost:8000/ws/orderbook/${eventId}/`;
   const { connectionStatus, lastMessage } = useWebSocket(wsUrl);
 
@@ -28,31 +28,39 @@ const useEventOrderbookData = (eventId) => {
     orderbookData,
     connectionStatus,
     lastUpdated,
-    bestAsk: orderbookData?.asks && orderbookData.asks.length > 0 
-      ? Math.min(...orderbookData.asks.map(ask => ask.price))
-      : null
+    bestAsk:
+      orderbookData?.asks && orderbookData.asks.length > 0
+        ? Math.min(...orderbookData.asks.map(a => a.price))
+        : null
   };
 };
 
-// Component for individual event row with its own WebSocket connection
-const EventRow = ({ event, index, onSelectEvent, onEventDataUpdate }) => {
+/* ---------- EventRow component (single event row + inline orderbook) ---------- */
+const EventRow = ({
+  event,
+  index,
+  onSelectEvent,
+  onEventDataUpdate,
+  isOpen,
+  openShareType,
+  onToggleOrderbook
+}) => {
   const eventId = event.eventId || index + 1;
   const { orderbookData, connectionStatus, lastUpdated, bestAsk } = useEventOrderbookData(eventId);
-
-
 
   const hasLiveData = bestAsk !== null && bestAsk !== undefined;
   const liveChance = hasLiveData ? `${(bestAsk * 100).toFixed(1)}%` : '-';
 
-  // Calculate best bid and best ask from orderbook data
-  const bestBid = orderbookData?.bids && orderbookData.bids.length > 0 
-    ? Math.max(...orderbookData.bids.map(bid => bid.price))
-    : null;
-  const bestAskPrice = orderbookData?.asks && orderbookData.asks.length > 0 
-    ? Math.min(...orderbookData.asks.map(ask => ask.price))
-    : null;
+  const bestBid =
+    orderbookData?.bids && orderbookData.bids.length > 0
+      ? Math.max(...orderbookData.bids.map(b => b.price))
+      : null;
+  const bestAskPrice =
+    orderbookData?.asks && orderbookData.asks.length > 0
+      ? Math.min(...orderbookData.asks.map(a => a.price))
+      : null;
 
-  // Notify parent component when orderbook data changes
+  // notify parent when orderbook snapshot updates for this event
   useEffect(() => {
     if (onEventDataUpdate && orderbookData) {
       onEventDataUpdate(eventId, {
@@ -63,74 +71,137 @@ const EventRow = ({ event, index, onSelectEvent, onEventDataUpdate }) => {
         lastUpdated
       });
     }
-  }, [orderbookData, bestBid, bestAskPrice, connectionStatus, lastUpdated, eventId, onEventDataUpdate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderbookData, bestBid, bestAskPrice, connectionStatus, lastUpdated]);
+
+  const handleToggle = (shareType) => onToggleOrderbook(eventId, shareType);
+
+  // Inline orderbook mount/unmount helper so CSS height transition can run
+  const ANIMATION_MS = 360;
+  const [mounted, setMounted] = useState(isOpen);
+  useEffect(() => {
+    let timeoutId;
+    if (isOpen) {
+      setMounted(true); // mount immediately so content is available for the open animation
+    } else {
+      // keep mounted for the duration of the animation, then unmount
+      timeoutId = setTimeout(() => setMounted(false), ANIMATION_MS);
+    }
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [isOpen]);
 
   return (
-    <tr className="market-events__tr" key={index}>
-      <td className="market-events__td market-events__outcome">
-        <div className="market-events__outcome-name">{event.outcomeName}</div>
-        <div className="market-events__outcome-price">
-          {hasLiveData ? `${(bestAsk * 100).toFixed(1)}c` : '-'}
-        </div>
-      </td>
+    <>
+      <tr className="market-events__tr" key={`ev-${eventId}`}>
+        <td className="market-events__td market-events__outcome">
+          <div className="market-events__outcome-name">{event.outcomeName}</div>
+          <div className="market-events__outcome-price">
+            {hasLiveData ? `${(bestAsk * 100).toFixed(1)}c` : '-'}
+          </div>
+        </td>
 
-      <td className="market-events__td market-events__chance">
-        <span className={hasLiveData ? 'live-chance' : 'static-chance'}>
-          {liveChance}
-        </span>
-        {hasLiveData && (
-          <span className="live-indicator" title={`Live data - Updated: ${lastUpdated}`}>
-            ●
-          </span>
-        )}
-      </td>
+        <td className="market-events__td market-events__chance">
+          <span className={hasLiveData ? 'live-chance' : 'static-chance'}>{liveChance}</span>
+          {hasLiveData && (
+            <span className="live-indicator" title={`Live data - Updated: ${lastUpdated}`}>
+              ●
+            </span>
+          )}
+        </td>
 
-      <td className="market-events__td market-events__actions">
-        <div className="market-events__actions-inner">
-          <button
-            type="button"
-            className="place-position__choice-button place-position__choice-button--yes market-events__btn"
-            onClick={() => onSelectEvent(event, 'yes')}
+        <td className="market-events__td market-events__actions">
+          <div className="market-events__actions-inner">
+            <button
+              type="button"
+              className="place-position__choice-button place-position__choice-button--yes market-events__btn"
+              onClick={() => onSelectEvent(event, 'yes')}
+            >
+              Yes
+            </button>
+
+            <button
+              type="button"
+              className="place-position__choice-button place-position__choice-button--no market-events__btn"
+              onClick={() => onSelectEvent(event, 'no')}
+            >
+              No
+            </button>
+          </div>
+        </td>
+
+        <td className="market-events__td market-events__orderbook">
+          <div className="orderbook-buttons">
+            <button
+              type="button"
+              className={`market-events__btn orderbook-btn orderbook-btn-yes ${isOpen && openShareType === 'YES' ? 'active' : ''}`}
+              onClick={() => handleToggle('YES')}
+              aria-expanded={isOpen && openShareType === 'YES'}
+              aria-controls={`orderbook-${eventId}`}
+            >
+              YES order book
+              <span className="iconify" data-icon="ri:arrow-down-s-line" data-inline="false" aria-hidden="true" />
+            </button>
+
+            <button
+              type="button"
+              className={`market-events__btn orderbook-btn orderbook-btn-no ${isOpen && openShareType === 'NO' ? 'active' : ''}`}
+              onClick={() => handleToggle('NO')}
+              aria-expanded={isOpen && openShareType === 'NO'}
+              aria-controls={`orderbook-${eventId}`}
+            >
+              NO order book
+              <span className="iconify" data-icon="ri:arrow-down-s-line" data-inline="false" aria-hidden="true" />
+            </button>
+          </div>
+        </td>
+      </tr>
+
+      {/* Inline orderbook row. wrapper remains in DOM so CSS can animate height */}
+      <tr className="market-events__orderbook-row" key={`orderbook-${eventId}`}>
+        <td colSpan="4" className="market-events__orderbook-cell">
+          <div
+            id={`orderbook-${eventId}`}
+            className={`orderbook-inline-wrapper ${isOpen ? 'open' : ''}`}
+            aria-hidden={!isOpen}
+            style={{ width: '100%', boxSizing: 'border-box' }}
           >
-            Yes
-          </button>
-          <button
-            type="button"
-            className="place-position__choice-button place-position__choice-button--no market-events__btn"
-            onClick={() => onSelectEvent(event, 'no')}
-          >
-            No
-          </button>
-        </div>
-      </td>
-
-      <td className="market-events__td market-events__orderbook">
-        <div className="orderbook-buttons">
-          <OrderBookDropdown
-            eventId={eventId}
-            eventName={event.outcomeName}
-            shareType="YES"
-            className="market-events__btn orderbook-btn-yes"
-            orderbookData={orderbookData}
-            connectionStatus={connectionStatus}
-            lastUpdated={lastUpdated}
-          />
-          <OrderBookDropdown
-            eventId={eventId}
-            eventName={event.outcomeName}
-            shareType="NO"
-            className="market-events__btn orderbook-btn-no"
-            orderbookData={orderbookData}
-            connectionStatus={connectionStatus}
-            lastUpdated={lastUpdated}
-          />
-        </div>
-      </td>
-    </tr>
+            {mounted && (
+              <OrderBook
+                inline
+                isOpen={true}
+                onClose={() => onToggleOrderbook(null, null)}
+                eventId={eventId}
+                eventName={event.outcomeName}
+                shareType={openShareType || 'YES'}
+                orderbookData={orderbookData}
+                connectionStatus={connectionStatus}
+                lastUpdated={lastUpdated}
+              />
+            )}
+          </div>
+        </td>
+      </tr>
+    </>
   );
 };
 
+/* ---------- MarketEventsTable (renders the rows) ---------- */
 export const MarketEventsTable = ({ events = [], onSelectEvent, marketId, onEventDataUpdate }) => {
+  const [openOrderbook, setOpenOrderbook] = useState({ eventId: null, shareType: null });
+
+  const onToggleOrderbook = (eventId, shareType) => {
+    setOpenOrderbook(prev => {
+      if (prev.eventId === eventId && prev.shareType === shareType) {
+        return { eventId: null, shareType: null };
+      }
+      if (eventId === null && shareType === null) {
+        return { eventId: null, shareType: null };
+      }
+      return { eventId, shareType };
+    });
+  };
 
   return (
     <div className="market-events">
@@ -147,11 +218,14 @@ export const MarketEventsTable = ({ events = [], onSelectEvent, marketId, onEven
         <tbody>
           {events.map((ev, i) => (
             <EventRow
-              key={i}
+              key={`ev-row-${ev.eventId || i}`}
               event={ev}
               index={i}
               onSelectEvent={onSelectEvent}
               onEventDataUpdate={onEventDataUpdate}
+              isOpen={openOrderbook.eventId === ev.eventId}
+              openShareType={openOrderbook.shareType}
+              onToggleOrderbook={onToggleOrderbook}
             />
           ))}
         </tbody>
@@ -160,39 +234,39 @@ export const MarketEventsTable = ({ events = [], onSelectEvent, marketId, onEven
   );
 };
 
+/* ---------- PlacePositionPage (main page) ---------- */
 export const PlacePositionPage = () => {
   const { marketId } = useParams();
   const { user, isAuthenticated } = useContext(AuthContext);
+
   const [amount, setAmount] = useState('');
   const [shares, setShares] = useState('');
   const [tradeType, setTradeType] = useState('buy'); // 'buy' or 'sell'
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [selectedChoice, setSelectedChoice] = useState(null); // 'yes' or 'no'
+  const [selectedChoice, setSelectedChoice] = useState('yes'); // yes/no for form
+  const [tradeDropdownOpen, setTradeDropdownOpen] = useState(false);
+
   const [market, setMarket] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [eventOrderbookData, setEventOrderbookData] = useState({}); // Store live orderbook data by eventId
+  const [eventOrderbookData, setEventOrderbookData] = useState({});
 
   const [submittingOrder, setSubmittingOrder] = useState(false);
   const [orderMessage, setOrderMessage] = useState('');
   const [walletBalance, setWalletBalance] = useState(0);
 
+  // fetch market + wallet
   useEffect(() => {
     const fetchMarket = async () => {
       try {
         setLoading(true);
         const res = await fetch(`${DJANGO_API_BASE}/fetch_market/${marketId}/`, {
-          headers: {'X-Requested-With': 'XMLHttpRequest'}
+          headers: { 'X-Requested-With': 'XMLHttpRequest' }
         });
-
-        if (!res.ok) {
-          throw new Error('Failed to fetch market');
-        }
-
+        if (!res.ok) throw new Error('Failed to fetch market');
         const data = await res.json();
         setMarket(data.market);
 
-        // Auto-select the first event if available
         if (data.market.events && data.market.events.length > 0) {
           const firstEvent = data.market.events[0];
           setSelectedEvent({
@@ -200,7 +274,7 @@ export const PlacePositionPage = () => {
             price: `${firstEvent.price}c`,
             chance: `${firstEvent.price}%`,
             volume: firstEvent.volume,
-            eventId: firstEvent.id // Include the eventId for orderbook data lookup
+            eventId: firstEvent.id
           });
         }
       } catch (err) {
@@ -216,22 +290,15 @@ export const PlacePositionPage = () => {
         setWalletBalance(0);
         return;
       }
-
       try {
         const res = await fetch(`${DJANGO_API_BASE}/wallet/`, {
           method: 'GET',
           credentials: 'include',
-          headers: {
-            'X-CSRFToken': Cookies.get('csrftoken'),
-          }
+          headers: { 'X-CSRFToken': Cookies.get('csrftoken') }
         });
-
         if (res.ok) {
           const data = await res.json();
           setWalletBalance(data.balance || 0);
-        } else {
-          console.error('Failed to fetch wallet balance');
-          setWalletBalance(0);
         }
       } catch (err) {
         console.error("Fetching Wallet Error: ", err);
@@ -239,26 +306,19 @@ export const PlacePositionPage = () => {
       }
     };
 
-    if (marketId) {
-      fetchMarket();
-    }
+    if (marketId) fetchMarket();
     fetchWalletBalance();
   }, [marketId, isAuthenticated]);
 
+  // input handlers
   const handleInputChange = (e) => {
     const value = e.target.value;
-    // Only allow numbers and decimal point
-    if (value === '' || /^\d*\.?\d*$/.test(value)) {
-      setAmount(value);
-    }
+    if (value === '' || /^\d*\.?\d*$/.test(value)) setAmount(value);
   };
 
   const handleSharesChange = (e) => {
     const value = e.target.value;
-    // Only allow integers
-    if (value === '' || /^\d*$/.test(value)) {
-      setShares(value);
-    }
+    if (value === '' || /^\d*$/.test(value)) setShares(value);
   };
 
   const handleIncrease = () => {
@@ -271,96 +331,75 @@ export const PlacePositionPage = () => {
     setAmount(Math.max(0, num - 0.01).toFixed(2));
   };
 
-  const toggleTradeType = () => {
-    setTradeType(prev => prev === 'buy' ? 'sell' : 'buy');
+  // trade dropdown handlers (now selects Buy / Sell)
+  const toggleTradeDropdown = () => setTradeDropdownOpen(prev => !prev);
+  const selectTradeType = (type) => {
+    setTradeType(type);
+    setTradeDropdownOpen(false);
   };
 
+  // sync selection from table event controls
   const handleSelectEvent = useCallback((event, choice) => {
     setSelectedEvent(event);
     setSelectedChoice(choice);
   }, []);
 
+  const handleEventDataUpdate = useCallback((eventId, orderbookData) => {
+    setEventOrderbookData(prev => ({ ...prev, [eventId]: orderbookData }));
+  }, []);
+
+  // choose price helper when user presses Yes/No in form
   const handleChoiceButtonClick = useCallback((choice) => {
     setSelectedChoice(choice);
 
-    // Auto-populate limit price based on current market price
-    if (selectedEvent) {
-      let marketPrice;
+    if (!selectedEvent) return;
 
-      // Try to get live orderbook data first
-      if (selectedEvent.eventId) {
-        const orderbookData = eventOrderbookData[selectedEvent.eventId];
-        if (orderbookData && orderbookData.bestBid && orderbookData.bestAsk) {
-          if (choice === 'yes') {
-            marketPrice = tradeType === 'buy' ? orderbookData.bestAsk : orderbookData.bestBid;
-          } else { // no
-            marketPrice = tradeType === 'buy' ? (1 - orderbookData.bestBid) : (1 - orderbookData.bestAsk);
-          }
+    let marketPrice;
+    if (selectedEvent.eventId) {
+      const ob = eventOrderbookData[selectedEvent.eventId];
+      if (ob && ob.bestBid !== undefined && ob.bestAsk !== undefined) {
+        if (choice === 'yes') {
+          marketPrice = tradeType === 'buy' ? ob.bestAsk : ob.bestBid;
+        } else {
+          marketPrice = tradeType === 'buy' ? (1 - ob.bestBid) : (1 - ob.bestAsk);
         }
-      }
-
-      // Fallback to static price if no live data
-      if (marketPrice === undefined && selectedEvent.price) {
-        const priceMatch = selectedEvent.price.match(/(\d+)c/);
-        if (priceMatch) {
-          const yesCents = parseInt(priceMatch[1], 10);
-          if (choice === 'yes') {
-            marketPrice = yesCents / 100;
-          } else { // no
-            marketPrice = (100 - yesCents) / 100;
-          }
-        }
-      }
-
-      // Set the limit price if we have a market price
-      if (marketPrice !== undefined) {
-        setAmount(marketPrice.toFixed(2));
       }
     }
+
+    if (marketPrice === undefined && selectedEvent.price) {
+      const priceMatch = selectedEvent.price.match(/(\d+)c/);
+      if (priceMatch) {
+        const yesCents = parseInt(priceMatch[1], 10);
+        marketPrice = (choice === 'yes') ? yesCents / 100 : (100 - yesCents) / 100;
+      }
+    }
+
+    if (marketPrice !== undefined) setAmount(marketPrice.toFixed(2));
   }, [selectedEvent, tradeType, eventOrderbookData]);
 
-  // Helper function to determine if a message is an error
+  // order submit
   const isErrorMessage = (message) => {
-    const errorKeywords = [
-      'Error',
-      'error',
-      'Failed',
-      'failed',
-      'Invalid',
-      'invalid',
-      'Insufficient',
-      'insufficient',
-      'Please',
-      'please',
-      'required',
-      'Required'
-    ];
-    return errorKeywords.some(keyword => message.includes(keyword));
+    const errorKeywords = ['Error', 'error', 'Failed', 'failed', 'Invalid', 'invalid', 'Insufficient', 'insufficient', 'Please', 'please', 'required', 'Required'];
+    return errorKeywords.some(k => message.includes(k));
   };
 
   const handleSubmitOrder = async () => {
-    // Validate authentication
     if (!isAuthenticated || !user) {
       setOrderMessage('Please log in to place orders');
       return;
     }
-
-    // Validate required fields
     if (!selectedEvent || !selectedChoice || !amount || !shares) {
       setOrderMessage('Please fill in all required fields');
       return;
     }
-
     if (!selectedEvent.eventId) {
       setOrderMessage('No event selected');
       return;
     }
 
-    // Convert amount from dollars to decimal price (e.g., $0.25 -> 0.25)
     const price = parseFloat(amount);
     const quantity = parseInt(shares, 10);
 
-    // Calculate total cost for buy orders
     if (tradeType === 'buy') {
       const totalCost = price * quantity;
       if (totalCost > walletBalance) {
@@ -373,65 +412,48 @@ export const PlacePositionPage = () => {
     setOrderMessage('');
 
     try {
-
       const orderData = {
         event_id: selectedEvent.eventId,
         order_type: tradeType.toUpperCase(),
         share_type: selectedChoice.toUpperCase(),
-        quantity: quantity,
-        price: price
+        quantity,
+        price
       };
 
       const response = await fetch(`${DJANGO_API_BASE}/api/orders/`, {
         method: 'POST',
-        credentials: 'include', // Include cookies for authentication
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': Cookies.get('csrftoken'),
+          'X-CSRFToken': Cookies.get('csrftoken')
         },
         body: JSON.stringify(orderData)
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Order submission failed:', {
-          status: response.status,
-          statusText: response.statusText,
-          errorData: errorData
-        });
         throw new Error(errorData.error || errorData.message || 'Failed to submit order');
       }
 
       const result = await response.json();
-      console.log('Order submitted successfully:', result);
-
       setOrderMessage(`Order submitted successfully! ${result.trades_executed} trades executed.`);
-
-      // Clear form
       setAmount('');
       setShares('');
 
-      // Refresh wallet balance after successful order
-      const refreshWalletBalance = async () => {
-        try {
-          const res = await fetch(`${DJANGO_API_BASE}/wallet/`, {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-              'X-CSRFToken': Cookies.get('csrftoken'),
-            }
-          });
-
-          if (res.ok) {
-            const data = await res.json();
-            setWalletBalance(data.balance || 0);
-          }
-        } catch (err) {
-          console.error("Error refreshing wallet balance: ", err);
+      // refresh wallet
+      try {
+        const res = await fetch(`${DJANGO_API_BASE}/wallet/`, {
+          method: 'GET',
+          credentials: 'include',
+          headers: { 'X-CSRFToken': Cookies.get('csrftoken') }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setWalletBalance(data.balance || 0);
         }
-      };
-      refreshWalletBalance();
-
+      } catch (err) {
+        console.error("Error refreshing wallet balance: ", err);
+      }
     } catch (err) {
       console.error('Order submission error:', err);
       setOrderMessage(`Error: ${err.message}`);
@@ -440,81 +462,48 @@ export const PlacePositionPage = () => {
     }
   };
 
-  // Handle orderbook data updates from EventRow components
-  const handleEventDataUpdate = useCallback((eventId, orderbookData) => {
-    setEventOrderbookData(prev => ({
-      ...prev,
-      [eventId]: orderbookData
-    }));
-  }, []);
-
-  // Calculate yes and no prices from live orderbook data
+  // yes/no prices for the small choice buttons
   const getYesNoPrice = () => {
-    if (!selectedEvent) {
-      return { yesPrice: '50c', noPrice: '50c' };
-    }
+    if (!selectedEvent) return { yesPrice: '50c', noPrice: '50c' };
 
-    // Try to get live orderbook data first
     if (selectedEvent.eventId) {
-      const orderbookData = eventOrderbookData[selectedEvent.eventId];
-      if (orderbookData && orderbookData.bestBid && orderbookData.bestAsk) {
+      const data = eventOrderbookData[selectedEvent.eventId];
+      if (data && data.bestBid !== undefined && data.bestAsk !== undefined) {
         let yesPrice, noPrice;
-
         if (tradeType === 'buy') {
-          // When buying: YES price = best ask for YES, NO price = best ask for NO (1 - best bid for YES)
-          yesPrice = orderbookData.bestAsk;
-          noPrice = 1 - orderbookData.bestBid;
+          yesPrice = data.bestAsk;
+          noPrice = 1 - data.bestBid;
         } else {
-          // When selling: YES price = best bid for YES, NO price = best bid for NO (1 - best ask for YES)
-          yesPrice = orderbookData.bestBid;
-          noPrice = 1 - orderbookData.bestAsk;
+          yesPrice = data.bestBid;
+          noPrice = 1 - data.bestAsk;
         }
-
-        return {
-          yesPrice: `${(yesPrice * 100).toFixed(1)}c`,
-          noPrice: `${(noPrice * 100).toFixed(1)}c`
-        };
+        return { yesPrice: `${(yesPrice * 100).toFixed(1)}c`, noPrice: `${(noPrice * 100).toFixed(1)}c` };
       }
     }
 
-    // Fallback to static price from event data if live data not available
     if (selectedEvent.price) {
-      const priceMatch = selectedEvent.price.match(/(\d+)/);
-      if (priceMatch) {
-        const yesCents = parseInt(priceMatch[1], 10);
-        const noCents = 100 - yesCents;
-        return {
-          yesPrice: `${yesCents}c`,
-          noPrice: `${noCents}c`
-        };
+      const match = selectedEvent.price.match(/(\d+)/);
+      if (match) {
+        const yesCents = parseInt(match[1], 10);
+        return { yesPrice: `${yesCents}c`, noPrice: `${100 - yesCents}c` };
       }
     }
 
-    // Final fallback
     return { yesPrice: '50c', noPrice: '50c' };
   };
 
   const { yesPrice, noPrice } = getYesNoPrice();
 
-  if (loading) {
-    return <div className="place-position">Loading market data...</div>;
-  }
+  if (loading) return <div className="place-position">Loading market data...</div>;
+  if (error) return <div className="place-position">Error loading market: {error.message}</div>;
+  if (!market) return <div className="place-position">Market not found</div>;
 
-  if (error) {
-    return <div className="place-position">Error loading market: {error.message}</div>;
-  }
-
-  if (!market) {
-    return <div className="place-position">Market not found</div>;
-  }
-
-  // Transform events data to match the expected format
-  const events = market.events.map(event => ({
-    outcomeName: event.name,
-    price: `${Number(event.price).toFixed(2)}c`,
-    chance: `${Number(event.price).toFixed(2)}%`,
-    volume: event.volume,
-    eventId: event.id // Include the event ID for orderbook
+  const events = market.events.map(e => ({
+    outcomeName: e.name,
+    price: `${Number(e.price).toFixed(2)}c`,
+    chance: `${Number(e.price).toFixed(2)}%`,
+    volume: e.volume,
+    eventId: e.id
   }));
 
   return (
@@ -525,43 +514,66 @@ export const PlacePositionPage = () => {
           <div className="place-position__subtitle">Volume: ${market.market_volume.toLocaleString()}</div>
           <div className="place-position__timestamp">October 14, 2025</div>
 
-          {/* Market events table component — pass events here */}
-          <MarketEventsTable events={events} onSelectEvent={handleSelectEvent} marketId={marketId} onEventDataUpdate={handleEventDataUpdate} />
+          <MarketEventsTable
+            events={events}
+            onSelectEvent={(ev, choice) => handleSelectEvent(ev, choice)}
+            marketId={marketId}
+            onEventDataUpdate={handleEventDataUpdate}
+          />
         </div>
       </div>
 
       <div className="place-position__right">
-        <div className="place-position__right-header">
+        {/* right header: inline Buy/Sell dropdown above position title */}
+        <div className="place-position__right-header" style={{alignItems: 'center', justifyContent: 'space-between'}}>
           <div className="place-position__title place-position__title--position">
             {selectedEvent ? selectedEvent.outcomeName : 'Position Name Goes Here'}
           </div>
 
-          <button className="place-position__button--buy-sell" onClick={toggleTradeType}>
-            <span className="place-position__subtitle">
-              {tradeType === 'buy' ? 'Buy' : 'Sell'}
-            </span>
-          </button>
+          {/* container so the menu can be absolutely positioned relative to the button */}
+          <div style={{position: 'relative', display: 'flex', alignItems: 'center'}}>
+            <button
+                type="button"
+                className={`trade-dropdown orderbook-btn ${tradeType === 'buy' ? 'buy' : 'sell'} ${tradeDropdownOpen ? 'open' : ''}`}
+                onClick={toggleTradeDropdown}
+                aria-expanded={tradeDropdownOpen}
+                aria-haspopup="true"
+            >
+              <span className="trade-dropdown-text">{tradeType === 'buy' ? 'Buy' : 'Sell'}</span>
+              <span className="iconify trade-dropdown-icon" data-icon="ri:arrow-down-s-line" data-inline="false"
+                    aria-hidden="true"/>
+            </button>
+
+            {tradeDropdownOpen && (
+                <div className="trade-dropdown-menu" role="menu" aria-label="Select trade type">
+                  <div className="trade-dropdown-item" role="menuitem" onClick={() => selectTradeType('buy')}>Buy</div>
+                  <div className="trade-dropdown-item" role="menuitem" onClick={() => selectTradeType('sell')}>Sell
+                  </div>
+                </div>
+            )}
+          </div>
         </div>
 
         <div className="place-position__info-container">
           <div className="place-position__outcome">
             <div className="place-position__subtitle">Outcome</div>
             <div className="place-position__icon">
-              <span className="iconify" data-icon="ri:information-2-line" data-inline="false"></span>
+              <span className="iconify" data-icon="ri:information-2-line" data-inline="false"/>
             </div>
           </div>
 
+          {/* big Yes/No buttons in the form area (kept behaviour) */}
           <div className="place-position__choice-buttons">
             <button
-              className={`place-position__choice-button place-position__choice-button--yes ${selectedChoice === 'yes' ? 'place-position__choice-button--selected' : ''}`}
-              onClick={() => handleChoiceButtonClick('yes')}
+                className={`place-position__choice-button place-position__choice-button--yes ${selectedChoice === 'yes' ? 'place-position__choice-button--selected' : ''}`}
+                onClick={() => handleChoiceButtonClick('yes')}
             >
               Yes {yesPrice}
             </button>
 
             <button
-              className={`place-position__choice-button place-position__choice-button--no ${selectedChoice === 'no' ? 'place-position__choice-button--selected' : ''}`}
-              onClick={() => handleChoiceButtonClick('no')}
+                className={`place-position__choice-button place-position__choice-button--no ${selectedChoice === 'no' ? 'place-position__choice-button--selected' : ''}`}
+                onClick={() => handleChoiceButtonClick('no')}
             >
               No {noPrice}
             </button>
@@ -569,75 +581,44 @@ export const PlacePositionPage = () => {
 
           <div className="place-position__amount">
             <div className="place-position__subtitle">Amount</div>
-
             <div className="place-position__balance">
               <div className="place-position__balance-text">Balance ${walletBalance.toFixed(2)}</div>
             </div>
           </div>
 
-          {/* New form rows: Limit Price and Shares - labels on left, inputs on right */}
           <div className="place-position__form-row">
             <div className="place-position__form-label">Limit Price</div>
-
             <div className="place-position__input place-position__input--compact" aria-label="Limit price input">
-              <button
-                className="place-position__input-button"
-                aria-label="Decrease amount"
-                onClick={handleDecrease}
-              >
-                <span className="iconify" data-icon="ri:subtract-line" data-inline="false"></span>
+              <button className="place-position__input-button" aria-label="Decrease amount" onClick={handleDecrease}>
+                <span className="iconify" data-icon="ri:subtract-line" data-inline="false"/>
               </button>
-
               <label className="place-position__input-field" aria-hidden="false">
                 <div className="place-position__input-center">
                   <span className="place-position__currency">$</span>
-                  <input
-                    type="text"
-                    placeholder="0.00"
-                    value={amount}
-                    onChange={handleInputChange}
-                    aria-label="Enter limit price"
-                  />
+                  <input type="text" placeholder="0.00" value={amount} onChange={handleInputChange}
+                         aria-label="Enter limit price"/>
                 </div>
               </label>
-
-              <button
-                className="place-position__input-button"
-                aria-label="Increase amount"
-                onClick={handleIncrease}
-              >
-                <span className="iconify" data-icon="ri:add-large-fill" data-inline="false"></span>
+              <button className="place-position__input-button" aria-label="Increase amount" onClick={handleIncrease}>
+                <span className="iconify" data-icon="ri:add-large-fill" data-inline="false"/>
               </button>
             </div>
           </div>
 
           <div className="place-position__form-row">
             <div className="place-position__form-label">Shares</div>
-
             <div className="place-position__simple-input" aria-label="Shares input">
-              <input
-                type="text"
-                placeholder="0"
-                value={shares}
-                onChange={handleSharesChange}
-                aria-label="Enter number of shares"
-              />
+              <input type="text" placeholder="0" value={shares} onChange={handleSharesChange}
+                     aria-label="Enter number of shares"/>
             </div>
           </div>
 
-          <button
-            className="place-position__button--buy"
-            onClick={handleSubmitOrder}
-            disabled={submittingOrder}
-          >
+          <button className="place-position__button--buy" onClick={handleSubmitOrder} disabled={submittingOrder}>
             {submittingOrder ? 'Submitting...' : (tradeType === 'buy' ? 'Buy' : 'Sell')}
           </button>
 
-          {orderMessage && (
-            <div className={`order-message ${isErrorMessage(orderMessage) ? 'error' : 'success'}`}>
-              {orderMessage}
-            </div>
-          )}
+          {orderMessage && <div
+              className={`order-message ${isErrorMessage(orderMessage) ? 'error' : 'success'}`}>{orderMessage}</div>}
 
           <div className="place-position__stat-row place-position__stat-row--shares">
             <div className="place-position__stat-label">Shares</div>
