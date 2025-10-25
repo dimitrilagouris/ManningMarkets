@@ -1,9 +1,37 @@
+place-positions-page-update
+=======
+.orderbook-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+/* OrderBook Container */
+.orderbook-container {
+  background-color: white;
+  border-radius: var(--border-rad-main);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  max-width: 600px;
+  width: 100%;
+  max-height: 70vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+main
 
 .orderbook-container--inline {
   max-width: none;
   max-height: 500px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-
   border: 1px solid var(--usyd-grey-200);
   border-radius: var(--border-rad-main);
 }
@@ -51,7 +79,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: #dc3545;
+  background-color: var(--usyd-red-dark);
 }
 
 .status-indicator.connected .status-dot {
@@ -85,12 +113,19 @@
   background: none;
   border: none;
   cursor: pointer;
+ place-positions-page-update
   border-radius: var(--border-rad-main);
   color: var(--usyd-grey-500);
   transition: var(--transition-base);
   line-height: 0;
   text-align: center;
   padding: 0;
+=======
+  padding: 8px;
+  border-radius: var(--border-rad-main);
+  color: var(--usyd-grey-500);
+  transition: var(--transition-base);
+ main
 }
 
 
@@ -115,7 +150,7 @@
   padding: 0;
   max-height: 400px;
   scrollbar-width: thin;
-  scrollbar-color: white var(--usyd-grey-100);
+  scrollbar-color: var(--usyd-grey-200) var(--usyd-grey-100);
 }
 
 .orderbook-table::-webkit-scrollbar {
@@ -128,7 +163,7 @@
 }
 
 .orderbook-table::-webkit-scrollbar-thumb {
-  background: #cbd5e0;
+  background: var(--usyd-grey-200);
   border-radius: 3px;
 }
 
@@ -144,7 +179,7 @@
   border-bottom: 1px solid var(--usyd-grey-200);
   font-size: 12px;
   font-weight: 600;
-  color: var(--usyd-grey-600);
+  color: var(--usyd-grey-500);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   position: sticky;
@@ -341,6 +376,7 @@
   }
 }
 
+
 .orderbook-dropdown-button {
   display: inline-flex;
   align-items: center;
@@ -361,11 +397,11 @@
 .orderbook-dropdown-button:hover {
   background-color: var(--usyd-grey-200);
   border-color: #adb5bd;
-  color: var(--usyd-grey-800);
+  color: var( --usyd-grey-600);
 }
 
 .orderbook-dropdown-button:active {
-  background-color: var(--usyd-grey-200);
+  background-color: #dee2e6;
   transform: translateY(1px);
 }
 
@@ -384,25 +420,22 @@
 .orderbook-dropdown-arrow {
   display: flex;
   align-items: center;
-  color:var(--usyd-red-dark);
+  color: var(--usyd-red-dark);
   font-size: 14px;
-  transition: transform 0.2s ease;
-}
-
-.orderbook-dropdown-button:hover .orderbook-dropdown-arrow {
-  transform: translateY(1px);
+  transition: var(--transition-base);
 }
 
 .market-events__btn.orderbook-dropdown-button {
-  background-color: transparent;
-  border: 1px solid var(--usyd-grey-200);
-  color: var(--usyd-grey-800);
+  background-color: white;
+  border: 1px solid var(--usyd-red-dark);
+  color: var(--usyd-red-dark);
+
   font-size: 12px;
   padding: 6px 10px;
-  margin-left: 8px;
 }
 
 .market-events__btn.orderbook-dropdown-button:hover {
+ place-positions-page-update
   border: 1px solid var(--usyd-red-dark);
 }
 
@@ -441,3 +474,8 @@
   stroke: currentColor !important;
   vertical-align: middle;
 }
+=======
+  background-color: var(--usyd-red-light);
+/*   border: 1px solid var(--usyd-red-dark); */
+}
+ main

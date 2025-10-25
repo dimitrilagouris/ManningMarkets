@@ -19,12 +19,24 @@ from django.urls import path
 
 from .views.authentication_views import activate_user, get_csrf_token, get_user_data, initiate_login, logout_view, register_user, verify_otp
 from .views.gmail_api_views import authorise_gmail, oauth2callback
+
 from .views.market_views import fetch_markets, fetch_leaderboard, fetch_market
 from .views.user_views import get_wallet, get_profile, change_username, change_password
 from .views.order_view import create_order, get_orderbook
+from .views import admin_views
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    #ADMIN URLS
+    path('api/admin/users/', admin_views.get_all_users, name='admin_get_users'),
+    path('api/admin/users/<int:user_id>/', admin_views.get_user_details, name='admin_user_details'),
+    path('api/admin/users/<int:user_id>/suspend/', admin_views.suspend_user, name='admin_suspend_user'),
+    path('api/admin/users/<int:user_id>/unsuspend/', admin_views.unsuspend_user, name='admin_unsuspend_user'),
+    path('api/admin/users/<int:user_id>/delete/', admin_views.delete_user, name='admin_delete_user'),
+    path('api/admin/users/<int:user_id>/give-points/', admin_views.give_points, name='admin_give_points'),
+    path('api/admin/stats/', admin_views.get_system_stats, name='admin_stats'),
+    path('api/admin/markets/', admin_views.get_markets_overview, name='admin_markets'),
+    path('api/admin/audit-logs/', admin_views.get_audit_logs, name='admin_audit_logs'),
 
     # AUTHENTICATION RELATED URLS
     path('activate/<str:raw_token>', activate_user, name="activate"),

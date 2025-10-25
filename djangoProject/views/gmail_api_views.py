@@ -11,7 +11,7 @@ from googleapiclient.discovery import build
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CREDENTIALS_FILE = os.path.join(BASE_DIR, 'credentials.json')
 TOKEN_FILE = os.path.join(BASE_DIR, 'token.json')
-REDIRECT_URI = 'http://localhost:3000/oauth2callback/' # CHANGE
+REDIRECT_URI = 'http://localhost:8000/oauth2callback/' # CHANGE
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
 def authorise_gmail(request):
@@ -24,6 +24,7 @@ def authorise_gmail(request):
         auth_url, _ = flow.authorization_url(
             access_type = 'offline',
             include_granted_scopes='true',
+            prompt = 'consent',
         )
         return redirect(auth_url)
     except Exception as error:

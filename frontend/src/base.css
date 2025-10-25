@@ -11,7 +11,7 @@
     --border-rad-main: 4px;
     --select-blue: #007aff;
     --transition-base: all 0.4s ease;
-
+    --overlay-bg: rgba(0, 0, 0, 0.5);
     --success-light: #c5f6b7;
     --success-green: #28a745;
 }
