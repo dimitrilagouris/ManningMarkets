@@ -6,6 +6,7 @@
   min-height: calc(100vh - 80px);
   color: var(--usyd-grey-800);
   overflow-x: hidden;
+  flex-direction: row;
 }
 
 .place-position__left {
@@ -723,4 +724,20 @@
   justify-content: center;
   gap: 8px;
   cursor: pointer;
+}
+
+
+@media (max-width: 1050px) {
+  .place-position {
+    flex-direction: column-reverse;
+  }
+  .place-position__left {
+  padding: 40px 40px 40px 40px;
+
+  }
+
+  .place-position__right {
+    width: 100%;
+  }
+
 }
