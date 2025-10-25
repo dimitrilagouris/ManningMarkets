@@ -2,7 +2,7 @@
 .place-position {
   background-color: white;
   display: flex;
-  font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--main-font);
   min-height: calc(100vh - 80px);
   color: var(--usyd-grey-800);
   overflow-x: hidden;
@@ -91,7 +91,7 @@
   overflow: hidden;
   transition: var(--transition-base);
   width: 150px;
-  font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--main-font);
 }
 
 .place-position__button--buy-sell:hover {
@@ -141,7 +141,7 @@
   line-height: normal;
   transition: var(--transition-base);
   white-space: nowrap;
-  font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--main-font);
 }
 
 .place-position__choice-button:hover {
@@ -317,7 +317,7 @@
   line-height: normal;
   transition: var(--transition-base);
   width: 100%;
-  font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--main-font);
 }
 
 .place-position__button--buy:hover {
@@ -352,7 +352,7 @@
 }
 
 .place-position__stat-value--positive {
-  color: #28a745;
+  color: var(--success-green);
 }
 
 /* Market events table */
@@ -419,7 +419,7 @@
 }
 
 .market-events__chance .live-chance {
-  color: #28a745;
+  color: var(--success-green);
   font-weight: 700;
 }
 
@@ -428,7 +428,7 @@
 }
 
 .market-events__chance .live-indicator {
-  color: #28a745;
+  color: var(--success-green);
   font-size: 8px;
   animation: pulse 2s infinite;
   margin-left: 4px;
@@ -473,8 +473,6 @@
   align-items: center;
 }
 
-
-
 .orderbook-btn {
   font-size: 12px;
   font-weight: 600;
@@ -492,7 +490,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--main-font);
 }
 
 
@@ -541,11 +539,10 @@
   font-weight: 600;
   font-size: 16px;
   line-height: 1;
-  position: relative; /* menu will be absolute relative to this */
+  position: relative;
   text-decoration: none;
 }
 
-/* red arrow like orderbook buttons */
 .trade-dropdown .trade-arrow {
   color: var(--usyd-red-dark);
   font-size: 14px;
@@ -554,12 +551,10 @@
   transition: transform 160ms ease;
 }
 
-/* rotate when open */
 .trade-dropdown.open .trade-arrow {
   transform: rotate(180deg);
 }
 
-/* dropdown menu */
 .trade-dropdown-menu {
   position: absolute;
   top: calc(100% + 8px);
@@ -572,7 +567,6 @@
   z-index: 2200;
 }
 
-/* menu item */
 .trade-dropdown-item {
   display: block;
   padding: 8px 12px;
@@ -591,7 +585,6 @@
   color: var(--usyd-red-dark);
 }
 
-/* smaller rule: ensure orderbook buttons remain stacked in your column */
 .orderbook-buttons {
   display: flex;
   flex-direction: column;
@@ -599,7 +592,6 @@
   align-items: center;
 }
 
-/* tidier orderbook button (keeps your look but removes redundant width locks) */
 .orderbook-btn {
   display: flex;
   align-items: center;
@@ -624,16 +616,10 @@
 
 
 .trade-dropdown {
-  font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--main-font);
 }
 
-
-
-
-
-/* reuse orderbook button appearance but remove border/background */
 .trade-dropdown.orderbook-btn {
-  /* keep same sizing/typography as orderbook buttons */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -645,7 +631,6 @@
   font-weight: 600;
   font-size: 14px;
 
-  /* remove visible chrome */
   border: none;
   background: transparent;
   box-shadow: none;
