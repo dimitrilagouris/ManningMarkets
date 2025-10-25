@@ -59,13 +59,13 @@
 }
 
 .place-position__right {
-  align-items: center;
+  align-items: flex-start;
   align-self: stretch;
   background-color: var(--usyd-grey-100);
   display: flex;
   flex-direction: column;
   gap: 20px;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 40px;
   width: 500px;
 }
