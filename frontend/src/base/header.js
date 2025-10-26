@@ -83,17 +83,23 @@ function Header() {
                             <li className="main-nav__item">
                                 <Link className="main-nav__link" to={isAuthenticated ? "/leaderboard" : "/login"} onClick={closeMenu}>Leaderboard</Link>
                             </li>
-                            <li className="main-nav__item">
-                                <Link className="main-nav__link" to={isAuthenticated ? "/wallet" : "/login"} onClick={closeMenu}>Wallet</Link>
-                            </li>
-                            <li className="main-nav__item main-nav__item--mobile-only">
-                                <Link className="main-nav__link" to={isAuthenticated ? "/profile" : "/login"} onClick={closeMenu}>Profile</Link>
-                            </li>
+                            {isAuthenticated && (
+                                <li className="main-nav__item">
+                                    <Link className="main-nav__link" to="/wallet" onClick={closeMenu}>Wallet</Link>
+                                </li>
+                            )}
+                            {isAuthenticated && (
+                                <li className="main-nav__item main-nav__item--mobile-only">
+                                    <Link className="main-nav__link" to="/profile" onClick={closeMenu}>Profile</Link>
+                                </li>
+                            )}
                         </ul>
                     </nav>
-                    <Link className="user-button" to={isAuthenticated ? "/profile" : "/login"} aria-label="Account">
-                        <FontAwesomeIcon icon={faUser} />
-                    </Link>
+                    {isAuthenticated && (
+                        <Link className="user-button" to="/profile" aria-label="Account">
+                            <FontAwesomeIcon icon={faUser} />
+                        </Link>
+                    )}
                 </div>
             </div>
             {menuOpen && <div className="menu-overlay" onClick={closeMenu}></div>}
