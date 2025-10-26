@@ -262,7 +262,7 @@ function Wallet() {
                         type="button"
                         role="tab"
                         aria-selected={activeTab === 'Transactions'}
-                        className={`wallet-tab ${activeTab === 'Transactions' ? 'wallet-tab--active' : ''}`}
+                        className={`selection-tab ${activeTab === 'Transactions' ? 'wallet-tab--active' : ''}`}
                         onClick={() => setActiveTab('Transactions')}
                     >
                     Transactions
@@ -272,7 +272,7 @@ function Wallet() {
                         type="button"
                         role="tab"
                         aria-selected={activeTab === 'Positions'}
-                        className={`wallet-tab ${activeTab === 'Positions' ? 'wallet-tab--active' : ''}`}
+                        className={`selection-tab ${activeTab === 'Positions' ? 'wallet-tab--active' : ''}`}
                         onClick={() => setActiveTab('Positions')}
                     >
                     Positions
@@ -282,7 +282,7 @@ function Wallet() {
                         type="button"
                         role="tab"
                         aria-selected={activeTab === 'Live Orders'}
-                        className={`wallet-tab ${activeTab === 'Live Orders' ? 'wallet-tab--active' : ''}`}
+                        className={`selection-tab ${activeTab === 'Live Orders' ? 'wallet-tab--active' : ''}`}
                         onClick={() => setActiveTab('Live Orders')}
                     >
                     Live Orders

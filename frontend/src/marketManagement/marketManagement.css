@@ -1,22 +1,24 @@
 .marketManagement-page {
-  min-height: calc(100vh - 80px);
-  background: white;
-  font-family: var(--main-font);
+  min-height: 100vh;
+  padding-top: 24px;
+  font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   color: var(--usyd-grey-800);
 }
 
 
 .marketManagement-content {
   padding: 32px;
+  display: flex;
+  justify-content: center;
 }
 
 .marketManagement-container {
   width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  display: flex;         
-  flex-direction: column;  
-  gap: 0;  
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  box-sizing: border-box;
 }
 
 .marketManagement-container__header {
@@ -33,10 +35,11 @@
 }
 
 .marketManagement-container__subtitle {
-  font-size: 18px;
-  font-weight: 500;
-  color: var(--usyd-grey-600);
-  margin: 0;
+  margin: 0 0 20px 0;
+  color: var(--usyd-grey-800);
+  font-weight: 400;
+  line-height: 1.6;
+  font-size: 16px;
 }
 
 
@@ -47,7 +50,7 @@
 .market-creation__title {
   font-size: 24px;
   font-weight: 600;
-  color: #333;
+  color: var(--usyd-grey-600);
   margin: 0 0 24px 0;
 }
 
@@ -92,7 +95,7 @@
   border: 2px solid #ddd;
   border-radius: 8px;
   padding: 24px;
-  background: #f9f9f9;
+  background: var(--usyd-grey-100);
 }
 
 .events-section__title {
@@ -190,7 +193,7 @@
 .market-settlement__title {
   font-size: 24px;
   font-weight: 600;
-  color: #333;
+  color: var(--usyd-grey-600);
   margin: 0 0 24px 0;
 }
 
@@ -219,7 +222,7 @@
 .market-card__title {
   font-size: 20px;
   font-weight: 600;
-  color: #333;
+  color: var(--usyd-grey-600);
   margin: 0;
 }
 
@@ -249,7 +252,7 @@
 
 .event-card {
   background: white;
-  border: 1px solid #ddd;
+  border: 1px solid var(--usyd-grey-200);
   border-radius: 6px;
   padding: 20px;
   display: flex;
@@ -264,7 +267,7 @@
 .event-card__name {
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: var(--usyd-grey-600);
   margin: 0 0 12px 0;
 }
 
@@ -278,7 +281,7 @@
   align-items: center;
   gap: 6px;
   font-size: 14px;
-  color: #666;
+  color: var(--usyd-grey-500);
 }
 
 .event-card__actions {
@@ -299,7 +302,7 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: var(--transition-base);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -315,16 +318,16 @@
 }
 
 .settle-btn--no {
-  background: #666;
-  color: white;
+  color: var(--usyd-grey-600);
+  color: black;
 }
 
 .settle-btn--no:hover:not(:disabled) {
-  background: #555;
+  color: var(--usyd-grey-600);
 }
 
 .settle-btn:disabled {
-  background: #999;
+  color: var(--usyd-grey-500);
   cursor: not-allowed;
 }
 
@@ -346,14 +349,14 @@
 
 .settled-date {
   font-size: 12px;
-  color: #666;
+  color: var(--usyd-grey-500);
 }
 
 .loading {
   text-align: center;
   padding: 40px;
   font-size: 16px;
-  color: #666;
+  color: var(--usyd-grey-500);
 }
 
 /* Responsive Design */
@@ -388,31 +391,3 @@
   }
 }
 
-
-.wallet-tabs {
-  display: flex;
-}
-
-.wallet-tab {
-  padding: 12px 24px;
-  font-size: 16px;
-  border: none;
-  background: var(--usyd-grey-100);
-  color: var(--usyd-grey-800);
-  font-family: Apercu;
-  border-top: 2px solid white;
-  cursor: pointer;
-}
-
-.wallet-tab:hover {
-  background: var(--usyd-grey-200);
-}
-
-.wallet-tab--active {
-  background: white;
-  border-top: 2px solid var(--usyd-red);
-}
-
-.wallet-tab--active:hover {
-  background: white;
-}

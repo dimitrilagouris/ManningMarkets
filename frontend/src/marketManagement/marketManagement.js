@@ -4,6 +4,7 @@ import { faTimes, faPlus, faCalendarAlt, faUsers, faDollarSign, faCheck } from '
 
 
 import './marketManagement.css';
+import '../buttons.css';
 const DJANGO_API_BASE = process.env.REACT_APP_DJANGO_API_BASE || 'http://localhost:8000';
 
 function MarketManagement() {
@@ -206,13 +207,13 @@ function MarketManagement() {
                     {/* Toggle buttons */}
                     <div className="wallet-tabs">
                         <button
-                            className={`wallet-tab ${activeTab === 'create' ? 'wallet-tab--active' : ''}`}
+                            className={`selection-tab ${activeTab === 'create' ? 'wallet-tab--active' : ''}`}
                             onClick={() => setActiveTab('create')}
                         >
                             Create Market
                         </button>
                         <button
-                            className={`wallet-tab ${activeTab === 'settle' ? 'wallet-tab--active' : ''}`}
+                            className={`selection-tab ${activeTab === 'settle' ? 'wallet-tab--active' : ''}`}
                             onClick={() => setActiveTab('settle')}
                         >
                             Settle Markets
