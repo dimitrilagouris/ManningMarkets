@@ -565,7 +565,16 @@ export const PlacePositionPage = () => {
         <div className="place-position__left-content">
           <div className="place-position__title place-position__title--market">{market.name}</div>
           <div className="place-position__subtitle">Volume: ${market.market_volume.toLocaleString()}</div>
-          <div className="place-position__timestamp">October 14, 2025</div>
+          <div className="place-position__timestamp">
+            {market.events && market.events.length > 0 && market.events[0].expiration_date 
+              ? new Date(market.events[0].expiration_date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })
+              : 'No expiration date'
+            }
+          </div>
 
           <MarketEventsTable
             events={events}

@@ -44,7 +44,6 @@ function Market({market}) {
                                     >
                                         {ev.name || 'Unnamed Event'}
                                     </div>
-                                    <div className="event__odds" aria-hidden="true">${Number(ev.price || 0).toFixed(2)}</div>
                                 </div>
 
                                 <div

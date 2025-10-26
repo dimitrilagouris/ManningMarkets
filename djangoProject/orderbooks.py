@@ -83,6 +83,9 @@ class Orderbooks:
         # --- Update Wallet Balances ---
         self.update_wallet_balances_from_trades(trades)
 
+        # --- Update Event Price ---
+        self.update_event_price_from_trades(trades, event)
+
         # --- Broadcast Full Orderbook Snapshot ---
         self.broadcast_full_orderbook(event)
 
@@ -447,6 +450,25 @@ class Orderbooks:
         
         wallet.save()
         print(f"DEBUG: Updated wallet for user {user.id} - new balance: ${wallet.points_balance:.2f}")
+
+    def update_event_price_from_trades(self, trades, event):
+        """
+        Update the event's price field to reflect the last traded price.
+        Uses the most recent trade's YES price as the event price.
+        """
+        if not trades:
+            return
+        
+        # Get the most recent trade (last in the list)
+        last_trade = trades[-1]
+        
+        # The trade price is already standardized to YES price
+        new_price = last_trade.price
+        
+        # Update the event's price field
+        event.price = new_price
+        event.save(update_fields=['price'])
+        
 
     def update_market_volume_from_trades(self, trades, event):
         if not trades:
