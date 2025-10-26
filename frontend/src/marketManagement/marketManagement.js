@@ -5,12 +5,15 @@ import { faTimes, faPlus, faCalendarAlt, faUsers, faDollarSign, faCheck } from '
 
 import './marketManagement.css';
 import '../buttons.css';
+import '../admin/admin.css';
 const DJANGO_API_BASE = process.env.REACT_APP_DJANGO_API_BASE || 'http://localhost:8000';
 
 function MarketManagement() {
 
     const [markets, setMarkets] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [hasAccess, setHasAccess] = useState(false);
+    const [accessError, setAccessError] = useState('');
 
     const [marketName, setMarketName] = useState('');
     const [marketExpirationDate, setMarketExpirationDate] = useState('');
@@ -26,6 +29,18 @@ function MarketManagement() {
             const response = await fetch(`${DJANGO_API_BASE}/api/admin/markets/`, {
                 credentials: 'include',
             });
+            
+            if (response.status === 401) {
+                setAccessError('Please log in to access this page.');
+                setHasAccess(false);
+                return;
+            }
+            
+            if (response.status === 403) {
+                setAccessError('You don\'t have permission to access the market management page.');
+                setHasAccess(false);
+                return;
+            }
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -50,9 +65,13 @@ function MarketManagement() {
                 console.warn('Unexpected data format:', data);
                 setMarkets([]);
             }
+            
+            setHasAccess(true);
         } catch (error) {
             console.error('Error fetching markets:', error);
             setMarkets([]);
+            setAccessError('Failed to load market data. Please try again.');
+            setHasAccess(false);
         } finally {
             setLoading(false);
         }
@@ -199,6 +218,24 @@ function MarketManagement() {
             setActionLoading(false);
         }
     };
+
+    // Show access denied if user doesn't have permission
+    if (!hasAccess && !loading) {
+        return (
+            <div className="admin-page">
+                <main className="admin-content">
+                    <div className="admin-container">
+                        <h1>Market Management Dashboard</h1>
+                        <div className="admin-access-denied">
+                            <h2>Access Denied</h2>
+                            <p>{accessError || 'You don\'t have permission to access the market management page.'}</p>
+                            <p>Please log in with an admin account.</p>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        );
+    }
 
     return (
         <>
