@@ -170,14 +170,36 @@
   flex-direction: column;
 }
 
+.orderbook-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+  position: relative;
+}
+
+.orderbook-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--usyd-grey-200);
+  transform: translateY(-50%);
+  z-index: 0;
+}
+
 .orderbook-divider-text {
-  background: var(--usyd-grey-100);
-  padding: 2px 8px;
-  font-size: 10px;
-  color: var(--usyd-grey-500);
-  font-weight: 500;
-  border-radius: 3px;
+  background: white;
+  padding: 4px 12px;
+  font-size: 11px;
+  color: var(--usyd-grey-600);
+  font-weight: 700;
+  border-radius: 6px;
   white-space: nowrap;
+  z-index: 2;
+  position: relative;
   border: 1px solid var(--usyd-grey-200);
 }
 
