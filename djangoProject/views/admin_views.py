@@ -3,8 +3,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.db.models import Q
 from decimal import Decimal
+from django.utils import timezone
+from datetime import datetime
 
-from ..models import Profiles, Markets, AdminActions, Wallet, Orders
+from ..models import Profiles, Markets, AdminActions, Wallet, Orders, Events
 
 import logging
 
@@ -133,18 +135,32 @@ def get_markets_overview(request):
     for market in markets:
         events = market.events.all()
         participants = Orders.objects.filter(event__in=events).values('user').distinct().count()
-        avg_price = sum(float(e.price) for e in events) / len(events) if events else 0
+        
+        # Format events data for frontend
+        events_data = []
+        for event in events:
+            events_data.append({
+                'id': event.id,
+                'event_name': event.event_name,
+                'expiration_date': event.expiration_date.isoformat() if event.expiration_date else None,
+                'price': float(event.price),
+                'volume': float(event.volume),
+                'participants': Orders.objects.filter(event=event).values('user').distinct().count(),
+                'settled': event.settled,
+                'winning_outcome': event.winning_outcome,
+                'settled_at': event.settled_at.isoformat() if event.settled_at else None
+            })
         
         markets_data.append({
             'id': market.id,
-            'title': market.market_name,
+            'market_name': market.market_name,
             'status': 'active' if market.open else 'closed',
             'participants': participants,
-            'price': round(avg_price, 2),
-            'volume': market.volume,
+            'volume': float(market.volume),
+            'events': events_data
         })
     
-    return Response({'markets': markets_data}, status=200)
+    return Response(markets_data, status=200)
 
 
 @api_view(['GET'])
@@ -232,3 +248,102 @@ def give_points(request, user_id):
         'message': 'Points added successfully',
         'newBalance': str(wallet.points_balance)
     }, status=200)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@admin_required
+def create_market(request):
+
+    try:
+        data = request.data
+        market_name = data.get('market_name')
+        events_data = data.get('events', [])
+        
+        if not market_name:
+            return Response({'error': 'Market name is required'}, status=400)
+        
+        if not events_data:
+            return Response({'error': 'At least one event is required'}, status=400)
+        
+        # Create the market
+        market = Markets.objects.create(
+            market_name=market_name,
+            open=True,
+            volume=0
+        )
+        
+        created_events = []
+        for event_data in events_data:
+            event_name = event_data.get('name', '').strip()
+            expiration_date = event_data.get('expiration_date')
+            
+            if not event_name:
+                continue
+                
+            # Parse expiration date
+            if expiration_date:
+                try:
+                    # Handle both datetime-local and ISO format
+                    if 'T' in expiration_date:
+                        exp_date = datetime.fromisoformat(expiration_date.replace('Z', '+00:00'))
+                    else:
+                        exp_date = datetime.fromisoformat(expiration_date)
+                except ValueError:
+                    exp_date = timezone.now() + timezone.timedelta(days=30)  # Default to 30 days from now
+            else:
+                exp_date = timezone.now() + timezone.timedelta(days=30)  # Default to 30 days from now
+            
+            event = Events.objects.create(
+                market=market,
+                event_name=event_name,
+                expiration_date=exp_date,
+                price=Decimal("0.0"),
+                volume=0
+            )
+            created_events.append({
+                'id': event.id,
+                'name': event.event_name,
+                'expiration_date': event.expiration_date.isoformat()
+            })
+        
+        return Response({
+            'success': True,
+            'market_id': market.id,
+            'market_name': market.market_name,
+            'events': created_events
+        })
+        
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@admin_required
+def settle_market(request):
+
+    try:
+        data = request.data
+        event_id = data.get('event_id')
+        winning_outcome = data.get('winning_outcome')
+
+        if not event_id or not winning_outcome:
+            return Response({'error': 'event_id and winning_outcome are required'}, status=400)
+
+        if winning_outcome not in ['YES', 'NO']:
+            return Response({'error': 'winning_outcome must be YES or NO'}, status=400)
+
+        # Import settlement service
+        from ..settlement_service import settle_event
+
+        # Call settlement service
+        result = settle_event(event_id, winning_outcome)
+
+        if 'error' in result:
+            return Response(result, status=400)
+
+        return Response(result)
+
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)

@@ -1,6 +1,7 @@
 // Wallet.jsx
 import React, {useEffect, useState, useMemo} from "react";
 import { DJANGO_API_BASE } from "../config";
+import Cookies from 'js-cookie';
 
 import { Doughnut } from 'react-chartjs-2';
 import 'chart.js/auto';
@@ -22,11 +23,11 @@ const PieChart = ({ allocated, unallocated }) => {
         borderWidth: 0,
         backgroundColor: [
           'var(--usyd-red)',
-          'rgba(0,0,0,0.06)'
+          '#e0e0e0'
         ],
         hoverBackgroundColor: [
           'var(--usyd-red-dark)',
-          'rgba(0,0,0,0.12)'
+          '#d0d0d0'
         ],
         cutout: '66%'
       }
@@ -65,11 +66,15 @@ PieChart.propTypes = {
 function Wallet() {
     const [activeTab, setActiveTab] = useState('Transactions');
     const [wallet_id, setWallet_Id] = useState("");
-    const [balance, setBalance] = useState("");
+    const [balance, setBalance] = useState(0);
+    const [allocated, setAllocated] = useState(0);
+    const [available, setAvailable] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [transactions, setTransactions] = useState([]);
     const [positions, setPositions] = useState([]);
+    const [liveOrders, setLiveOrders] = useState([]);
+
 
     useEffect(() => {
         const fetch_wallet = async () => {
@@ -88,6 +93,8 @@ function Wallet() {
 
                 setWallet_Id(data.wallet_id);
                 setBalance(data.balance);
+                setAllocated(data.allocated);
+                setAvailable(data.available);
             }
 
             catch (err){
@@ -102,6 +109,90 @@ function Wallet() {
 
         fetch_wallet();
     }, []);
+
+    // Fetch additional data when tab changes
+    useEffect(() => {
+        const fetchTabData = async () => {
+            if (activeTab === 'Transactions') {
+                try {
+                    const res = await fetch(`${DJANGO_API_BASE}/api/wallet/trades/`, {
+                        method: 'GET',
+                        credentials: 'include',
+                        headers: {'X-Requested-With': 'XMLHttpRequest'},
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        setTransactions(data.trades || []);
+                    }
+                } catch (err) {
+                    console.error("Error fetching trades:", err);
+                }
+            } else if (activeTab === 'Positions') {
+                try {
+                    const res = await fetch(`${DJANGO_API_BASE}/api/wallet/positions/`, {
+                        method: 'GET',
+                        credentials: 'include',
+                        headers: {'X-Requested-With': 'XMLHttpRequest'},
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        setPositions(data.positions || []);
+                    }
+                } catch (err) {
+                    console.error("Error fetching positions:", err);
+                }
+            } else if (activeTab === 'Live Orders') {
+                try {
+                    const res = await fetch(`${DJANGO_API_BASE}/api/wallet/orders/`, {
+                        method: 'GET',
+                        credentials: 'include',
+                        headers: {'X-Requested-With': 'XMLHttpRequest'},
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        setLiveOrders(data.orders || []);
+                    }
+                } catch (err) {
+                    console.error("Error fetching live orders:", err);
+                }
+            }
+        };
+
+        fetchTabData();
+    }, [activeTab]);
+
+    // Cancel order function
+    const cancelOrder = async (orderId) => {
+        try {
+            const res = await fetch(`${DJANGO_API_BASE}/api/wallet/cancel-order/`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': Cookies.get('csrftoken'),
+                },
+                body: JSON.stringify({ order_id: orderId }),
+            });
+            
+            if (res.ok) {
+                // Refresh live orders after successful cancellation
+                const ordersRes = await fetch(`${DJANGO_API_BASE}/api/wallet/orders/`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {'X-Requested-With': 'XMLHttpRequest'},
+                });
+                if (ordersRes.ok) {
+                    const data = await ordersRes.json();
+                    setLiveOrders(data.orders || []);
+                }
+            } else {
+                console.error('Failed to cancel order');
+            }
+        } catch (err) {
+            console.error('Error cancelling order:', err);
+        }
+    };
 
     if (loading) {
         return <main className="main-content"> <div>Loading Wallet... </div> </main>;
@@ -128,23 +219,23 @@ function Wallet() {
                     <div className="wallet-balance-list">
                     <div className="wallet-balance-item">
                         <div className="wallet-balance-label">Total balance</div>
-                        <div className="wallet-balance-value">{balance} pts</div>
+                        <div className="wallet-balance-value">{(balance || 0).toFixed(2)} pts</div>
                     </div>
 
                     <div className="wallet-balance-item">
                         <div className="wallet-balance-label">Currently allocated</div>
-                        <div className="wallet-balance-value">{balance} pts</div>
+                        <div className="wallet-balance-value">{(allocated || 0).toFixed(2)} pts</div>
                     </div>
 
                     <div className="wallet-balance-item">
                         <div className="wallet-balance-label">Available for trading</div>
-                        <div className="wallet-balance-value">{balance} pts</div>
+                        <div className="wallet-balance-value">{(available || 0).toFixed(2)} pts</div>
                     </div>
                     </div>
                 </div>
 
                 <div className="wallet-chart-container" aria-hidden="true">
-                    <PieChart allocated={balance} unallocated={balance} />
+                    <PieChart allocated={allocated || 0} unallocated={available || 0} />
                 </div>
                 </section>
 
@@ -152,7 +243,8 @@ function Wallet() {
                 <section className="wallet-content-section" aria-labelledby="wallet-content-heading">
                 <div className="wallet-content-header">
                     <h2 id="wallet-content-heading" className="wallet-content-title">
-                    {activeTab === 'Transactions' ? 'Transaction history' : 'Current positions'}
+                    {activeTab === 'Transactions' ? 'Transaction history' : 
+                     activeTab === 'Positions' ? 'Current positions' : 'Live orders'}
                     </h2>
                 </div>
                 <p className="wallet-description">
@@ -185,15 +277,28 @@ function Wallet() {
                     >
                     Positions
                     </button>
+
+                    <button
+                        type="button"
+                        role="tab"
+                        aria-selected={activeTab === 'Live Orders'}
+                        className={`wallet-tab ${activeTab === 'Live Orders' ? 'wallet-tab--active' : ''}`}
+                        onClick={() => setActiveTab('Live Orders')}
+                    >
+                    Live Orders
+                    </button>
                 </div>
                 {activeTab === 'Transactions' ? (
-                    <div className="wallet-transactions-table" role="table" aria-label="Transaction history">
+                    <div className="wallet-transactions-table transactions-table" role="table" aria-label="Transaction history">
                         <div className="wallet-transactions-header" role="row">
-                        <div className="wallet-table-col">Date</div>
+                        <div className="wallet-table-col">Date/Time</div>
                         <div className="wallet-table-col">Event</div>
-                        <div className="wallet-table-col">Quantity</div>
+                        <div className="wallet-table-col">Side</div>
+                        <div className="wallet-table-col">Buy/Sell</div>
+                        <div className="wallet-table-col">Shares</div>
+                        <div className="wallet-table-col">Price</div>
+                        <div className="wallet-table-col">Cash Effect</div>
                         </div>
-
 
                         <div className="wallet-transactions-body" role="rowgroup">
                         {transactions.map((tx, idx) => (
@@ -203,53 +308,161 @@ function Wallet() {
                                 role="row"
                             >
                                 <div className="wallet-table-col" role="cell">
-                                <div className="session-title">{tx.timestamp}</div>
+                                    <div className="session-title">{tx.timestamp}</div>
                                 </div>
 
                                 <div className="wallet-table-col" role="cell">
-                                <div className="event-text">{tx.event}</div>
+                                    <div className="event-text">{tx.event_name}</div>
+                                </div>
+
+                                <div className="wallet-table-col" role="cell">
+                                    <div className={`side-badge ${tx.share_type.toLowerCase()}`}>
+                                        {tx.share_type}
+                                    </div>
+                                </div>
+
+                                <div className="wallet-table-col" role="cell">
+                                    <div className={`trade-type ${tx.order_type.toLowerCase()}`}>
+                                        {tx.order_type}
+                                    </div>
+                                </div>
+
+                                <div className="wallet-table-col" role="cell">
+                                    <div className="shares-quantity">
+                                        {tx.quantity}
+                                    </div>
+                                </div>
+
+                                <div className="wallet-table-col" role="cell">
+                                    <span className={`price-amount ${tx.share_type.toLowerCase()}`}>
+                                        ${tx.price.toFixed(2)}
+                                    </span>
                                 </div>
 
                                 <div
-                                    className={`wallet-table-col col-quantity-value ${
-                                        (tx.quantity || 0) >= 0 ? 'col-quantity--positive' : 'col-quantity--negative'
+                                    className={`wallet-table-col col-cash-effect ${
+                                        tx.cash_effect >= 0 ? 'col-cash--positive' : 'col-cash--negative'
                                     }`}
                                     role="cell"
-                                    aria-label={`Quantity ${tx.quantity >= 0 ? 'positive' : 'negative'}`}
                                 >
-                                {(tx.quantity || 0) >= 0 ? `+${tx.quantity}` : tx.quantity}
+                                {tx.cash_effect >= 0 ? `+$${tx.cash_effect.toFixed(2)}` : `-$${Math.abs(tx.cash_effect).toFixed(2)}`}
+                                </div>
+                            </div>
+                        ))}
+                        </div>
+                    </div>
+                ) : activeTab === 'Positions' ? (
+                    // Positions table
+                    <div className="wallet-transactions-table positions-table" role="table" aria-label="Positions list">
+                        <div className="wallet-transactions-header" role="row">
+                        <div className="wallet-table-col">Market</div>
+                        <div className="wallet-table-col">Side</div>
+                        <div className="wallet-table-col">Avg Price</div>
+                        <div className="wallet-table-col">Quantity</div>
+                        <div className="wallet-table-col">Value</div>
+                        </div>
+
+                        <div className="wallet-transactions-body" role="rowgroup">
+                        {positions.map((pos, idx) => (
+                            <div
+                                key={pos.id}
+                                className={`wallet-transactions-row ${idx % 2 === 1 ? 'wallet-transactions-row--alt' : ''}`}
+                                role="row"
+                            >
+                                <div className="wallet-table-col" role="cell">
+                                <div className="event-text">{pos.market_name}</div>
+                                <div className="market-sub">{pos.event_name}</div>
+                                </div>
+
+                                <div className="wallet-table-col" role="cell">
+                                <div className={`side-badge ${pos.side.toLowerCase()}`}>
+                                    {pos.side}
+                                </div>
+                                </div>
+
+                                <div className="wallet-table-col" role="cell">
+                                <span className={`price-amount ${pos.side.toLowerCase()}`}>
+                                    ${pos.avg_price.toFixed(2)}
+                                </span>
+                                </div>
+
+                                <div className="wallet-table-col" role="cell">
+                                <div className="shares-quantity">
+                                    {pos.quantity}
+                                </div>
+                                </div>
+
+                                <div className="wallet-table-col" role="cell">
+                                <div className="col-cash-effect">
+                                    {fmt(pos.current_value)} pts
+                                </div>
                                 </div>
                             </div>
                         ))}
                         </div>
                     </div>
                 ) : (
-                    // Positions table now has 3 columns with market taking up most space
-                    <div className="wallet-positions-table" role="table" aria-label="Positions list">
-                        <div className="wallet-positions-header" role="row">
-                        <div className="col-market">Market</div>
-                        <div className="col-odds">Odds</div>
-                        <div className="col-staked">Staked</div>
+                    // Live Orders table
+                    <div className="wallet-transactions-table orders-table" role="table" aria-label="Live orders list">
+                        <div className="wallet-transactions-header" role="row">
+                        <div className="wallet-table-col">Market</div>
+                        <div className="wallet-table-col">Type</div>
+                        <div className="wallet-table-col">Side</div>
+                        <div className="wallet-table-col">Price</div>
+                        <div className="wallet-table-col">Quantity</div>
+                        <div className="wallet-table-col">Status</div>
+                        <div className="wallet-table-col">Actions</div>
                         </div>
 
-                        <div className="wallet-positions-body" role="rowgroup">
-                        {positions.map((pos, idx) => (
+                        <div className="wallet-transactions-body" role="rowgroup">
+                        {liveOrders.map((order, idx) => (
                             <div
-                                key={pos.id}
-                                className={`wallet-positions-row ${idx % 2 === 1 ? 'wallet-transactions-row--alt' : ''}`}
+                                key={order.id}
+                                className={`wallet-transactions-row ${idx % 2 === 1 ? 'wallet-transactions-row--alt' : ''}`}
                                 role="row"
                             >
-                                <div className="col-market" role="cell">
-                                <div className="market-title">{pos.market}</div>
-                                <div className="market-sub">Position: {pos.position}</div>
+                                <div className="wallet-table-col" role="cell">
+                                    <div className="event-text">{order.market_name}</div>
+                                    <div className="market-sub">{order.event_name}</div>
                                 </div>
 
-                                <div className="col-odds" role="cell" aria-label={`Odds: ${pos.currentOdds}`}>
-                                {pos.currentOdds}
+                                <div className="wallet-table-col" role="cell">
+                                    <div className={`trade-type ${order.order_type.toLowerCase()}`}>
+                                        {order.order_type}
+                                    </div>
+                                </div>
+                                <div className="wallet-table-col" role="cell">
+                                    <div className={`side-badge ${order.share_type.toLowerCase()}`}>
+                                        {order.share_type}
+                                    </div>
                                 </div>
 
-                                <div className="col-staked" role="cell" aria-label={`Staked ${pos.amount} points`}>
-                                {fmt(pos.amount)} pts
+                                <div className="wallet-table-col" role="cell">
+                                <span className={`price-amount ${order.share_type.toLowerCase()}`}>
+                                    ${order.price.toFixed(2)}
+                                </span>
+                                </div>
+
+                                <div className="wallet-table-col" role="cell">
+                                <div className="shares-quantity">
+                                    {order.remaining_quantity} / {order.total_quantity}
+                                </div>
+                                </div>
+
+                                <div className="wallet-table-col" role="cell">
+                                <span className={`status-badge ${order.status.toLowerCase()}`}>
+                                    {order.status}
+                                </span>
+                                </div>
+
+                                <div className="wallet-table-col" role="cell">
+                                <button
+                                    className="cancel-order-btn"
+                                    onClick={() => cancelOrder(order.id)}
+                                    disabled={order.status !== 'ACTIVE'}
+                                >
+                                    Cancel
+                                </button>
                                 </div>
                             </div>
                         ))}

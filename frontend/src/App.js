@@ -5,6 +5,9 @@ import Wallet from './wallet/wallet';
 import Leaderboard from './leaderboard/leaderboard';
 import VerifyOTP from './otp/verifyOTP'
 import Profile from './profile/profile';
+import Admin from './admin/admin';
+import MarketManagement from './marketManagement/marketManagement';
+
 import { AuthProvider } from './session_management/authentication_context';
 import './App.css';
 
@@ -31,6 +34,8 @@ function App() {
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/verify-otp" element={<VerifyOTP />} />
             <Route path="/wallet" element={<Wallet/>} />
+            <Route path="/admin" element={<Admin/>} />
+            <Route path="/market-management" element={<MarketManagement/>} />
           </Routes>
         </div>
       </AuthProvider>

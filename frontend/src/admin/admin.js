@@ -15,7 +15,7 @@ import {
   faUserCheck
 } from '@fortawesome/free-solid-svg-icons';
 import { DJANGO_API_BASE } from '../config';
-import { getCSRFToken } from '../session_management/csrfToken';
+// import { getCSRFToken } from '../session_management/csrfToken';
 
 function Admin() {
   //States
@@ -43,6 +43,28 @@ function Admin() {
   const [showGivePointsModal, setShowGivePointsModal] = useState(false);
   const [pointsAmount, setPointsAmount] = useState('');
   const [pointsError, setPointsError] = useState('');
+
+  // Get CSRF token
+  const getCSRFToken = async () => {
+    try {
+      const response = await fetch(`${DJANGO_API_BASE}/get-csrf-token/`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        return data.csrfToken;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching CSRF token:', error);
+      return null;
+    }
+  };
 
   // Fetch all data on mount
   useEffect(() => {

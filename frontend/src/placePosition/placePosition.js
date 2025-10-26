@@ -263,7 +263,14 @@ export const PlacePositionPage = () => {
         const res = await fetch(`${DJANGO_API_BASE}/fetch_market/${marketId}/`, {
           headers: { 'X-Requested-With': 'XMLHttpRequest' }
         });
-        if (!res.ok) throw new Error('Failed to fetch market');
+        
+        if (!res.ok) {
+          if (res.status === 404) {
+            throw new Error('Market not found or has been closed');
+          }
+          throw new Error(`Failed to fetch market (${res.status})`);
+        }
+        
         const data = await res.json();
         setMarket(data.market);
 
@@ -495,8 +502,54 @@ export const PlacePositionPage = () => {
   const { yesPrice, noPrice } = getYesNoPrice();
 
   if (loading) return <div className="place-position">Loading market data...</div>;
-  if (error) return <div className="place-position">Error loading market: {error.message}</div>;
+  
+  if (error) {
+    return (
+      <div className="market-not-found-overlay">
+        <div className="market-not-found-modal">
+          <h2 className="market-not-found-title">
+            Market Not Found
+          </h2>
+          <p className="market-not-found-message">
+            {error.message}
+          </p>
+          <p className="market-not-found-description">
+            This market may have been closed, settled, or doesn't exist.
+          </p>
+          <button 
+            className="market-not-found-button"
+            onClick={() => window.history.back()}
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+  
   if (!market) return <div className="place-position">Market not found</div>;
+
+  // Check if market is closed/settled
+  const isMarketClosed = market.status === 'closed' || 
+    (market.events && market.events.some(event => event.settled));
+
+  if (isMarketClosed) {
+    return (
+      <div className="market-closed-overlay">
+        <div className="market-closed-modal">
+          <h2 className="market-closed-title">
+            Market Closed
+          </h2>
+          <p className="market-closed-message">
+            This market is no longer accepting new orders as all events have been settled.
+          </p>
+          <p className="market-closed-description">
+            All trading has been disabled for this market.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const events = market.events.map(e => ({
     outcomeName: e.name,

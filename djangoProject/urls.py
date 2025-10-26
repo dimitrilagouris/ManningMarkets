@@ -23,6 +23,7 @@ from .views.gmail_api_views import authorise_gmail, oauth2callback
 from .views.market_views import fetch_markets, fetch_leaderboard, fetch_market
 from .views.user_views import get_wallet, get_profile, change_username, change_password
 from .views.order_view import create_order, get_orderbook
+from .views.wallet_views import get_user_trades, get_user_orders, get_user_positions, cancel_order
 from .views import admin_views
 
 
@@ -37,6 +38,9 @@ urlpatterns = [
     path('api/admin/stats/', admin_views.get_system_stats, name='admin_stats'),
     path('api/admin/markets/', admin_views.get_markets_overview, name='admin_markets'),
     path('api/admin/audit-logs/', admin_views.get_audit_logs, name='admin_audit_logs'),
+
+    path('api/admin/create-market/', admin_views.create_market, name='admin_create_market'),
+    path('api/admin/settle-market/', admin_views.settle_market, name='admin_settle_market'),
 
     # AUTHENTICATION RELATED URLS
     path('activate/<str:raw_token>', activate_user, name="activate"),
@@ -65,5 +69,11 @@ urlpatterns = [
     # ORDER / TRADE URLS
     path('api/orders/', create_order),
     path('api/orderbook/<int:event_id>/', get_orderbook),
+
+    # WALLET URLS
+    path('api/wallet/trades/', get_user_trades, name="user-trades"),
+    path('api/wallet/orders/', get_user_orders, name="user-orders"),
+    path('api/wallet/positions/', get_user_positions, name="user-positions"),
+    path('api/wallet/cancel-order/', cancel_order, name="cancel-order"),
 
 ]

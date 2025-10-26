@@ -1,0 +1,419 @@
+.marketManagement-page {
+  min-height: calc(100vh - 80px);
+  background: white;
+  font-family: -apple-system, 'Apercu', "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: var(--usyd-grey-800);
+}
+
+
+.marketManagement-content {
+  padding: 32px;
+}
+
+.marketManagement-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;         
+  flex-direction: column;  
+  gap: 0;  
+}
+
+.marketManagement-container__header {
+  margin-bottom: 32px;
+}
+
+.marketManagement-container__title {
+  font-family: 'LyonDisplay', Apercu, sans-serif;
+  font-size: 42px;
+  font-weight: 400;
+  color: var(--usyd-grey-800);
+  margin: 0 0 8px 0;
+  line-height: 1.1;
+}
+
+.marketManagement-container__subtitle {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--usyd-grey-600);
+  margin: 0;
+}
+
+
+.market-management__tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 32px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 0;
+}
+
+.market-management__tab {
+  padding: 12px 24px;
+  border: none;
+  background: transparent;
+  color: #666;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.market-management__tab:hover {
+  color: #333;
+  background: #f0f0f0;
+}
+
+.market-management__tab--active {
+  color: #ff6b35;
+  border-bottom-color: #ff6b35;
+  background: #f0f0f0;
+}
+
+
+
+/* Market Creation Styles */
+.market-creation__title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 24px 0;
+}
+
+.market-creation__form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-input {
+  padding: 12px 16px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #ff6b35;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.events-section {
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 24px;
+  background: #f9f9f9;
+}
+
+.events-section__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 20px 0;
+}
+
+.event-form {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.event-form__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.event-form__header h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.remove-event-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.remove-event-btn:hover {
+  background: #c82333;
+}
+
+.add-event-btn {
+  background: #ff6b35;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.add-event-btn:hover {
+  background: #e55a2b;
+}
+
+.create-market-btn {
+  background: #ff6b35;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 16px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  align-self: flex-start;
+}
+
+.create-market-btn:hover:not(:disabled) {
+  background: #e55a2b;
+}
+
+.create-market-btn:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+
+
+/* Market Settlement Styles */
+.market-settlement__title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 24px 0;
+}
+
+.markets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.market-card {
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 24px;
+  background: #f9f9f9;
+}
+
+.market-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #ddd;
+}
+
+.market-card__title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.market-status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.market-status--active {
+  background: #d4edda;
+  color: #155724;
+}
+
+.market-status--inactive {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.market-card__events {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.event-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.event-card__info {
+  flex: 1;
+}
+
+.event-card__name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 12px 0;
+}
+
+.event-card__details {
+  display: flex;
+  gap: 24px;
+}
+
+.event-detail {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #666;
+}
+
+.event-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.settlement-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.settle-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.settle-btn--yes {
+  background: #ff6b35;
+  color: white;
+}
+
+.settle-btn--yes:hover:not(:disabled) {
+  background: #e55a2b;
+}
+
+.settle-btn--no {
+  background: #666;
+  color: white;
+}
+
+.settle-btn--no:hover:not(:disabled) {
+  background: #555;
+}
+
+.settle-btn:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+.settled-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.settled-badge {
+  background: #d1ecf1;
+  color: #0c5460;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.settled-date {
+  font-size: 12px;
+  color: #666;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 16px;
+  color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .market-management {
+    padding: 16px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .event-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .event-card__actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .settlement-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .settle-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

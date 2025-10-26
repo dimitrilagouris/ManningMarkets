@@ -712,6 +712,118 @@
 }
 
 
+/* Market Closed Overlay */
+.market-closed-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  background-color: var(--usyd-grey-50);
+  z-index: 1000;
+}
+
+.market-closed-modal {
+  text-align: center; 
+  padding: 3rem;
+  max-width: 500px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  margin: 2rem;
+}
+
+.market-closed-title {
+  color: var(--usyd-red-dark); 
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-family: var(--main-font);
+}
+
+.market-closed-message {
+  color: var(--usyd-grey-600); 
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  font-family: var(--main-font);
+  line-height: 1.5;
+}
+
+.market-closed-description {
+  color: var(--usyd-grey-500); 
+  font-size: 0.9rem;
+  line-height: 1.5;
+  font-family: var(--main-font);
+}
+
+/* Market Not Found Overlay */
+.market-not-found-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  background-color: var(--usyd-grey-50);
+  z-index: 1000;
+}
+
+.market-not-found-modal {
+  text-align: center; 
+  padding: 3rem;
+  max-width: 500px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  margin: 2rem;
+}
+
+.market-not-found-title {
+  color: var(--usyd-red-dark); 
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-family: var(--main-font);
+}
+
+.market-not-found-message {
+  color: var(--usyd-grey-600); 
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  font-family: var(--main-font);
+  line-height: 1.5;
+}
+
+.market-not-found-description {
+  color: var(--usyd-grey-500); 
+  font-size: 0.9rem;
+  line-height: 1.5;
+  font-family: var(--main-font);
+  margin-bottom: 2rem;
+}
+
+.market-not-found-button {
+  background-color: var(--usyd-red-dark);
+  color: white;
+  border: none;
+  border-radius: var(--border-rad-main);
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-base);
+  font-family: var(--main-font);
+}
+
+.market-not-found-button:hover {
+  background-color: var(--usyd-red);
+}
+
 @media (max-width: 1050px) {
   .place-position {
     flex-direction: column-reverse;
