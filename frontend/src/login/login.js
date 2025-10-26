@@ -110,7 +110,7 @@ function Login() {
 
           {loginError && <div className="login-error" role="alert">{loginError}</div>}
 
-          <button className="signup-cta">Sign Up</button>
+          <button className="signup-cta" onClick={() => navigate('/sign-up')}>Sign Up</button>
 
           <a className="info-link" href="#partner">Forgot password?</a>
         </div>
