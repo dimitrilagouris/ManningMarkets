@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faBars, faTimes } from '@fortawesome/free-solid-svg-icons'
 import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -11,6 +11,7 @@ import '../base.css';
 function Header() {
     const {isAuthenticated, user} = useContext(AuthContext)
     const [query, setQuery] = useState('');
+    const [menuOpen, setMenuOpen] = useState(false);
     const navigate = useNavigate();
 
     const isAdmin = isAuthenticated && user && user.is_admin;
@@ -19,12 +20,18 @@ function Header() {
         e.preventDefault();
         const trimmed = query.trim();
         if (!trimmed) {
-            // if empty, go to markets root or home
             navigate('/markets');
             return;
         }
-        // navigate to markets listing with a search param
         navigate(`/markets?search=${encodeURIComponent(trimmed)}`);
+    }
+
+    function toggleMenu() {
+        setMenuOpen(!menuOpen);
+    }
+
+    function closeMenu() {
+        setMenuOpen(false);
     }
 
     return (
@@ -52,23 +59,35 @@ function Header() {
                 </form>
 
                 <div className="site-header__right">
-                    <nav className="main-nav" role="navigation" aria-label="Main navigation">
+                    <button
+                        className="hamburger-button"
+                        onClick={toggleMenu}
+                        aria-label="Toggle menu"
+                        aria-expanded={menuOpen}
+                    >
+                        <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} />
+                    </button>
+
+                    <nav className={`main-nav ${menuOpen ? 'main-nav--open' : ''}`} role="navigation" aria-label="Main navigation">
                         <ul className="main-nav__list">
                             {isAdmin && (
                                 <li className="main-nav__item">
-                                    <Link className="main-nav__link" to="/admin">Admin Dashboard</Link>
+                                    <Link className="main-nav__link" to="/admin" onClick={closeMenu}>Admin Dashboard</Link>
                                 </li>
                             )}
                             {isAdmin && (
                                 <li className="main-nav__item">
-                                    <Link className="main-nav__link" to="/market-management">Market Management</Link>
+                                    <Link className="main-nav__link" to="/market-management" onClick={closeMenu}>Market Management</Link>
                                 </li>
                             )}
                             <li className="main-nav__item">
-                                <Link className="main-nav__link" to={isAuthenticated ? "/leaderboard" : "/login"}>Leaderboard</Link>
+                                <Link className="main-nav__link" to={isAuthenticated ? "/leaderboard" : "/login"} onClick={closeMenu}>Leaderboard</Link>
                             </li>
                             <li className="main-nav__item">
-                                <Link className="main-nav__link" to={isAuthenticated ? "/wallet" : "/login"}>Wallet</Link>
+                                <Link className="main-nav__link" to={isAuthenticated ? "/wallet" : "/login"} onClick={closeMenu}>Wallet</Link>
+                            </li>
+                            <li className="main-nav__item main-nav__item--mobile-only">
+                                <Link className="main-nav__link" to={isAuthenticated ? "/profile" : "/login"} onClick={closeMenu}>Profile</Link>
                             </li>
                         </ul>
                     </nav>
@@ -77,6 +96,7 @@ function Header() {
                     </Link>
                 </div>
             </div>
+            {menuOpen && <div className="menu-overlay" onClick={closeMenu}></div>}
         </header>
     );
 }
