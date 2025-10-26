@@ -258,10 +258,14 @@ def create_market(request):
     try:
         data = request.data
         market_name = data.get('market_name')
+        market_expiration_date = data.get('expiration_date')
         events_data = data.get('events', [])
         
         if not market_name:
             return Response({'error': 'Market name is required'}, status=400)
+        
+        if not market_expiration_date:
+            return Response({'error': 'Market expiration date is required'}, status=400)
         
         if not events_data:
             return Response({'error': 'At least one event is required'}, status=400)
@@ -273,26 +277,22 @@ def create_market(request):
             volume=0
         )
         
+        # Parse market expiration date
+        try:
+            # Handle both datetime-local and ISO format
+            if 'T' in market_expiration_date:
+                exp_date = datetime.fromisoformat(market_expiration_date.replace('Z', '+00:00'))
+            else:
+                exp_date = datetime.fromisoformat(market_expiration_date)
+        except ValueError:
+            return Response({'error': 'Invalid expiration date format'}, status=400)
+        
         created_events = []
         for event_data in events_data:
             event_name = event_data.get('name', '').strip()
-            expiration_date = event_data.get('expiration_date')
             
             if not event_name:
                 continue
-                
-            # Parse expiration date
-            if expiration_date:
-                try:
-                    # Handle both datetime-local and ISO format
-                    if 'T' in expiration_date:
-                        exp_date = datetime.fromisoformat(expiration_date.replace('Z', '+00:00'))
-                    else:
-                        exp_date = datetime.fromisoformat(expiration_date)
-                except ValueError:
-                    exp_date = timezone.now() + timezone.timedelta(days=30)  # Default to 30 days from now
-            else:
-                exp_date = timezone.now() + timezone.timedelta(days=30)  # Default to 30 days from now
             
             event = Events.objects.create(
                 market=market,

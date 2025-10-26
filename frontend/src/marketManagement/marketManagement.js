@@ -12,7 +12,8 @@ function MarketManagement() {
     const [loading, setLoading] = useState(false);
 
     const [marketName, setMarketName] = useState('');
-    const [events, setEvents] = useState([{name: '', expiration_date: ''}])
+    const [marketExpirationDate, setMarketExpirationDate] = useState('');
+    const [events, setEvents] = useState([{name: ''}]);
 
     const [activeTab, setActiveTab] = useState('create'); // 'create' or 'settle'
     const [actionLoading, setActionLoading] = useState(false);
@@ -83,7 +84,7 @@ function MarketManagement() {
     };
 
     const addEvent = () => {
-        setEvents([...events, { name: '', expiration_date: '' }]);
+        setEvents([...events, { name: '' }]);
     };
 
     const removeEvent = (index) => {
@@ -104,12 +105,17 @@ function MarketManagement() {
             return;
         }
 
+        if (!marketExpirationDate) {
+            alert('Please enter an expiration date for the market');
+            return;
+        }
+
         const validEvents = events.filter(event => 
-            event.name.trim() && event.expiration_date
+            event.name.trim()
         );
 
         if (validEvents.length === 0) {
-            alert('Please add at least one event with a name and expiration date');
+            alert('Please add at least one event with a name');
             return;
         }
 
@@ -125,6 +131,7 @@ function MarketManagement() {
                 },
                 body: JSON.stringify({
                 market_name: marketName,
+                expiration_date: marketExpirationDate,
                 events: validEvents
                 }),
             });
@@ -134,7 +141,8 @@ function MarketManagement() {
             if (res.ok) {
                 alert('Market created successfully!');
                 setMarketName('');
-                setEvents([{ name: '', expiration_date: '' }]);
+                setMarketExpirationDate('');
+                setEvents([{ name: '' }]);
                 fetchMarkets();
             } else {
                 alert(data.error || 'Failed to create market');
@@ -234,7 +242,18 @@ function MarketManagement() {
                                     className="form-input"
                                     value={marketName}
                                     onChange={(e) => setMarketName(e.target.value)}
-                                    placeholder="Enter market name (e.g., NBA Championship 2024)"
+                                    placeholder="Enter market name"
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="marketExpirationDate" className="form-label">Market Expiration Date</label>
+                                    <input
+                                    type="datetime-local"
+                                    id="marketExpirationDate"
+                                    className="form-input"
+                                    value={marketExpirationDate}
+                                    onChange={(e) => setMarketExpirationDate(e.target.value)}
                                     />
                                 </div>
 
@@ -255,7 +274,6 @@ function MarketManagement() {
                                         )}
                                         </div>
                                         
-                                        <div className="form-row">
                                         <div className="form-group">
                                             <label className="form-label">Event Name</label>
                                             <input
@@ -265,17 +283,6 @@ function MarketManagement() {
                                                 onChange={(e) => updateEvent(index, 'name', e.target.value)}
                                                 placeholder="Enter event name"
                                             />
-                                        </div>
-                                        
-                                        <div className="form-group">
-                                            <label className="form-label">Expiration Date</label>
-                                            <input
-                                                type="datetime-local"
-                                                className="form-input"
-                                                value={event.expiration_date}
-                                                onChange={(e) => updateEvent(index, 'expiration_date', e.target.value)}
-                                            />
-                                        </div>
                                         </div>
                                     </div>
                                     ))}

@@ -126,7 +126,7 @@ function Admin() {
       });
       const data = await res.json();
       if (res.ok) {
-        setMarkets(data.markets || []);
+        setMarkets(data || []);
       } else {
         setMarkets([]);
         console.error('Failed to fetch markets:', data.error);
@@ -521,7 +521,6 @@ function Admin() {
                       <th>Market Title</th>
                       <th>Status</th>
                       <th>Participants</th>
-                      <th>Price (Campus Credits)</th>
                       <th>Volume (Campus Credits)</th>
                     </tr>
                   </thead>
@@ -529,14 +528,13 @@ function Admin() {
                     {markets.map(market => (
                       <tr key={market.id}>
                         <td>{market.id}</td>
-                        <td className="market-title">{market.title}</td>
+                        <td className="market-title">{market.market_name}</td>
                         <td>
                           <span className={`status-badge status-badge--${market.status}`}>
                             {market.status}
                           </span>
                         </td>
                         <td>{market.participants}</td>
-                        <td>{market.price.toLocaleString()}</td>
                         <td>{market.volume.toLocaleString()}</td>
                       </tr>
                     ))}
