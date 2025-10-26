@@ -85,7 +85,7 @@
 }
 
 .leaderboard-item:first-child {
-  border-bottom: 2px solid var(--usyd-grey-800);
+  border-bottom: 2px solid var(--usyd-red-dark);
 }
 
 .leaderboard-label {
