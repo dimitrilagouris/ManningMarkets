@@ -79,7 +79,7 @@ def fetch_leaderboard(request):
         for user in users:
             leaderboard_data.append({
                 'username': user.username,
-                'balance': float(user.wallet.points_balance if hasattr(user, "wallet") else 0.0),
+                'balance': float(user.wallet.points_balance) if user.wallet else 0.0,
             })
 
         return JsonResponse({'markets': leaderboard_data})

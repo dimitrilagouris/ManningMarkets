@@ -1,3 +1,4 @@
+import re
 from django.contrib.auth import update_session_auth_hash
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -46,19 +47,26 @@ def change_username(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def change_password(request): 
-    user = request.user;
+    user = request.user
     old_password = request.data.get("oldPassword")
     new_password = request.data.get("newPassword")
     
     if not old_password or not new_password:
-        return Response({'error': "Both old and new passwords required."}, status=400)
+        return Response({'error': "Both old and new passwords are required."}, status=400)
     
     if not user.check_password(old_password):
         return Response({'error': "Old password is incorrect."}, status=400)
-    
+
+    if len(new_password) < 8:
+        return Response({'error': "Password must be at least 8 characters long."}, status=400)
+    if not re.search(r'\d', new_password):
+        return Response({'error': "Password must contain at least one number."}, status=400)
+    if not re.search(r'[^A-Za-z0-9]', new_password):
+        return Response({'error': "Password must contain at least one special character."}, status=400)
+
+    # If all checks pass, set and save new password
     user.set_password(new_password)
     user.save()
-
     update_session_auth_hash(request, user)
 
     return Response({'message': 'Password changed successfully.'}, status=200)
