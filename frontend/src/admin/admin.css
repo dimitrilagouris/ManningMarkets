@@ -1,7 +1,7 @@
 .admin-page {
-  min-height: calc(100vh - 80px);
-  background: white;
-  font-family: -apple-system, 'Apercu', "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  min-height: 100vh;
+  padding-top: 24px;
+  font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   color: var(--usyd-grey-800);
 }
 
@@ -11,7 +11,7 @@
 
 .admin-container {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1000px;
   margin: 0 auto;
   display: flex;         
   flex-direction: column;  
@@ -76,7 +76,6 @@
   
   .stat-card:hover {
     border-color: var(--usyd-red);
-    transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   
