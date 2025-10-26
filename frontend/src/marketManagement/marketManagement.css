@@ -1,7 +1,7 @@
 .marketManagement-page {
   min-height: calc(100vh - 80px);
   background: white;
-  font-family: -apple-system, 'Apercu', "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--main-font);
   color: var(--usyd-grey-800);
 }
 
@@ -40,36 +40,6 @@
 }
 
 
-.market-management__tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 32px;
-  border-bottom: 2px solid #ddd;
-  padding-bottom: 0;
-}
-
-.market-management__tab {
-  padding: 12px 24px;
-  border: none;
-  background: transparent;
-  color: #666;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  border-bottom: 3px solid transparent;
-  transition: all 0.2s ease;
-}
-
-.market-management__tab:hover {
-  color: #333;
-  background: #f0f0f0;
-}
-
-.market-management__tab--active {
-  color: #ff6b35;
-  border-bottom-color: #ff6b35;
-  background: #f0f0f0;
-}
 
 
 
@@ -155,7 +125,7 @@
 }
 
 .remove-event-btn {
-  background: #dc3545;
+  background: var(--usyd-red-dark);
   color: white;
   border: none;
   border-radius: 50%;
@@ -169,11 +139,11 @@
 }
 
 .remove-event-btn:hover {
-  background: #c82333;
+  background: var(--usyd-red);
 }
 
 .add-event-btn {
-  background: #ff6b35;
+  background: var(--usyd-red-dark);
   color: white;
   border: none;
   border-radius: 6px;
@@ -189,11 +159,11 @@
 }
 
 .add-event-btn:hover {
-  background: #e55a2b;
+  background: var(--usyd-red);
 }
 
 .create-market-btn {
-  background: #ff6b35;
+  background: var(--usyd-red-dark);
   color: white;
   border: none;
   border-radius: 6px;
@@ -206,7 +176,7 @@
 }
 
 .create-market-btn:hover:not(:disabled) {
-  background: #e55a2b;
+  background: var(--usyd-red);
 }
 
 .create-market-btn:disabled {
@@ -336,12 +306,12 @@
 }
 
 .settle-btn--yes {
-  background: #ff6b35;
+  background: var(--usyd-red-dark);;
   color: white;
 }
 
 .settle-btn--yes:hover:not(:disabled) {
-  background: #e55a2b;
+  background: var(--usyd-red-dark);;
 }
 
 .settle-btn--no {
@@ -416,4 +386,33 @@
     width: 100%;
     justify-content: center;
   }
+}
+
+
+.wallet-tabs {
+  display: flex;
+}
+
+.wallet-tab {
+  padding: 12px 24px;
+  font-size: 16px;
+  border: none;
+  background: var(--usyd-grey-100);
+  color: var(--usyd-grey-800);
+  font-family: Apercu;
+  border-top: 2px solid white;
+  cursor: pointer;
+}
+
+.wallet-tab:hover {
+  background: var(--usyd-grey-200);
+}
+
+.wallet-tab--active {
+  background: white;
+  border-top: 2px solid var(--usyd-red);
+}
+
+.wallet-tab--active:hover {
+  background: white;
 }

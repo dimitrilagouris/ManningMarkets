@@ -204,15 +204,15 @@ function MarketManagement() {
 
 
                     {/* Toggle buttons */}
-                    <div className="market-management__tabs">
+                    <div className="wallet-tabs">
                         <button
-                            className={`market-management__tab ${activeTab === 'create' ? 'market-management__tab--active' : ''}`}
+                            className={`wallet-tab ${activeTab === 'create' ? 'wallet-tab--active' : ''}`}
                             onClick={() => setActiveTab('create')}
                         >
                             Create Market
                         </button>
                         <button
-                            className={`market-management__tab ${activeTab === 'settle' ? 'market-management__tab--active' : ''}`}
+                            className={`wallet-tab ${activeTab === 'settle' ? 'wallet-tab--active' : ''}`}
                             onClick={() => setActiveTab('settle')}
                         >
                             Settle Markets

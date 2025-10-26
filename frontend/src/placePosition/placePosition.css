@@ -60,6 +60,7 @@
 }
 
 .place-position__right {
+  box-sizing: border-box;
   align-items: flex-start;
   align-self: stretch;
   background-color: var(--usyd-grey-100);

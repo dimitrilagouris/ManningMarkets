@@ -146,6 +146,7 @@
   color: var(--usyd-grey-800);
   font-family: Apercu;
   border-top: 2px solid white;
+  cursor: pointer;
 }
 
 .wallet-tab:hover {
