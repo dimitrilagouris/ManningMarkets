@@ -334,10 +334,6 @@ function MarketManagement() {
                                                     <FontAwesomeIcon icon={faUsers} />
                                                     {event.participants || 0} participants
                                                 </span>
-                                                <span className="event-detail">
-                                                    <FontAwesomeIcon icon={faDollarSign} />
-                                                    ${event.volume || 0} volume
-                                                </span>
                                                 </div>
                                             </div>
                                             
