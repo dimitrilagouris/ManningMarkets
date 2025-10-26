@@ -94,10 +94,14 @@ function Admin() {
       });
       const data = await res.json();
       if (res.ok) {
-        setUsers(data.users);
+        setUsers(data.users || []);
+      } else {
+        setUsers([]);
+        console.error('Failed to fetch users:', data.error);
       }
     } catch (err) {
       console.error('Error fetching users:', err);
+      setUsers([]);
     }
   };
 
@@ -122,10 +126,14 @@ function Admin() {
       });
       const data = await res.json();
       if (res.ok) {
-        setMarkets(data.markets);
+        setMarkets(data.markets || []);
+      } else {
+        setMarkets([]);
+        console.error('Failed to fetch markets:', data.error);
       }
     } catch (err) {
       console.error('Error fetching markets:', err);
+      setMarkets([]);
     }
   };
 
@@ -136,10 +144,14 @@ function Admin() {
       });
       const data = await res.json();
       if (res.ok) {
-        setAuditLogs(data.auditLogs);
+        setAuditLogs(data.auditLogs || []);
+      } else {
+        setAuditLogs([]);
+        console.error('Failed to fetch audit logs:', data.error);
       }
     } catch (err) {
       console.error('Error fetching audit logs:', err);
+      setAuditLogs([]);
     }
   };
 
@@ -333,6 +345,26 @@ function Admin() {
         <main className="admin-content">
           <div className="admin-container">
             <h1>Loading admin dashboard...</h1>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // Check if user has access (all arrays are empty and no stats)
+  const hasAccess = stats.totalUsers > 0 || users.length > 0 || markets.length > 0;
+  
+  if (!hasAccess) {
+    return (
+      <div className="admin-page">
+        <main className="admin-content">
+          <div className="admin-container">
+            <h1>Admin Dashboard</h1>
+            <div className="admin-access-denied">
+              <h2>Access Denied</h2>
+              <p>You don't have permission to access the admin dashboard.</p>
+              <p>Please log in with an admin account.</p>
+            </div>
           </div>
         </main>
       </div>
