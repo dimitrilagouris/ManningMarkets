@@ -59,7 +59,7 @@ def fetch_market(request, market_id):
                 'id': market.id,
                 'name': market.market_name,
                 'market_volume': market.volume,
-                'events': [{'id': event.id, 'name': event.event_name, 'price': event.price, 'volume': event.volume, 'created_at': event.created_at} for event in market.events.all()]
+                'events': [{'id': event.id, 'name': event.event_name, 'price': event.price, 'volume': event.volume, 'expiration_date': event.expiration_date.isoformat() if event.expiration_date else None} for event in market.events.all()]
             }
             return JsonResponse({'market': market_data})
         except Exception as e:

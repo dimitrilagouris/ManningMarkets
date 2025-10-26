@@ -359,7 +359,6 @@ function Wallet() {
                         <div className="wallet-table-col">Side</div>
                         <div className="wallet-table-col">Avg Price</div>
                         <div className="wallet-table-col">Quantity</div>
-                        <div className="wallet-table-col">Value</div>
                         </div>
 
                         <div className="wallet-transactions-body" role="rowgroup">
@@ -392,11 +391,6 @@ function Wallet() {
                                 </div>
                                 </div>
 
-                                <div className="wallet-table-col" role="cell">
-                                <div className="col-cash-effect">
-                                    {fmt(pos.current_value)} pts
-                                </div>
-                                </div>
                             </div>
                         ))}
                         </div>
