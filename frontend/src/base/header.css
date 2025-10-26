@@ -56,6 +56,7 @@ body {
   margin: 0 auto;
   height: 60px;
 }
+
 .search__input {
   flex: 1 1 auto;
   padding: 0 20px;
@@ -102,7 +103,6 @@ body {
 .search__submit:hover {
   background: white;
   border: 2px solid var(--usyd-red-dark);
-
 }
 
 .search__submit:hover svg {
@@ -114,8 +114,8 @@ body {
   display: flex;
   align-items: stretch;
   height: 100%;
+  gap: 12px;
 }
-
 
 .main-nav__list {
   list-style: none;
@@ -130,6 +130,11 @@ body {
   height: 100%;
   display: flex;
   align-items: stretch;
+}
+
+/* Hide mobile-only profile link on desktop */
+.main-nav__item--mobile-only {
+  display: none;
 }
 
 .main-nav__link {
@@ -156,31 +161,6 @@ body {
   text-decoration: none;
 }
 
-
-
-
-@media (max-width: 780px) {
-  .site-header__inner {
-    grid-template-columns: auto 1fr auto;
-    gap: 12px;
-    padding: 0 12px;
-  }
-  .main-nav__list {
-    display: none;
-  }
-}
-
-
-
-
-.site-header__right {
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  height: 100%;
-  gap: 12px;
-}
-
 .user-button {
   width: 70px;
   height: 100%;
@@ -198,14 +178,12 @@ body {
   align-self: center;
 }
 
-/* hover: swap colours so icon becomes usyd red */
 .user-button:hover {
   background: white;
-  color: var(--usyd-red); /* icon will pick this up */
+  color: var(--usyd-red);
   border: 2px solid var(--usyd-red);
 }
 
-/* make the FontAwesome svg inherit the button colour */
 .user-button .svg-inline--fa {
   width: 18px;
   height: 18px;
@@ -213,4 +191,108 @@ body {
   color: currentColor;
 }
 
+/* Hamburger button - styled like user button, hidden by default */
+.hamburger-button {
+  display: none;
+  width: 70px;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  background: var(--usyd-red-dark);
+  color: white;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: var(--transition-base);
+  font-size: 20px;
+  padding: 0;
+  box-sizing: border-box;
+  align-self: center;
+}
 
+.hamburger-button:hover {
+  background: white;
+  color: var(--usyd-red-dark);
+  border: 2px solid var(--usyd-red-dark);
+}
+
+.hamburger-button .svg-inline--fa {
+  width: 18px;
+  height: 18px;
+  display: block;
+  color: currentColor;
+}
+
+/* Menu overlay for mobile */
+.menu-overlay {
+  display: none;
+  position: fixed;
+  top: 80px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+}
+
+/* Responsive styles for screens under 1000px */
+@media (max-width: 999px) {
+  .hamburger-button {
+    display: inline-flex;
+  }
+
+  /* Hide desktop user button on mobile */
+  .user-button {
+    display: none;
+  }
+
+  /* Show mobile-only profile link */
+  .main-nav__item--mobile-only {
+    display: flex;
+  }
+
+  .menu-overlay {
+    display: block;
+  }
+
+  .main-nav {
+    position: absolute;
+    top: 80px;
+    right: 0;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+  }
+
+  .main-nav--open {
+    max-height: 500px;
+  }
+
+  .main-nav__list {
+    flex-direction: column;
+    height: auto;
+    min-width: 250px;
+  }
+
+  .main-nav__item {
+    height: auto;
+    border-bottom: 1px solid var(--usyd-grey-200);
+  }
+
+  .main-nav__item:last-child {
+    border-bottom: none;
+  }
+
+  .main-nav__link {
+    width: 100%;
+    padding: 16px 20px;
+    justify-content: flex-start;
+    height: auto;
+  }
+
+  .site-header__right {
+    gap: 8px;
+  }
+}

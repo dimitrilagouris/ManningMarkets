@@ -112,7 +112,6 @@ function Login() {
 
           <button className="signup-cta" onClick={() => navigate('/sign-up')}>Sign Up</button>
 
-          <a className="info-link" href="#partner">Forgot password?</a>
         </div>
       </aside>
 
