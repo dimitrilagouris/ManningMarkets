@@ -63,7 +63,7 @@
   box-sizing: border-box;
   align-items: flex-start;
   align-self: stretch;
-  background-color: var(--usyd-grey-100);
+  background-color: var(--usyd-baby-blue);
   display: flex;
   flex-direction: column;
   gap: 20px;

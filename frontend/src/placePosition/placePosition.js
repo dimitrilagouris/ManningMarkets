@@ -556,8 +556,20 @@ export const PlacePositionPage = () => {
     price: `${Number(e.price).toFixed(2)}c`,
     chance: `${Number(e.price).toFixed(2)}%`,
     volume: e.volume,
-    eventId: e.id
+    eventId: e.id,
+    createdAt: e.created_at
   }));
+
+  const formatEventDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
 
   return (
     <div className="place-position">
@@ -565,7 +577,7 @@ export const PlacePositionPage = () => {
         <div className="place-position__left-content">
           <div className="place-position__title place-position__title--market">{market.name}</div>
           <div className="place-position__subtitle">Volume: ${market.market_volume.toLocaleString()}</div>
-          <div className="place-position__timestamp">October 14, 2025</div>
+          <div className="place-position__timestamp">{formatEventDate(events[0]?.createdAt)}</div>
 
           <MarketEventsTable
             events={events}
