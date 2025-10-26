@@ -14,7 +14,7 @@ def send_activation_email(user):
     })
     send_email(user.email, subject, body)
 
-def send_otp_email(user, otp):
+def send_otp_email_login(user, otp):
     subject = "ManningMarkets OTP"
     body = render_to_string('emails/otp_email.txt', {
         'username': user.username,

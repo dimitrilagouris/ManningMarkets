@@ -10,7 +10,7 @@ from django.db import transaction
 from ..models import Roles, Wallet, EmailToken
 from ..serialisers import RegisterSerialiser, UserSerialiser
 from ..utils.tokens import verify_email_token
-from ..utils.emails import send_otp_email
+from ..utils.emails import send_otp_email_login
 
 from decimal import Decimal
 import logging
@@ -40,7 +40,7 @@ def initiate_login(request):
     
     # NOW REDIRECT TO OTP - change
     otp = EmailToken.create_otp_token(user)
-    send_otp_email(user, otp)
+    send_otp_email_login(user, otp)
 
     return Response({'OTP Sent to Email'}, status=200)
 
