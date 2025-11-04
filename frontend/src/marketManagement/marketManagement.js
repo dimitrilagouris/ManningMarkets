@@ -6,7 +6,7 @@ import { faTimes, faPlus, faCalendarAlt, faUsers, faDollarSign, faCheck } from '
 import './marketManagement.css';
 import '../buttons.css';
 import '../admin/admin.css';
-const DJANGO_API_BASE = process.env.REACT_APP_DJANGO_API_BASE || 'http://localhost:8000';
+import { DJANGO_API_BASE } from '../config';
 
 function MarketManagement() {
 

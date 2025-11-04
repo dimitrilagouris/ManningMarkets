@@ -1,7 +1,7 @@
 // placePosition.jsx
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import { DJANGO_API_BASE } from '../config';
+import { DJANGO_API_BASE, WS_BASE_URL } from '../config';
 import OrderBook from '../orderbook/orderBook';
 import { useWebSocket } from '../websocketHook/useWebsocket';
 import { AuthContext } from '../session_management/authentication_context';
@@ -14,7 +14,7 @@ const useEventOrderbookData = (eventId) => {
   const [orderbookData, setOrderbookData] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
 
-  const wsUrl = `ws://localhost:8000/ws/orderbook/${eventId}/`;
+  const wsUrl = `${WS_BASE_URL}/ws/orderbook/${eventId}/`;
   const { connectionStatus, lastMessage } = useWebSocket(wsUrl);
 
   useEffect(() => {

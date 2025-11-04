@@ -6,7 +6,8 @@ from .tokens import create_email_token
 def send_activation_email(user):
     raw_token = create_email_token(user)
     subject = "Activate your ManningMarkets account"
-    frontend_path = getattr(settings, 'FRONTEND_PATH', 'http://localhost:3000') # REMOVE THE HARDCODE WHEN IN PROD
+    # FRONTEND_PATH is now configurable via environment variable (see settings.py)
+    frontend_path = getattr(settings, 'FRONTEND_PATH', 'http://localhost:3000')
     activation_link = f"{frontend_path}/activate/{raw_token}"
     body = render_to_string('emails/activation_email.txt', {
         'username': user.username,
