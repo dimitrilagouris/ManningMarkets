@@ -17,7 +17,9 @@ function Activate() {
             setStatus('Your account has been activated!');
             navigate("/login");
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            setStatus('Activation failed. Please try again or contact support.');
+        });
     }, [token, navigate]);
 
     return (
