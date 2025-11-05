@@ -15,7 +15,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
+from django.views.generic import TemplateView
+from django.conf import settings
+from django.conf.urls.static import static
 
 from .views.authentication_views import activate_user, get_csrf_token, get_user_data, initiate_login, logout_view, register_user, verify_otp
 from .views.gmail_api_views import authorise_gmail, oauth2callback
@@ -75,5 +78,7 @@ urlpatterns = [
     path('api/wallet/orders/', get_user_orders, name="user-orders"),
     path('api/wallet/positions/', get_user_positions, name="user-positions"),
     path('api/wallet/cancel-order/', cancel_order, name="cancel-order"),
+
+    re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
 
 ]

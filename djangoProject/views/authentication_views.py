@@ -7,6 +7,9 @@ from rest_framework.response import Response
 from django_ratelimit.decorators import ratelimit
 from django.db import transaction
 
+from django.shortcuts import redirect
+from django.conf import settings
+
 from ..models import Roles, Wallet, EmailToken
 from ..serialisers import RegisterSerialiser, UserSerialiser
 from ..utils.tokens import verify_email_token
@@ -87,22 +90,25 @@ def register_user(request):
     logger.error(f"Registration failed: {serialiser.errors}")
     return Response(serialiser.errors, status = 400)
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
 def activate_user(request, raw_token):
     if not raw_token:
-        return Response({'error': 'Token is required'}, status=400)
+        # Note: In a GET request from a browser, this isn't usually hit, but good practice.
+        return redirect(f"{settings.FRONTEND_PATH}/") 
     
     token_hash = EmailToken.hash_token(raw_token=raw_token)
 
     try:
         token_object = EmailToken.objects.select_related('user').get(token_hash=token_hash)
     except EmailToken.DoesNotExist:
-        return Response({'error': 'Invalid or expired token'}, status=400)
+        # If the token is bad, redirect them back to the site, don't show an API error.
+        return redirect(f"{settings.FRONTEND_PATH}/login?status=invalid_token") 
     
     if token_object.is_expired():
         token_object.delete()
-        return Response({'error': 'Token expired'})
+        # If expired, redirect them back to the site
+        return redirect(f"{settings.FRONTEND_PATH}/login?status=expired") 
     
     user = token_object.user
 
@@ -120,7 +126,8 @@ def activate_user(request, raw_token):
         
         token_object.delete()
 
-    return Response({'message': 'User activated successfully'}, status=200)
+    # CRITICAL FIX: Redirect the user's browser to the login page on success!
+    return redirect(f"{settings.FRONTEND_PATH}/login?status=activated")
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

@@ -3,6 +3,8 @@
  * Ensures only one WebSocket connection per event
  */
 
+import { WS_BASE_URL } from '../config';
+
 class WebSocketManager {
   constructor() {
     this.connections = new Map(); // eventId -> { ws, subscribers }
@@ -27,7 +29,8 @@ class WebSocketManager {
 
     // Create WebSocket if it doesn't exist or is closed
     if (!connection.ws || connection.ws.readyState === WebSocket.CLOSED || connection.ws.readyState === WebSocket.CLOSING) {
-      const wsUrl = `ws://localhost:8000/ws/orderbook/${eventId}/`;
+      const wsUrl = `${WS_BASE_URL}/ws/orderbook/${eventId}/`;
+      console.log(`[WS MANAGER] Creating SINGLE connection for event ${eventId}`);
       
       const ws = new WebSocket(wsUrl);
       connection.ws = ws;
