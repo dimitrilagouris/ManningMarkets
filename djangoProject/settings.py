@@ -18,7 +18,7 @@ DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true' # Set to False for pr
 
 # Reads ALLOWED_HOSTS from .env (comma-separated list)
 # CRITICAL FIX: Ensure your public IP is always included.
-ALLOWED_HOSTS_STR = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost,98.89.34.153')
+ALLOWED_HOSTS_STR = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost')
 ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS_STR.split(',') if host.strip()]
 
 
@@ -161,11 +161,11 @@ SECURE_HSTS_PRELOAD = True
 CORS_ALLOW_CREDENTIALS = True
 
 # CORS_ALLOWED_ORIGINS
-CORS_ALLOWED_ORIGINS_STR = os.environ.get('CORS_ALLOWED_ORIGINS', 'https://localhost,https://98.89.34.153')
+CORS_ALLOWED_ORIGINS_STR = os.environ.get('CORS_ALLOWED_ORIGINS', 'https://localhost')
 CORS_ALLOWED_ORIGINS = [origin.strip() for origin in CORS_ALLOWED_ORIGINS_STR.split(',') if origin.strip()]
 
 # CSRF_TRUSTED_ORIGINS
-CSRF_TRUSTED_ORIGINS_STR = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://localhost,https://98.89.34.153')
+CSRF_TRUSTED_ORIGINS_STR = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://localhost')
 CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in CSRF_TRUSTED_ORIGINS_STR.split(',') if origin.strip()]
 
 # CSRF COOKIE
@@ -185,7 +185,7 @@ SESSION_COOKIE_AGE = 60 * 60 * 1
 
 
 # FRONTEND
-FRONTEND_PATH = os.environ.get('FRONTEND_PATH', 'https://98.89.34.153')
+FRONTEND_PATH = os.environ.get('FRONTEND_PATH')
 
 
 LOGGING = {
