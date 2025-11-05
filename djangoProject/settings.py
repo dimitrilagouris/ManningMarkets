@@ -137,9 +137,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # AUTHENTICATION
 AUTH_USER_MODEL = 'djangoProject.Profiles'
 
-# -------------------------------------------------------------
-# --- CRITICAL PRODUCTION DEPLOYMENT SECURITY FIXES ---
-# -------------------------------------------------------------
+
 
 # CRITICAL: Tells Django that all requests coming from the Nginx proxy (which uses HTTP internally)
 # should be treated as secure HTTPS requests. This fixes the cookie and integrity errors.
