@@ -219,17 +219,28 @@ function MarketManagement() {
         }
     };
 
-    // Show access denied if user doesn't have permission
-    if (!hasAccess && !loading) {
+    if (loading) {
         return (
             <div className="admin-page">
                 <main className="admin-content">
                     <div className="admin-container">
-                        <h1>Market Management Dashboard</h1>
+                        <h1>Checking access to Market Management...</h1> 
+                    </div>
+                </main>
+            </div>
+        );
+    }
+
+    // Show access denied if user doesn't have permission
+    if (!hasAccess) {
+        return (
+            <div className="admin-page">
+                <main className="admin-content">
+                    <div className="admin-container">
+                        <h1>Market Management</h1>
                         <div className="admin-access-denied">
                             <h2>Access Denied</h2>
-                            <p>{accessError || 'You don\'t have permission to access the market management page.'}</p>
-                            <p>Please log in with an admin account.</p>
+                            <p>You don't have permission to access the market management page.</p>
                         </div>
                     </div>
                 </main>
