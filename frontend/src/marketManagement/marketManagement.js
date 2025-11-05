@@ -49,12 +49,10 @@ function MarketManagement() {
             const contentType = response.headers.get('content-type');
             if (!contentType || !contentType.includes('application/json')) {
                 const text = await response.text();
-                console.error('Expected JSON but got:', text.substring(0, 200));
                 throw new Error('Server returned non-JSON response');
             }
             
             const data = await response.json();
-            console.log('Markets response:', data);
             
             // Handle the response format from get_markets_overview
             if (Array.isArray(data)) {
@@ -62,13 +60,11 @@ function MarketManagement() {
             } else if (data.markets && Array.isArray(data.markets)) {
                 setMarkets(data.markets);
             } else {
-                console.warn('Unexpected data format:', data);
                 setMarkets([]);
             }
             
             setHasAccess(true);
         } catch (error) {
-            console.error('Error fetching markets:', error);
             setMarkets([]);
             setAccessError('Failed to load market data. Please try again.');
             setHasAccess(false);
@@ -98,7 +94,6 @@ function MarketManagement() {
             }
             return null;
         } catch (error) {
-            console.error('Error fetching CSRF token:', error);
             return null;
         }
     };
@@ -168,7 +163,6 @@ function MarketManagement() {
                 alert(data.error || 'Failed to create market');
             }
         } catch (err) {
-            console.error('Error creating market:', err);
             alert('An error occurred');
         } finally {
             setActionLoading(false);
@@ -212,7 +206,6 @@ function MarketManagement() {
                 alert(data.error || 'Failed to settle event');
             }
         } catch (err) {
-            console.error('Error settling event:', err);
             alert('An error occurred');
         } finally {
             setActionLoading(false);

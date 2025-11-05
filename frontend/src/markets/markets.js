@@ -41,7 +41,6 @@ function Markets() {
           setMarkets(data.markets || []);
         }
       } catch (err) {
-        console.error('Fetching Markets Error:', err);
         if (isMounted) {
           setError(err);
           setMarkets([]);

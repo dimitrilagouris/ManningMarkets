@@ -46,14 +46,12 @@ function VerifyOTP({ email, onClose, onSuccess }) {
         try {
           await checkAuthStatus();
         } catch (err) {
-          console.warn("checkAuthStatus failed:", err);
         }
         onSuccess && onSuccess();
       } else {
         setError(data.error || "OTP verification failed");
       }
     } catch (err) {
-      console.error("OTP verify error:", err);
       setError("Network or server error occurred");
     } finally {
       setSubmitting(false);

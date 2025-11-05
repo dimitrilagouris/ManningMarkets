@@ -98,7 +98,6 @@ function Wallet() {
             }
 
             catch (err){
-                console.error("Fetching Wallet Error: ", err);
                 setError(err);
             }
 
@@ -125,7 +124,6 @@ function Wallet() {
                         setTransactions(data.trades || []);
                     }
                 } catch (err) {
-                    console.error("Error fetching trades:", err);
                 }
             } else if (activeTab === 'Positions') {
                 try {
@@ -139,7 +137,6 @@ function Wallet() {
                         setPositions(data.positions || []);
                     }
                 } catch (err) {
-                    console.error("Error fetching positions:", err);
                 }
             } else if (activeTab === 'Live Orders') {
                 try {
@@ -153,7 +150,6 @@ function Wallet() {
                         setLiveOrders(data.orders || []);
                     }
                 } catch (err) {
-                    console.error("Error fetching live orders:", err);
                 }
             }
         };
@@ -187,10 +183,8 @@ function Wallet() {
                     setLiveOrders(data.orders || []);
                 }
             } else {
-                console.error('Failed to cancel order');
             }
         } catch (err) {
-            console.error('Error cancelling order:', err);
         }
     };
 

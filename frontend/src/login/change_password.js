@@ -36,7 +36,6 @@ function ChangePassword() {
 
             if (res.ok)
             {
-                console.log("Password change successful", data);
                 setErrorMessage("Password change successful.");
                 setNewPassword('');
                 setConfirmNewPassword('');
@@ -51,7 +50,6 @@ function ChangePassword() {
             }
         }
         catch (err) {
-            console.error("Password change error: ", err)
         }
     };
 

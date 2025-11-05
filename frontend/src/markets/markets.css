@@ -6,6 +6,7 @@
   gap: 24px;
   align-items: stretch;
   box-sizing: border-box;
+  grid-template-columns: repeat(4, minmax(260px, 1fr));
 }
 
 .main-content {

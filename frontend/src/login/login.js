@@ -54,7 +54,6 @@ function Login() {
         setLoginError(data.error || "Login failed.");
       }
     } catch (err) {
-      console.error("Login error: ", err);
       setLoginError("Error occurred during login");
     } finally {
       setLoginLoading(false);
@@ -124,7 +123,6 @@ function Login() {
             try {
               await checkAuthStatus();
             } catch (err) {
-              console.warn("checkAuthStatus failed:", err);
             }
             setShowOtpModal(false);
             navigate('/markets');

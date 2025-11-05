@@ -61,7 +61,6 @@ function Admin() {
       }
       return null;
     } catch (error) {
-      console.error('Error fetching CSRF token:', error);
       return null;
     }
   };
@@ -81,7 +80,6 @@ function Admin() {
         fetchAuditLogs()
       ]);
     } catch (err) {
-      console.error('Error fetching admin data:', err);
     } finally {
       setLoading(false);
     }
@@ -97,10 +95,8 @@ function Admin() {
         setUsers(data.users || []);
       } else {
         setUsers([]);
-        console.error('Failed to fetch users:', data.error);
       }
     } catch (err) {
-      console.error('Error fetching users:', err);
       setUsers([]);
     }
   };
@@ -115,7 +111,6 @@ function Admin() {
         setStats(data);
       }
     } catch (err) {
-      console.error('Error fetching stats:', err);
     }
   };
 
@@ -129,10 +124,8 @@ function Admin() {
         setMarkets(data || []);
       } else {
         setMarkets([]);
-        console.error('Failed to fetch markets:', data.error);
       }
     } catch (err) {
-      console.error('Error fetching markets:', err);
       setMarkets([]);
     }
   };
@@ -147,10 +140,8 @@ function Admin() {
         setAuditLogs(data.auditLogs || []);
       } else {
         setAuditLogs([]);
-        console.error('Failed to fetch audit logs:', data.error);
       }
     } catch (err) {
-      console.error('Error fetching audit logs:', err);
       setAuditLogs([]);
     }
   };
@@ -201,7 +192,6 @@ function Admin() {
         alert(data.error || 'Failed to suspend user');
       }
     } catch (err) {
-      console.error('Error suspending user:', err);
       alert('An error occurred');
     } finally {
       setActionLoading(false);
@@ -234,7 +224,6 @@ function Admin() {
         alert(data.error || 'Failed to reactivate user');
       }
     } catch (err) {
-      console.error('Error reactivating user:', err);
       alert('An error occurred');
     } finally {
       setActionLoading(false);
@@ -271,7 +260,6 @@ function Admin() {
         alert(data.error || 'Failed to delete user');
       }
     } catch (err) {
-      console.error('Error deleting user:', err);
       alert('An error occurred');
     } finally {
       setActionLoading(false);
@@ -332,7 +320,6 @@ function Admin() {
         setPointsError(data.error || 'Failed to add points');
       }
     } catch (err) {
-      console.error('Error adding points:', err);
       setPointsError('An error occurred');
     } finally {
       setActionLoading(false);

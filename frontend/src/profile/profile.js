@@ -57,7 +57,6 @@ function Profile() {
                 setLastLogin(formatDate(data.last_login));
             }
             catch(err) {
-                console.log("Fetching profile error: ", err);
                 setError(err);
             }
             finally {

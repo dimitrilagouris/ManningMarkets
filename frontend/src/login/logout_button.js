@@ -24,16 +24,13 @@ function LogoutButton() {
             })
 
             if (res.ok) {
-                console.log("Logout successful");
                 await checkAuthStatus();
                 navigate("/");
             }
             else {
-                console.error("logout failed");
             }
         }
         catch (err) {
-            console.error("Error logging out: ", err);
         }
     }
     return (

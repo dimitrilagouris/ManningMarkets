@@ -12,7 +12,6 @@ function ChangeUsername({ onUsernameChange }) {
 
         try {
 
-            console.log("CSRF COOKIE: ", Cookies.get("csrftoken"));
             const res = await fetch(`${DJANGO_API_BASE}/change-username/`, {
                 method: "POST",
                 credentials: "include",
@@ -30,7 +29,6 @@ function ChangeUsername({ onUsernameChange }) {
 
             if (res.ok)
             {
-                console.log("Username change successful", data);
 
                 if (onUsernameChange) {
                     onUsernameChange(newUsername);
@@ -38,13 +36,8 @@ function ChangeUsername({ onUsernameChange }) {
 
                 setNewUsername('');
             }
-            else 
-            {
-                alert(data.error || "Username change failed.");
-            }
         }
         catch (err) {
-            console.error("Username change error: ", err)
         }
     };
 

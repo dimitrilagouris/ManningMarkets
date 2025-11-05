@@ -20,19 +20,6 @@ function User() {
   const userName = 'Alex Vaughan';
   const userId = 'User ID: 1';
 
-  const handleEmailClick = () => { console.log('View email clicked');};
-
-  const handlePasswordClick = () => { console.log('View password settings clicked');};
-
-  const handleWalletClick = () => { console.log('View wallet clicked');};
-
-  const handleSubmitReports = () => { console.log('Submit reports clicked');};
-
-  const handleUpdateEmail = () => {console.log('Update email clicked');};
-
-  const handleResetPassword = () => { console.log('Reset password clicked');};
-
-  const handleDeleteAccount = () => { console.log('Delete account clicked');};
 
   return (
     <>
@@ -52,7 +39,6 @@ function User() {
                 <button 
                   type="button" 
                   className="user-button-item"
-                  onClick={handleEmailClick}
                   aria-label="View email"
                 >
                   <FontAwesomeIcon icon={faEnvelope} className="button-icon" />
@@ -62,7 +48,6 @@ function User() {
                 <button 
                   type="button" 
                   className="user-button-item"
-                  onClick={handlePasswordClick}
                   aria-label="View password settings"
                 >
                   <FontAwesomeIcon icon={faLock} className="button-icon" />
@@ -72,7 +57,6 @@ function User() {
                 <button 
                   type="button" 
                   className="user-button-item"
-                  onClick={handleWalletClick}
                   aria-label="View wallet"
                 >
                   <FontAwesomeIcon icon={faWallet} className="button-icon" />
@@ -82,7 +66,6 @@ function User() {
                 <button 
                   type="button" 
                   className="user-button-item user-submit-reports"
-                  onClick={handleSubmitReports}
                   aria-label="Submit reports"
                 >
                   <FontAwesomeIcon icon={faFlag} className="button-icon" />
@@ -97,7 +80,6 @@ function User() {
                 <button 
                   type="button"
                   className="user-settings-item"
-                  onClick={handleUpdateEmail}
                   aria-label="Update email address"
                 >
                   <div className="user-settings-item__content">
@@ -110,7 +92,6 @@ function User() {
                 <button 
                   type="button"
                   className="user-settings-item"
-                  onClick={handleResetPassword}
                   aria-label="Reset password"
                 >
                   <div className="user-settings-item__content">
@@ -127,7 +108,6 @@ function User() {
               <button 
                 type="button" 
                 className="user-delete-account"
-                onClick={handleDeleteAccount}
                 aria-label="Delete account"
               >
                 <FontAwesomeIcon icon={faTrash} className="delete-icon" />

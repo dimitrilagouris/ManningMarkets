@@ -29,7 +29,6 @@ function Leaderboard() {
                 setLeaderboardData(data.markets || []);
             }
             catch(err) {
-                console.log("Fetching leaderboard error: ", err);
                 setError(err);
             }
             finally {

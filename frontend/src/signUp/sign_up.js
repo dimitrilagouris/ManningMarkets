@@ -46,8 +46,6 @@ function SignUp() {
       }
     }
     catch(err) {
-      console.error(err);
-      alert('Something went wrong.');
     }
   };
 

@@ -20,7 +20,6 @@ class WebSocketManager {
     
     // Prevent duplicate callbacks
     if (connection.subscribers.has(callback)) {
-      console.log(`[WS MANAGER] Callback already subscribed to event ${eventId}`);
       return () => this.unsubscribe(eventIdStr, callback);
     }
     
@@ -29,14 +28,10 @@ class WebSocketManager {
     // Create WebSocket if it doesn't exist or is closed
     if (!connection.ws || connection.ws.readyState === WebSocket.CLOSED || connection.ws.readyState === WebSocket.CLOSING) {
       const wsUrl = `ws://localhost:8000/ws/orderbook/${eventId}/`;
-      console.log(`[WS MANAGER] Creating SINGLE connection for event ${eventId}`);
       
       const ws = new WebSocket(wsUrl);
       connection.ws = ws;
 
-      ws.onopen = () => {
-        console.log(`[WS MANAGER] Connected to event ${eventId}`);
-      };
 
       ws.onmessage = (event) => {
         try {
@@ -46,21 +41,17 @@ class WebSocketManager {
             try {
               callback(data);
             } catch (error) {
-              console.error(`[WS MANAGER] Error in subscriber callback:`, error);
             }
           });
         } catch (error) {
-          console.error(`[WS MANAGER] Failed to parse message:`, error);
         }
       };
 
       ws.onclose = () => {
-        console.log(`[WS MANAGER] Disconnected from event ${eventId}`);
         connection.ws = null;
       };
 
       ws.onerror = (error) => {
-        console.error(`[WS MANAGER] Error for event ${eventId}:`, error);
       };
     }
 
@@ -77,7 +68,6 @@ class WebSocketManager {
       
       // Close WebSocket if no more subscribers
       if (connection.subscribers.size === 0 && connection.ws) {
-        console.log(`[WS MANAGER] Closing connection for event ${eventId} (no subscribers)`);
         connection.ws.close();
         this.connections.delete(eventIdStr);
       }

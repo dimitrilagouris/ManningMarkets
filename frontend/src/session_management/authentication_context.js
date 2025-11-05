@@ -33,7 +33,6 @@ export const AuthProvider = ({ children }) => {
             }
         }
         catch (err) {
-            console.error("Failed to fetch authentication status", err);
             setIsAuthenticated(false);
             setUser(null);
         }

@@ -285,7 +285,6 @@ export const PlacePositionPage = () => {
           });
         }
       } catch (err) {
-        console.error("Fetching Market Error: ", err);
         setError(err);
       } finally {
         setLoading(false);
@@ -308,7 +307,6 @@ export const PlacePositionPage = () => {
           setWalletBalance(data.balance || 0);
         }
       } catch (err) {
-        console.error("Fetching Wallet Error: ", err);
         setWalletBalance(0);
       }
     };
@@ -459,10 +457,8 @@ export const PlacePositionPage = () => {
           setWalletBalance(data.balance || 0);
         }
       } catch (err) {
-        console.error("Error refreshing wallet balance: ", err);
       }
     } catch (err) {
-      console.error('Order submission error:', err);
       setOrderMessage(`Error: ${err.message}`);
     } finally {
       setSubmittingOrder(false);

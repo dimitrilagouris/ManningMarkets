@@ -59,7 +59,6 @@ function Registration() {
     e.preventDefault();
     
     if (validateForm()) {
-      console.log('Register user', { name, email, password });
       //need API call
     }
   };
