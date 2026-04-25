@@ -1,44 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { DJANGO_API_BASE } from '../../config';
+import client from '../../api/client';
 import { FormInput } from '../../components/forms/FormInput';
 import { Button } from '../../components/buttons/Button';
 import { SettleMarketsList } from '../../components/cards/MarketCard';
 
 import './marketManagement.css';
 import '../../styles/base.css';
-import {useAuthGuard} from "../../hooks/useAuthGuard";
 
-/**
- * Retrieves the CSRF token for secure POST requests.
- * @returns {Promise<string|null>} The token string, or null if unretrievable.
- */
-const getCSRFToken = async () => {
-    try {
-        const res = await fetch(`${DJANGO_API_BASE}/get-csrf-token/`, {
-            method: 'GET',
-            credentials: 'include',
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
-        });
-        return res.ok ? (await res.json()).csrfToken : null;
-    } catch {
-        return null;
-    }
-};
-
-/**
- * Renders a single event entry with an animated underline input.
- * @param {{ index: number, value: string, onChange: function(number, string): void, onRemove: function(number): void, canRemove: boolean, isNew?: boolean }} props
- * @returns {JSX.Element}
- */
 const EventRow = ({ index, value, onChange, onRemove, canRemove, isNew = false }) => {
     const inputRef = useRef(null);
 
-    // Auto-focus facilitates rapid data entry when adding multiple events in succession.
     useEffect(() => {
-        if (isNew && inputRef.current) {
-            inputRef.current.focus();
-        }
+        if (isNew && inputRef.current) inputRef.current.focus();
     }, [isNew]);
 
     const removeIcon = (
@@ -53,7 +27,6 @@ const EventRow = ({ index, value, onChange, onRemove, canRemove, isNew = false }
             <span className="event-index" aria-hidden="true">
                 {String(index + 1).padStart(2, '0')}
             </span>
-
             <div className="event-input-wrapper">
                 <input
                     ref={inputRef}
@@ -66,17 +39,9 @@ const EventRow = ({ index, value, onChange, onRemove, canRemove, isNew = false }
                 />
                 <span className="event-input-underline" aria-hidden="true" />
             </div>
-
             {canRemove ? (
                 <div className="event-remove-action">
-                    <Button
-                        fill="none"
-                        outline="none"
-                        textColor="dark"
-                        onClick={() => onRemove(index)}
-                        icon={removeIcon}
-                        aria-label={`Remove event ${index + 1}`}
-                    />
+                    <Button fill="none" outline="none" textColor="dark" onClick={() => onRemove(index)} icon={removeIcon} aria-label={`Remove event ${index + 1}`} />
                 </div>
             ) : (
                 <div className="event-remove-placeholder" aria-hidden="true" />
@@ -94,11 +59,6 @@ EventRow.propTypes = {
     isNew: PropTypes.bool,
 };
 
-/**
- * Renders the full prediction events panel.
- * @param {{ events: Array<{name: string}>, onAdd: function(): void, onRemove: function(number): void, onUpdate: function(number, string): void }} props
- * @returns {JSX.Element}
- */
 export const EventsSection = ({ events, onAdd, onRemove, onUpdate }) => {
     const [newestIndex, setNewestIndex] = useState(null);
 
@@ -107,7 +67,6 @@ export const EventsSection = ({ events, onAdd, onRemove, onUpdate }) => {
         setNewestIndex(events.length);
     };
 
-    // Clears the animation flag to prevent re-triggering on unrelated renders.
     useEffect(() => {
         if (newestIndex !== null) {
             const timer = setTimeout(() => setNewestIndex(null), 300);
@@ -129,7 +88,6 @@ export const EventsSection = ({ events, onAdd, onRemove, onUpdate }) => {
                 <h3 className="events-header-label">Prediction Events</h3>
                 <span className="events-count-badge">{validCount} / {events.length} filled</span>
             </div>
-
             <div className="events-list" role="list">
                 {events.length === 0 ? (
                     <p className="events-empty">No events yet — add one below.</p>
@@ -147,15 +105,8 @@ export const EventsSection = ({ events, onAdd, onRemove, onUpdate }) => {
                     ))
                 )}
             </div>
-
             <div className="events-add-row">
-                <Button
-                    outline="primary"
-                    fill="none"
-                    textColor="dark"
-                    icon={addIcon}
-                    onClick={handleAdd}
-                >
+                <Button outline="primary" fill="none" textColor="dark" icon={addIcon} onClick={handleAdd}>
                     Add Event
                 </Button>
             </div>
@@ -170,11 +121,6 @@ EventsSection.propTypes = {
     onUpdate: PropTypes.func.isRequired,
 };
 
-/**
- * Form for creating new prediction markets.
- * @param {{ actionLoading: boolean, onMarketCreate: function(Object): Promise<void> }} props
- * @returns {JSX.Element}
- */
 const CreateMarketForm = ({ actionLoading, onMarketCreate }) => {
     const [marketName, setMarketName] = useState('');
     const [marketExpirationDate, setMarketExpirationDate] = useState('');
@@ -189,9 +135,7 @@ const CreateMarketForm = ({ actionLoading, onMarketCreate }) => {
     });
 
     const handleSubmit = async () => {
-        if (!marketName.trim() || !marketExpirationDate) {
-            return alert('Please provide a market name and expiration date.');
-        }
+        if (!marketName.trim() || !marketExpirationDate) return alert('Please provide a market name and expiration date.');
         const validEvents = events.filter(e => e.name.trim());
         if (!validEvents.length) return alert('Please add at least one valid event.');
 
@@ -208,28 +152,9 @@ const CreateMarketForm = ({ actionLoading, onMarketCreate }) => {
 
     return (
         <div className="create-market-form">
-            <FormInput
-                label="Market Name"
-                value={marketName}
-                onChange={(e) => setMarketName(e.target.value)}
-                placeholder="Enter market name"
-                fullWidth
-            />
-            <FormInput
-                type="datetime-local"
-                label="Market Expiration Date"
-                value={marketExpirationDate}
-                onChange={(e) => setMarketExpirationDate(e.target.value)}
-                fullWidth
-            />
-
-            <EventsSection
-                events={events}
-                onAdd={addEvent}
-                onRemove={removeEvent}
-                onUpdate={updateEvent}
-            />
-
+            <FormInput label="Market Name" value={marketName} onChange={(e) => setMarketName(e.target.value)} placeholder="Enter market name" fullWidth />
+            <FormInput type="datetime-local" label="Market Expiration Date" value={marketExpirationDate} onChange={(e) => setMarketExpirationDate(e.target.value)} fullWidth />
+            <EventsSection events={events} onAdd={addEvent} onRemove={removeEvent} onUpdate={updateEvent} />
             <Button fill="primary" width="full" height="medium" onClick={actionLoading ? undefined : handleSubmit}>
                 {actionLoading ? 'Creating…' : 'Create Market'}
             </Button>
@@ -242,40 +167,18 @@ CreateMarketForm.propTypes = {
     onMarketCreate: PropTypes.func.isRequired,
 };
 
-/**
- * Main wrapper for Market Management administrative tools.
- * @returns {JSX.Element}
- */
 export default function MarketManagementPage() {
-    useAuthGuard();
-
     const [markets, setMarkets] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [hasAccess, setHasAccess] = useState(false);
-    const [accessError, setAccessError] = useState('');
     const [activeTab, setActiveTab] = useState('create');
     const [actionLoading, setActionLoading] = useState(false);
 
-    const fetchMarkets = async () => {
-        try {
-            setLoading(true);
-            const res = await fetch(`${DJANGO_API_BASE}/api/admin/markets/`, { credentials: 'include' });
-            if (res.status === 401 || res.status === 403) {
-                setHasAccess(false);
-                return setAccessError(res.status === 401 ? 'Please log in.' : 'Permission denied.');
-            }
-            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-
-            const data = await res.json();
-            setMarkets(Array.isArray(data) ? data : (data.markets || []));
-            setHasAccess(true);
-        } catch {
-            setMarkets([]);
-            setHasAccess(false);
-            setAccessError('Failed to load market data.');
-        } finally {
-            setLoading(false);
-        }
+    const fetchMarkets = () => {
+        setLoading(true);
+        client.get('/api/admin/markets/')
+            .then(({ data }) => setMarkets(Array.isArray(data) ? data : (data.markets || [])))
+            .catch(() => setMarkets([]))
+            .finally(() => setLoading(false));
     };
 
     useEffect(() => { fetchMarkets(); }, []);
@@ -283,22 +186,11 @@ export default function MarketManagementPage() {
     const handleCreateMarket = async (payload) => {
         setActionLoading(true);
         try {
-            const csrfToken = await getCSRFToken();
-            const res = await fetch(`${DJANGO_API_BASE}/api/admin/create-market/`, {
-                method: 'POST',
-                credentials: 'include',
-                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
-                body: JSON.stringify(payload),
-            });
-            const data = await res.json();
-            if (res.ok) {
-                alert('Market created successfully!');
-                fetchMarkets();
-            } else {
-                alert(data.error || 'Failed to create market');
-            }
-        } catch {
-            alert('An error occurred during market creation.');
+            await client.post('/api/admin/create-market/', payload);
+            alert('Market created successfully!');
+            fetchMarkets();
+        } catch (err) {
+            alert(err.response?.data?.error || 'Failed to create market');
         } finally {
             setActionLoading(false);
         }
@@ -306,32 +198,19 @@ export default function MarketManagementPage() {
 
     const handleSettleEvent = async (eventId, outcome) => {
         if (!window.confirm(`Settle this event with ${outcome} as the winner? This cannot be undone!`)) return;
-
         setActionLoading(true);
         try {
-            const csrfToken = await getCSRFToken();
-            const res = await fetch(`${DJANGO_API_BASE}/api/admin/settle-market/`, {
-                method: 'POST',
-                credentials: 'include',
-                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
-                body: JSON.stringify({ event_id: eventId, winning_outcome: outcome }),
-            });
-            const data = await res.json();
-            if (res.ok) {
-                alert(`Event settled!\nTotal payout: $${data.total_payout}`);
-                fetchMarkets();
-            } else {
-                alert(data.error || 'Failed to settle event');
-            }
-        } catch {
-            alert('An error occurred during settlement.');
+            const { data } = await client.post('/api/admin/settle-market/', { event_id: eventId, winning_outcome: outcome });
+            alert(`Event settled!\nTotal payout: $${data.total_payout}`);
+            fetchMarkets();
+        } catch (err) {
+            alert(err.response?.data?.error || 'Failed to settle event');
         } finally {
             setActionLoading(false);
         }
     };
 
     if (loading && !markets.length) return <main className="main-content"><div>Checking access…</div></main>;
-    if (!hasAccess) return <main className="main-content"><div><h2>Access Denied</h2><p>{accessError}</p></div></main>;
 
     return (
         <div className="wallet-page">
@@ -362,12 +241,8 @@ export default function MarketManagementPage() {
                             ))}
                         </div>
 
-                        {activeTab === 'create' && (
-                            <CreateMarketForm actionLoading={actionLoading} onMarketCreate={handleCreateMarket} />
-                        )}
-                        {activeTab === 'settle' && (
-                            <SettleMarketsList markets={markets} loading={loading} actionLoading={actionLoading} onSettleEvent={handleSettleEvent} />
-                        )}
+                        {activeTab === 'create' && <CreateMarketForm actionLoading={actionLoading} onMarketCreate={handleCreateMarket} />}
+                        {activeTab === 'settle' && <SettleMarketsList markets={markets} loading={loading} actionLoading={actionLoading} onSettleEvent={handleSettleEvent} />}
                     </section>
                 </div>
             </div>

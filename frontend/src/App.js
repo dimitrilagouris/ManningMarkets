@@ -7,6 +7,7 @@ import OtpModal from './services/otp/OtpModal'
 import ProfilePage from './services/profile/ProfilePage';
 import AdminDashboard from './services/admin/AdminDashboard';
 import MarketManagementPage from './services/marketManagement/MarketManagementPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 import { AuthProvider } from './auth-pages/authentication_context';
 
@@ -23,18 +24,21 @@ function App() {
         <div className="App">
           <Header />
           <Routes>
-            <Route path="/" element={<MarketPage/>} />
-            <Route path="/markets" element={<MarketPage/>} />
+            {/* Public routes */}
+            <Route path="/" element={<MarketPage />} />
+            <Route path="/markets" element={<MarketPage />} />
             <Route path="/market/:marketId" element={<PlacePositionPage />} />
-            <Route path="activate/:token" element={<Activate/>} />
+            <Route path="activate/:token" element={<Activate />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/leaderboard" element={<LeaderboardPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/verify-otp" element={<OtpModal />} />
-            <Route path="/wallet" element={<Wallet/>} />
-            <Route path="/admin" element={<AdminDashboard/>} />
-            <Route path="/market-management" element={<MarketManagementPage/>} />
+
+            {/* Protected routes */}
+            <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+            <Route path="/wallet" element={<ProtectedRoute><Wallet /></ProtectedRoute>} />
+            <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+            <Route path="/market-management" element={<ProtectedRoute><MarketManagementPage /></ProtectedRoute>} />
           </Routes>
         </div>
       </AuthProvider>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchAdminData, executeUserAction } from '../../api/adminApi';
+import client from '../../api/client';
 import { SystemOverview } from './systemOverview';
 import { AdminControls } from './AdminControls';
 import { UserManagement } from './userManagement';
@@ -10,15 +10,8 @@ import { ModalGivePoints } from './ModalGivePoints';
 
 import '../wallet/wallet.css';
 import '../../styles/base.css';
-import {useAuthGuard} from "../../hooks/useAuthGuard";
 
-/**
- * Main AdminDashboard Dashboard.
- * @returns {React.JSX.Element}
- */
 function AdminDashboard() {
-    useAuthGuard();
-
     const [activeTab, setActiveTab] = useState('Users');
     const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState('all');
@@ -33,7 +26,6 @@ function AdminDashboard() {
         'Audit Log': { title: 'System audit log', desc: 'Review a chronological history of administrative actions to ensure compliance and track system modifications.' }
     };
 
-    /** @param {string} tab */
     const handleTabSwitch = (tab) => {
         setActiveTab(tab);
         setSearchTerm('');
@@ -41,52 +33,41 @@ function AdminDashboard() {
     };
 
     useEffect(() => {
-        fetchAdminData('stats/').then(stats => setData(prev => ({ ...prev, stats }))).catch(console.error);
+        client.get('/api/admin/stats/')
+            .then(({ data: stats }) => setData(prev => ({ ...prev, stats })))
+            .catch(console.error);
     }, []);
 
     useEffect(() => {
-        const loadActiveData = async () => {
-            try {
-                const query = `?search=${searchTerm}&status=${filterStatus}`;
-                if (activeTab === 'Users') {
-                    const { users } = await fetchAdminData(`users/${query}`);
-                    setData(prev => ({ ...prev, users: users || [] }));
-                } else if (activeTab === 'MarketPage') {
-                    const markets = await fetchAdminData(`markets/${query}`);
-                    setData(prev => ({ ...prev, markets: markets || [] }));
-                } else if (activeTab === 'Audit Log') {
-                    const logs = await fetchAdminData(`audit-logs/${query}`);
-                    setData(prev => ({ ...prev, auditLogs: logs.auditLogs || [] }));
-                }
-            } catch (err) {
-                console.error("Failed to load tab data", err);
-            } finally {
-                setLoading(false);
-            }
+        const query = `?search=${searchTerm}&status=${filterStatus}`;
+        const endpoints = {
+            'Users': `/api/admin/users/${query}`,
+            'MarketPage': `/api/admin/markets/${query}`,
+            'Audit Log': `/api/admin/audit-logs/${query}`,
         };
-        loadActiveData();
+        const keys = {
+            'Users': 'users',
+            'MarketPage': 'markets',
+            'Audit Log': 'auditLogs',
+        };
+
+        client.get(endpoints[activeTab])
+            .then(({ data: res }) => setData(prev => ({ ...prev, [keys[activeTab]]: res[keys[activeTab]] || [] })))
+            .catch(err => console.error("Failed to load tab data", err))
+            .finally(() => setLoading(false));
     }, [activeTab, searchTerm, filterStatus]);
 
-    /**
-     * Refreshes the user table data after a successful state change.
-     */
     const refreshUserList = async () => {
-        const { users } = await fetchAdminData(`users/?search=${searchTerm}&status=${filterStatus}`);
-        setData(prev => ({ ...prev, users: users || [] }));
+        const { data: res } = await client.get(`/api/admin/users/?search=${searchTerm}&status=${filterStatus}`);
+        setData(prev => ({ ...prev, users: res.users || [] }));
     };
 
-    /**
-     * Executes the confirmed modal action and refreshes the user list.
-     * @param {number} [payload]
-     */
     const handleAction = async (payload = null) => {
         if (!modalState.user) return;
-
         try {
             const urlSlug = modalState.type === 'points' ? 'give-points' : modalState.type;
-            const requestBody = modalState.type === 'points' ? { amount: payload } : null;
-
-            await executeUserAction(modalState.user.id, urlSlug, 'POST', requestBody);
+            const body = modalState.type === 'points' ? { amount: payload } : null;
+            await client.post(`/api/admin/users/${modalState.user.id}/${urlSlug}/`, body);
             await refreshUserList();
         } catch (err) {
             alert(err.message);
@@ -95,27 +76,17 @@ function AdminDashboard() {
         }
     };
 
-    /**
-     * Intercepts table actions to handle immediate deletions or route to modals.
-     * @param {string} type
-     * @param {Object} user
-     */
     const handleTableAction = async (type, user) => {
         if (type === 'delete') {
             if (!window.confirm(`Are you sure you want to permanently delete ${user.name}?`)) return;
-
             try {
-                // Ensure your adminApi defaults to 'DELETE' or handles this appropriately.
-                // If Django strictly expects a POST, change 'DELETE' to 'POST'.
-                await executeUserAction(user.id, 'delete', 'DELETE');
+                await client.delete(`/api/admin/users/${user.id}/delete/`);
                 await refreshUserList();
             } catch (err) {
                 alert(`Failed to delete user: ${err.message}`);
             }
             return;
         }
-
-        // Route 'suspend', 'unsuspend', and 'points' to the modal state
         setModalState({ type, user });
     };
 
@@ -129,7 +100,7 @@ function AdminDashboard() {
                         <div className="wallet-balance-info" style={{ width: '100%', maxWidth: '100%' }}>
                             <div className="wallet-section-header">System management</div>
                             <h1 id="wallet-overview-heading" className="wallet-section-title">Admin Dashboard</h1>
-                            <p className="wallet-description"> Monitor system health, manage user accounts, and review active markets.</p>
+                            <p className="wallet-description">Monitor system health, manage user accounts, and review active markets.</p>
                             <SystemOverview stats={data.stats} />
                         </div>
                     </section>
@@ -177,7 +148,6 @@ function AdminDashboard() {
                 onClose={() => setModalState({ type: null, user: null })}
                 onConfirm={(amount) => handleAction(amount)}
             />
-
         </div>
     );
 }

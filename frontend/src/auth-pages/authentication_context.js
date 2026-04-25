@@ -41,6 +41,11 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
+    const logout = () => {
+        setIsAuthenticated(false);
+        setUser(null);
+    };
+
     useEffect(() => {
         checkAuthStatus();
 
@@ -53,6 +58,7 @@ export const AuthProvider = ({ children }) => {
         setUser,
         loading,
         checkAuthStatus,
+        logout,
     };
 
     return (
