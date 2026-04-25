@@ -1,0 +1,41 @@
+/* * LeaderboardTable component styles
+ * Inherits main layout from wallet.css
+ */
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.leaderboard-item {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--usyd-grey-200);
+  padding-bottom: 8px;
+}
+
+.leaderboard-item:last-child {
+  border-bottom: none;
+}
+
+.leaderboard-item:first-child {
+  border-bottom: 2px solid var(--usyd-red-dark);
+}
+
+.leaderboard-first-label {
+  color: var(--usyd-grey-800);
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.leaderboard-label {
+  color: var(--usyd-grey-800);
+  font-size: 15px;
+}
+
+.leaderboard-value {
+  font-weight: 600;
+  color: var(--usyd-grey-800);
+  font-size: 15px;
+}

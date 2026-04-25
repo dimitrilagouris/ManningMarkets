@@ -1,0 +1,43 @@
+.alert-card {
+  background-color: var(--usyd-grey-200);
+  padding: 32px;
+  box-sizing: border-box;
+  font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: var(--usyd-grey-800);
+}
+
+.alert-card__title {
+  margin: 0 0 24px 0;
+  color: var(--usyd-red-dark);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.alert-card__description {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.alert-card__description p {
+  margin: 0 0 24px 0;
+}
+
+.alert-card__description p:last-child {
+  margin-bottom: 0;
+}
+
+.alert-card__description strong {
+  font-weight: 600;
+}
+
+.alert-card__description a {
+  color: var(--usyd-red-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: var(--transition-base);
+}
+
+.alert-card__description a:hover {
+  color: black;
+}

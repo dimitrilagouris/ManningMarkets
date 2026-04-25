@@ -1,0 +1,159 @@
+.events-section-usyd {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    font-family: var(--main-font);
+    background: var(--usyd-red-light);
+    padding: 24px;
+
+}
+
+
+.create-market-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+/* --- Section Header Row --- */
+.events-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--usyd-grey-500);
+    margin-bottom: 0;
+}
+
+.events-header-label {
+    font-family: var(--main-font);
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: var(--usyd-grey-800);
+    line-height: 1;
+}
+
+.events-count-badge {
+    font-family: var(--main-font);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--usyd-red);
+}
+
+.events-list {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.event-row {
+    display: grid;
+    grid-template-columns: 36px 1fr auto;
+    align-items: center;
+    gap: 0 16px;
+    padding: 18px 0;
+    position: relative;
+}
+
+.event-row:first-child {
+    border-top: none;
+}
+
+/* Subtle hover tint on the whole row */
+.event-row::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    pointer-events: none;
+}
+
+
+/* --- Index Number --- */
+.event-index {
+    font-family: var(--main-font);
+    font-size: 13px;
+    font-style: italic;
+    color: var(--usyd-red);
+    text-align: center;
+    font-weight: 400;
+    user-select: none;
+    padding-top: 2px;
+    line-height: 1;
+}
+
+/* --- Input --- */
+.event-input-wrapper {
+    position: relative;
+}
+
+.event-input {
+    width: 100%;
+    font-family: var(--main-font);
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--usyd-grey-800);
+    background: transparent;
+    border: none;
+    border-bottom: 1.5px solid transparent;
+    padding: 6px 0 6px 2px;
+    outline: none;
+    box-sizing: border-box;
+    caret-color: var(--usyd-red);
+}
+
+.event-input::placeholder {
+    color: var(--usyd-grey-500);
+    font-weight: 300;
+}
+
+.event-input:focus {
+    border-bottom-color: var(--usyd-red);
+}
+
+
+.event-input-underline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 1.5px;
+    width: 0;
+    background: var(--usyd-red);
+    transition: width 260ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.event-input:focus ~ .event-input-underline {
+    width: 100%;
+}
+
+/* Fixes grid alignment without a hardcoded button size */
+.event-remove-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Placeholder slot so grid doesn't collapse when the button is conditionally hidden */
+.event-remove-placeholder {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+}
+
+.events-add-row {
+    display: flex;
+    align-items: center;
+    padding-top: 20px;
+}
+
+
+.events-empty {
+    padding: 40px 0;
+    text-align: center;
+    font-style: italic;
+    font-size: 16px;
+}

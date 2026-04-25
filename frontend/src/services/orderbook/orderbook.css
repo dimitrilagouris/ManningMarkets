@@ -1,0 +1,465 @@
+
+.orderbook-container--inline {
+  max-width: none;
+  max-height: 500px;
+  /*box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);*/
+
+  /*border: 1px solid var(--usyd-grey-200);*/
+  /*border-radius: var(--border-rad-main);*/
+}
+
+.orderbook-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--usyd-grey-200);
+  position: relative;
+}
+
+.orderbook-header--inline {
+  padding: 16px 20px 12px;
+}
+
+.orderbook-title h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--usyd-grey-800);
+  margin: 0 0 4px 0;
+  font-family: 'Apercu-Medium', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.orderbook-subtitle {
+  font-size: 14px;
+  color: var(--usyd-grey-500);
+  margin-bottom: 12px;
+}
+
+.orderbook-status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #dc3545;
+}
+
+.status-indicator.connected .status-dot {
+  background-color: #28a745;
+}
+
+.status-text {
+  text-transform: lowercase;
+  color: var(--usyd-grey-500);
+}
+
+.last-updated {
+  font-size: 12px;
+  color: var(--usyd-grey-500);
+}
+
+.orderbook-summary {
+  font-size: 12px;
+  color: var(--usyd-grey-500);
+}
+
+.orderbook-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  height: 20px;
+  width: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--border-rad-main);
+  color: var(--usyd-grey-500);
+  transition: var(--transition-base);
+  line-height: 0;
+  text-align: center;
+  padding: 0;
+}
+
+
+.orderbook-close:hover {
+  background-color: var(--usyd-grey-200);
+  color: var(--usyd-grey-600);
+}
+
+/* OrderBook Content */
+.orderbook-content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.orderbook-table {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0;
+  max-height: 400px;
+  scrollbar-width: thin;
+  scrollbar-color: white var(--usyd-grey-100);
+}
+
+.orderbook-table::-webkit-scrollbar {
+  width: 6px;
+}
+
+.orderbook-table::-webkit-scrollbar-track {
+  background: var(--usyd-grey-100);
+  border-radius: 3px;
+}
+
+.orderbook-table::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 3px;
+}
+
+.orderbook-table::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+.orderbook-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 12px 24px;
+  background-color: var(--usyd-grey-100);
+  border-bottom: 1px solid var(--usyd-grey-200);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--usyd-grey-600);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.orderbook-column:first-child {
+  text-align: left;
+}
+
+.orderbook-column:nth-child(2) {
+  text-align: center;
+}
+
+.orderbook-column:last-child {
+  text-align: right;
+}
+
+/* OrderBook Sections */
+.orderbook-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.orderbook-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+  position: relative;
+}
+
+.orderbook-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--usyd-grey-200);
+  transform: translateY(-50%);
+  z-index: 0;
+}
+
+.orderbook-divider-text {
+  background: white;
+  padding: 4px 12px;
+  font-size: 11px;
+  color: var(--usyd-grey-600);
+  font-weight: 700;
+  border-radius: 6px;
+  white-space: nowrap;
+  z-index: 2;
+  position: relative;
+  border: 1px solid var(--usyd-grey-200);
+}
+
+/* OrderBook Rows */
+.orderbook-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 8px 24px;
+  position: relative;
+  border-bottom: 1px solid var(--usyd-grey-200);
+  font-size: 14px;
+  font-weight: 500;
+  min-height: 40px;
+  align-items: center;
+}
+
+.orderbook-row:last-child {
+  border-bottom: none;
+}
+
+.ask-row {
+  color: var(--usyd-red-light);
+}
+
+.ask-row .orderbook-cell {
+  color: var(--usyd-red);
+}
+
+.bid-row {
+  color: #c5f6b7;
+}
+
+.bid-row .orderbook-cell {
+  color: var(--success-green);
+}
+
+/* OrderBook Cells */
+.orderbook-cell {
+  font-family: 'Apercu-Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  font-weight: 500;
+  z-index: 2;
+  position: relative;
+}
+
+.orderbook-cell:first-child {
+  text-align: left;
+}
+
+.orderbook-cell:nth-child(2) {
+  text-align: center;
+}
+
+.orderbook-cell:last-child {
+  text-align: right;
+}
+
+.orderbook-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  opacity: 0.15;
+  z-index: 1;
+}
+
+.ask-bar {
+  background-color: #dc3545;
+  left: 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.bid-bar {
+  background-color: #28a745;
+  left: 0;
+  border-radius: 4px 0 0 4px;
+}
+
+@media (max-width: 768px) {
+  .orderbook-overlay {
+    padding: 10px;
+  }
+
+  .orderbook-container {
+    max-height: 90vh;
+  }
+
+  .orderbook-container--inline {
+    max-height: 400px;
+  }
+
+  .orderbook-table {
+    max-height: 300px;
+  }
+
+  .orderbook-header {
+    padding: 16px 20px 12px;
+  }
+
+  .orderbook-header--inline {
+    padding: 12px 16px 8px;
+  }
+
+  .orderbook-title h2 {
+    font-size: 20px;
+  }
+
+  .orderbook-columns,
+  .orderbook-row {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .orderbook-status {
+    gap: 12px;
+  }
+
+  .orderbook-summary {
+    font-size: 11px;
+  }
+
+  .orderbook-dropdown-content {
+    min-width: 300px;
+    max-width: 90vw;
+  }
+}
+
+.orderbook-section:empty::after {
+  content: "No orders available";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  color: var(--usyd-grey-500);
+  font-size: 14px;
+  font-style: italic;
+}
+
+.orderbook-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  color: var(--usyd-grey-500);
+  font-size: 14px;
+}
+
+.orderbook-row {
+  transition: background-color 0.3s ease;
+}
+
+.orderbook-row.new-data {
+  background-color: rgba(0, 123, 255, 0.1);
+  animation: highlight 1s ease-out;
+}
+
+@keyframes highlight {
+  0% {
+    background-color: rgba(0, 123, 255, 0.2);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.orderbook-dropdown-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background-color: var(--usyd-grey-100);
+  border: 1px solid var(--usyd-grey-200);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--usyd-grey-600);
+  transition: all 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.orderbook-dropdown-button:hover {
+  background-color: var(--usyd-grey-200);
+  border-color: #adb5bd;
+  color: var(--usyd-grey-800);
+}
+
+.orderbook-dropdown-button:active {
+  background-color: var(--usyd-grey-200);
+  transform: translateY(1px);
+}
+
+
+.orderbook-dropdown-icon {
+  display: flex;
+  align-items: center;
+  color: var(--usyd-red-dark);
+  font-size: 16px;
+}
+
+.orderbook-dropdown-text {
+  font-family: 'Apercu-Medium', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.orderbook-dropdown-arrow {
+  display: flex;
+  align-items: center;
+  color:var(--usyd-red-dark);
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+.orderbook-dropdown-button:hover .orderbook-dropdown-arrow {
+  transform: translateY(1px);
+}
+
+.market-events__btn.orderbook-dropdown-button {
+  background-color: transparent;
+  border: 1px solid var(--usyd-grey-200);
+  color: var(--usyd-grey-800);
+  font-size: 12px;
+  padding: 6px 10px;
+  margin-left: 8px;
+}
+
+.market-events__btn.orderbook-dropdown-button:hover {
+  border: 1px solid var(--usyd-red-dark);
+}
+
+.orderbook-inline-wrapper {
+  overflow: hidden;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  transition: max-height 320ms ease, padding 220ms linear;
+}
+
+.orderbook-inline-wrapper.open {
+  max-height: 680px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.orderbook-inline-wrapper .orderbook-close {
+  display: block;
+}
+
+
+
+.orderbook-btn .iconify {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 0;
+  color: var(--usyd-red-dark);
+  font-size: 14px;
+}
+
+.orderbook-btn .iconify svg {
+  width: 1em;
+  height: 1em;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+  vertical-align: middle;
+}
