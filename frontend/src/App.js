@@ -7,8 +7,8 @@ import OtpModal from './services/otp/OtpModal'
 import ProfilePage from './services/profile/ProfilePage';
 import AdminDashboard from './services/admin/AdminDashboard';
 import MarketManagementPage from './services/marketManagement/MarketManagementPage';
-import ProtectedRoute from './components/ProtectedRoute';
-import AdminRoute from './components/AdminRoute';
+import ProtectedRoute from './components/routing/ProtectedRoute';
+import AdminRoute from './components/routing/AdminRoute';
 
 import { AuthProvider } from './auth-pages/authentication_context';
 

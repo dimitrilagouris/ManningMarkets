@@ -10,7 +10,7 @@ import LiveOrdersTable from '../../components/tables/wallet/LiveOrdersTable';
 
 import './wallet.css';
 import '../../styles/base.css';
-import Loading from "../../components/Loading";
+import Loading from "../../components/common/Loading";
 
 const PieChart = ({ allocated, unallocated }) => {
     const total = allocated + unallocated;

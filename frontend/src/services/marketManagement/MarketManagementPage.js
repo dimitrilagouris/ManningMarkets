@@ -7,7 +7,7 @@ import { SettleMarketsList } from '../../components/cards/MarketCard';
 
 import './marketManagement.css';
 import '../../styles/base.css';
-import Loading from "../../components/Loading";
+import Loading from "../../components/common/Loading";
 
 const EventRow = ({ index, value, onChange, onRemove, canRemove, isNew = false }) => {
     const inputRef = useRef(null);

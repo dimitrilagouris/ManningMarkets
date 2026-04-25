@@ -7,7 +7,7 @@ import { MarketsOverview } from './marketsOverview';
 import { AuditLogs } from './auditLog';
 import { SuspendModal } from './ModalSuspend';
 import { ModalGivePoints } from './ModalGivePoints';
-import Loading from '../../components/Loading';
+import Loading from '../../components/common/Loading';
 
 import '../wallet/wallet.css';
 import '../../styles/base.css';
