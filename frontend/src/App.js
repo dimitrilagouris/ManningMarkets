@@ -8,6 +8,7 @@ import ProfilePage from './services/profile/ProfilePage';
 import AdminDashboard from './services/admin/AdminDashboard';
 import MarketManagementPage from './services/marketManagement/MarketManagementPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminRoute from './components/AdminRoute';
 
 import { AuthProvider } from './auth-pages/authentication_context';
 
@@ -37,8 +38,8 @@ function App() {
             {/* Protected routes */}
             <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
             <Route path="/wallet" element={<ProtectedRoute><Wallet /></ProtectedRoute>} />
-            <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-            <Route path="/market-management" element={<ProtectedRoute><MarketManagementPage /></ProtectedRoute>} />
+            <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+            <Route path="/market-management" element={<AdminRoute><MarketManagementPage /></AdminRoute>} />
           </Routes>
         </div>
       </AuthProvider>

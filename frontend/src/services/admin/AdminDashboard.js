@@ -7,6 +7,7 @@ import { MarketsOverview } from './marketsOverview';
 import { AuditLogs } from './auditLog';
 import { SuspendModal } from './ModalSuspend';
 import { ModalGivePoints } from './ModalGivePoints';
+import Loading from '../../components/Loading';
 
 import '../wallet/wallet.css';
 import '../../styles/base.css';
@@ -33,12 +34,25 @@ function AdminDashboard() {
     };
 
     useEffect(() => {
-        client.get('/api/admin/stats/')
-            .then(({ data: stats }) => setData(prev => ({ ...prev, stats })))
-            .catch(console.error);
+        const loadAll = async () => {
+            try {
+                const [{ data: stats }, { data: tabRes }] = await Promise.all([
+                    client.get('/api/admin/stats/'),
+                    client.get('/api/admin/users/?search=&status=all'),
+                ]);
+                setData(prev => ({ ...prev, stats, users: tabRes.users || [] }));
+                setLoading(false);
+            } catch (err) {
+                console.error("Failed to load dashboard", err);
+                // loading stays true, interceptor is redirecting, nothing should render
+            }
+        };
+        loadAll();
     }, []);
 
     useEffect(() => {
+        if (loading) return;
+
         const query = `?search=${searchTerm}&status=${filterStatus}`;
         const endpoints = {
             'Users': `/api/admin/users/${query}`,
@@ -53,8 +67,7 @@ function AdminDashboard() {
 
         client.get(endpoints[activeTab])
             .then(({ data: res }) => setData(prev => ({ ...prev, [keys[activeTab]]: res[keys[activeTab]] || [] })))
-            .catch(err => console.error("Failed to load tab data", err))
-            .finally(() => setLoading(false));
+            .catch(err => console.error("Failed to load tab data", err));
     }, [activeTab, searchTerm, filterStatus]);
 
     const refreshUserList = async () => {
@@ -90,7 +103,7 @@ function AdminDashboard() {
         setModalState({ type, user });
     };
 
-    if (loading && !data.stats.totalUsers) return <main className="main-content"><div>Loading Dashboard...</div></main>;
+    if (loading) return <Loading />;
 
     return (
         <div className="wallet-page">

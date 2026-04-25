@@ -10,6 +10,7 @@ import LiveOrdersTable from '../../components/tables/wallet/LiveOrdersTable';
 
 import './wallet.css';
 import '../../styles/base.css';
+import Loading from "../../components/Loading";
 
 const PieChart = ({ allocated, unallocated }) => {
     const total = allocated + unallocated;
@@ -101,8 +102,7 @@ function Wallet() {
         }
     };
 
-    if (loading) return <main className="main-content"><div>Loading Wallet...</div></main>;
-    if (error)   return <main className="main-content"><div>Error: {error.message}</div></main>;
+    if (loading) return <Loading />;
 
     return (
         <div className="wallet-page">

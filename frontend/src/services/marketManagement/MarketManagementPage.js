@@ -7,6 +7,7 @@ import { SettleMarketsList } from '../../components/cards/MarketCard';
 
 import './marketManagement.css';
 import '../../styles/base.css';
+import Loading from "../../components/Loading";
 
 const EventRow = ({ index, value, onChange, onRemove, canRemove, isNew = false }) => {
     const inputRef = useRef(null);
@@ -176,9 +177,12 @@ export default function MarketManagementPage() {
     const fetchMarkets = () => {
         setLoading(true);
         client.get('/api/admin/markets/')
-            .then(({ data }) => setMarkets(Array.isArray(data) ? data : (data.markets || [])))
-            .catch(() => setMarkets([]))
-            .finally(() => setLoading(false));
+            .then(({ data }) => {
+                setMarkets(Array.isArray(data) ? data : (data.markets || []));
+                setLoading(false);
+            })
+            .catch(err => console.error("Failed to load markets", err));
+            // no finally — if 403, loading stays true while interceptor redirects
     };
 
     useEffect(() => { fetchMarkets(); }, []);
@@ -210,7 +214,7 @@ export default function MarketManagementPage() {
         }
     };
 
-    if (loading && !markets.length) return <main className="main-content"><div>Checking access…</div></main>;
+    if (loading) return <Loading />;
 
     return (
         <div className="wallet-page">
