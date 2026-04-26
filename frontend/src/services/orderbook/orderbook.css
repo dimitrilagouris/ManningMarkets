@@ -2,10 +2,10 @@
 .orderbook-container--inline {
   max-width: none;
   max-height: 500px;
-  /*box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);*/
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 
-  /*border: 1px solid var(--usyd-grey-200);*/
-  /*border-radius: var(--border-rad-main);*/
+  border: 1px solid var(--usyd-grey-200);
+  border-radius: var(--border-rad-main);
 }
 
 .orderbook-header {

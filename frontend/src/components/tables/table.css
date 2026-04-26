@@ -103,3 +103,25 @@
   /* Columns: Admin | Action (stretches) | Timestamp */
   grid-template-columns: 180px 1fr 180px;
 }
+
+/* Market Events Table Overrides */
+.market-events-table {
+  border: none; /* Removes the outer border */
+}
+
+.market-events-table .table-header,
+.market-events-table .table-row {
+  grid-template-columns: 2fr 1fr 1.5fr 1.5fr;
+}
+
+.market-events-table .table-col {
+  border-right: none; /* Removes vertical lines, leaving only the row borders */
+}
+
+/* Modifier for vertically stacked action buttons (Order Books) */
+.table-col--stacked-actions {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 8px;
+}
