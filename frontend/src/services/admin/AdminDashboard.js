@@ -11,6 +11,7 @@ import Loading from '../../components/common/Loading';
 
 import '../wallet/wallet.css';
 import '../../styles/base.css';
+import {ModalDeleteUser} from "../../components/modals/ModalDeleteUser";
 
 function AdminDashboard() {
     const [activeTab, setActiveTab] = useState('Users');
@@ -78,9 +79,13 @@ function AdminDashboard() {
     const handleAction = async (payload = null) => {
         if (!modalState.user) return;
         try {
-            const urlSlug = modalState.type === 'points' ? 'give-points' : modalState.type;
-            const body = modalState.type === 'points' ? { amount: payload } : null;
-            await clientApi.post(`/api/admin/users/${modalState.user.id}/${urlSlug}/`, body);
+            if (modalState.type === 'delete') {
+                await clientApi.delete(`/api/admin/users/${modalState.user.id}/delete/`);
+            } else {
+                const urlSlug = modalState.type === 'points' ? 'give-points' : modalState.type;
+                const body = modalState.type === 'points' ? { amount: payload } : null;
+                await clientApi.post(`/api/admin/users/${modalState.user.id}/${urlSlug}/`, body);
+            }
             await refreshUserList();
         } catch (err) {
             alert(err.message);
@@ -90,16 +95,7 @@ function AdminDashboard() {
     };
 
     const handleTableAction = async (type, user) => {
-        if (type === 'delete') {
-            if (!window.confirm(`Are you sure you want to permanently delete ${user.name}?`)) return;
-            try {
-                await clientApi.delete(`/api/admin/users/${user.id}/delete/`);
-                await refreshUserList();
-            } catch (err) {
-                alert(`Failed to delete user: ${err.message}`);
-            }
-            return;
-        }
+        // Now simply passes 'delete' to the state alongside 'suspend' and 'points'
         setModalState({ type, user });
     };
 
@@ -160,6 +156,13 @@ function AdminDashboard() {
                 user={modalState.user}
                 onClose={() => setModalState({ type: null, user: null })}
                 onConfirm={(amount) => handleAction(amount)}
+            />
+
+            <ModalDeleteUser
+                show={modalState.type === 'delete'}
+                user={modalState.user}
+                onClose={() => setModalState({ type: null, user: null })}
+                onConfirm={() => handleAction()}
             />
         </div>
     );
