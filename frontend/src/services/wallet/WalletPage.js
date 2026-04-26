@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import client from '../../api/client';
+import clientApi from '../../api/clientApi';
 import { Doughnut } from 'react-chartjs-2';
 import 'chart.js/auto';
 import PropTypes from 'prop-types';
@@ -72,7 +72,7 @@ function Wallet() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        client.get('/wallet/')
+        clientApi.get('/wallet/')
             .then(({ data }) => setWalletData({
                 id: data.wallet_id,
                 balance: data.balance,
@@ -87,15 +87,15 @@ function Wallet() {
         const endpoint = TAB_ENDPOINTS[activeTab];
         const key = TAB_KEYS[activeTab];
 
-        client.get(endpoint)
+        clientApi.get(endpoint)
             .then(({ data }) => setTabData(prev => ({ ...prev, [activeTab]: data[key] || [] })))
             .catch(err => console.error(`Failed to load ${activeTab}:`, err));
     }, [activeTab]);
 
     const handleCancelOrder = async (orderId) => {
         try {
-            await client.post('/api/wallet/cancel-order/', { order_id: orderId });
-            const { data } = await client.get(TAB_ENDPOINTS['Live Orders']);
+            await clientApi.post('/api/wallet/cancel-order/', { order_id: orderId });
+            const { data } = await clientApi.get(TAB_ENDPOINTS['Live Orders']);
             setTabData(prev => ({ ...prev, 'Live Orders': data.orders || [] }));
         } catch (err) {
             console.error("Failed to cancel order:", err);

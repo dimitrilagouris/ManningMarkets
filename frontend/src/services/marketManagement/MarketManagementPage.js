@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import client from '../../api/client';
+import clientApi from '../../api/clientApi';
 import { FormInput } from '../../components/forms/FormInput';
 import { Button } from '../../components/buttons/Button';
 import { SettleMarketsList } from '../../components/cards/MarketCard';
@@ -176,7 +176,7 @@ export default function MarketManagementPage() {
 
     const fetchMarkets = () => {
         setLoading(true);
-        client.get('/api/admin/markets/')
+        clientApi.get('/api/admin/markets/')
             .then(({ data }) => {
                 setMarkets(Array.isArray(data) ? data : (data.markets || []));
                 setLoading(false);
@@ -190,7 +190,7 @@ export default function MarketManagementPage() {
     const handleCreateMarket = async (payload) => {
         setActionLoading(true);
         try {
-            await client.post('/api/admin/create-market/', payload);
+            await clientApi.post('/api/admin/create-market/', payload);
             alert('Market created successfully!');
             fetchMarkets();
         } catch (err) {
@@ -204,7 +204,7 @@ export default function MarketManagementPage() {
         if (!window.confirm(`Settle this event with ${outcome} as the winner? This cannot be undone!`)) return;
         setActionLoading(true);
         try {
-            const { data } = await client.post('/api/admin/settle-market/', { event_id: eventId, winning_outcome: outcome });
+            const { data } = await clientApi.post('/api/admin/settle-market/', { event_id: eventId, winning_outcome: outcome });
             alert(`Event settled!\nTotal payout: $${data.total_payout}`);
             fetchMarkets();
         } catch (err) {

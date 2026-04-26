@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
-import client from '../../api/client';
+import clientApi from '../../api/clientApi';
 
 import ChangeUsername from "../login/ChangeUsernameForm";
 import ChangePassword from "../login/ChangePasswordForm";
@@ -22,7 +22,7 @@ function ProfilePage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        client.get('/profile/')
+        clientApi.get('/profile/')
             .then(({ data }) => setData(data))
             .catch(setError)
             .finally(() => setLoading(false));

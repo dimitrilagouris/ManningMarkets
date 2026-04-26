@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { AuthContext } from '../../auth-pages/authentication_context';
 import { MarketEventsTable } from '../../components/tables/place-position/MarketEventsTable';
 import { OrderForm } from './OrderForm';
-import { fetchMarketData, fetchWalletBalance } from './marketApi';
+import { fetchMarketData, fetchWalletBalance } from '../../api/marketApi';
 import PropTypes from 'prop-types';
 
 import './placePosition.css';

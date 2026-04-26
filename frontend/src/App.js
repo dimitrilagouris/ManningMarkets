@@ -3,7 +3,7 @@ import LoginPage from './services/login/LoginPage';
 import MarketPage from './services/markets/MarketPage';
 import Wallet from './services/wallet/WalletPage';
 import LeaderboardPage from './services/leaderboard/LeaderboardPage';
-import OtpModal from './services/otp/OtpModal'
+import OtpModal from './components/modals/OtpModal'
 import ProfilePage from './services/profile/ProfilePage';
 import AdminDashboard from './services/admin/AdminDashboard';
 import MarketManagementPage from './services/marketManagement/MarketManagementPage';

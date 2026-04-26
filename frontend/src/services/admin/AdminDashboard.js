@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import client from '../../api/client';
+import clientApi from '../../api/clientApi';
 import { SystemOverview } from './systemOverview';
 import { AdminControls } from './AdminControls';
 import { UserManagement } from './userManagement';
 import { MarketsOverview } from './marketsOverview';
 import AuditLogsTable from '../../components/tables/admin/AuditLogTable';
-import { SuspendModal } from './ModalSuspend';
-import { ModalGivePoints } from './ModalGivePoints';
+import { SuspendModal } from '../../components/modals/ModalSuspend';
+import { ModalGivePoints } from '../../components/modals/ModalGivePoints';
 import Loading from '../../components/common/Loading';
 
 import '../wallet/wallet.css';
@@ -37,8 +37,8 @@ function AdminDashboard() {
         const loadAll = async () => {
             try {
                 const [{ data: stats }, { data: tabRes }] = await Promise.all([
-                    client.get('/api/admin/stats/'),
-                    client.get('/api/admin/users/?search=&status=all'),
+                    clientApi.get('/api/admin/stats/'),
+                    clientApi.get('/api/admin/users/?search=&status=all'),
                 ]);
                 setData(prev => ({ ...prev, stats, users: tabRes.users || [] }));
                 setLoading(false);
@@ -65,13 +65,13 @@ function AdminDashboard() {
             'Audit Log': 'auditLogs',
         };
 
-        client.get(endpoints[activeTab])
+        clientApi.get(endpoints[activeTab])
             .then(({ data: res }) => setData(prev => ({ ...prev, [keys[activeTab]]: res[keys[activeTab]] || [] })))
             .catch(err => console.error("Failed to load tab data", err));
     }, [activeTab, searchTerm, filterStatus]);
 
     const refreshUserList = async () => {
-        const { data: res } = await client.get(`/api/admin/users/?search=${searchTerm}&status=${filterStatus}`);
+        const { data: res } = await clientApi.get(`/api/admin/users/?search=${searchTerm}&status=${filterStatus}`);
         setData(prev => ({ ...prev, users: res.users || [] }));
     };
 
@@ -80,7 +80,7 @@ function AdminDashboard() {
         try {
             const urlSlug = modalState.type === 'points' ? 'give-points' : modalState.type;
             const body = modalState.type === 'points' ? { amount: payload } : null;
-            await client.post(`/api/admin/users/${modalState.user.id}/${urlSlug}/`, body);
+            await clientApi.post(`/api/admin/users/${modalState.user.id}/${urlSlug}/`, body);
             await refreshUserList();
         } catch (err) {
             alert(err.message);
@@ -93,7 +93,7 @@ function AdminDashboard() {
         if (type === 'delete') {
             if (!window.confirm(`Are you sure you want to permanently delete ${user.name}?`)) return;
             try {
-                await client.delete(`/api/admin/users/${user.id}/delete/`);
+                await clientApi.delete(`/api/admin/users/${user.id}/delete/`);
                 await refreshUserList();
             } catch (err) {
                 alert(`Failed to delete user: ${err.message}`);

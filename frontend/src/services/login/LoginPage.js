@@ -10,7 +10,7 @@ import '../otp/OtpModal.css';
 
 import { DJANGO_API_BASE } from '../../config';
 import { AuthContext } from '../../auth-pages/authentication_context';
-import OtpModal from '../otp/OtpModal';
+import OtpModal from '../../components/modals/OtpModal';
 
 import { Button } from '../../components/buttons/Button';
 import { FormInput } from '../../components/forms/FormInput';

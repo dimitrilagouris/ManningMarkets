@@ -1,4 +1,4 @@
-import { DJANGO_API_BASE } from '../../config';
+import { DJANGO_API_BASE } from '../config';
 import Cookies from 'js-cookie';
 
 /**
