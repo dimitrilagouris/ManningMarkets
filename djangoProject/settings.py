@@ -4,10 +4,14 @@ Django settings for djangoProject project.
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+TWO_FACTOR_ENABLED = False
 
 # --- CORE DEPLOYMENT SETTINGS ---
 # Reads SECRET_KEY from .env
@@ -37,9 +41,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -144,7 +148,7 @@ AUTH_USER_MODEL = 'djangoProject.Profiles'
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Enforce secure connections
-SECURE_SSL_REDIRECT = True 
+SECURE_SSL_REDIRECT = False
 
 # Ensures security is enforced for the browser (fixes integrity/digest errors)
 SECURE_BROWSER_XSS_FILTER = True 

@@ -58,7 +58,7 @@ class OrderbookConsumer(AsyncWebsocketConsumer):
             print(f"[WS SEND ORDERBOOK ERROR] {e}")
 
     async def send_initial_orderbook(self):
-        """Send initial orderbook snapshot when client connects"""
+        """Send initial orderbook snapshot when clientApi connects"""
         try:
             # Import here to avoid circular imports at module level
             from .models import Events

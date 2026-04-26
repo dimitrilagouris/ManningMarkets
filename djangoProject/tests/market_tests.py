@@ -11,7 +11,7 @@ class MarketViewsTestCase(TestCase):
     def setUp(self):
         self.factory = APIRequestFactory()
 
-    @patch('djangoProject.views.market_views.Markets.objects.filter')
+    @patch('djangoProject.views.market_views.MarketPage.objects.filter')
     def test_fetch_markets_ajax_success(self, mock_filter):
         # Setup mock market and events
         mock_event = MagicMock()
@@ -40,7 +40,7 @@ class MarketViewsTestCase(TestCase):
         self.assertEqual(len(data['markets']), 1)
         self.assertEqual(data['markets'][0]['events'][0]['name'], "Event 1")
 
-    @patch('djangoProject.views.market_views.Markets.objects.filter')
+    @patch('djangoProject.views.market_views.MarketPage.objects.filter')
     def test_fetch_markets_ajax_empty(self, mock_filter):
         # Test empty queryset
         mock_qs = MagicMock()
@@ -60,7 +60,7 @@ class MarketViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.content.decode(), "Invalid Request Type")
 
-    @patch('djangoProject.views.market_views.Markets.objects.filter')
+    @patch('djangoProject.views.market_views.MarketPage.objects.filter')
     def test_fetch_market_ajax_success(self, mock_filter):
         # Setup mock market and events
         mock_event = MagicMock()
@@ -87,7 +87,7 @@ class MarketViewsTestCase(TestCase):
         self.assertIn('market', data)
         self.assertEqual(data['market']['name'], "Market 1")
 
-    @patch('djangoProject.views.market_views.Markets.objects.filter')
+    @patch('djangoProject.views.market_views.MarketPage.objects.filter')
     def test_fetch_market_not_found(self, mock_filter):
         mock_qs = MagicMock()
         mock_qs.prefetch_related.return_value.first.return_value = None
@@ -174,7 +174,7 @@ class MarketViewsTestCase(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data['markets'][0]['balance'], 0.0)
 
-    @patch('djangoProject.views.market_views.Markets.objects.filter')
+    @patch('djangoProject.views.market_views.MarketPage.objects.filter')
     def test_fetch_markets_with_search_query(self, mock_filter):
         """Test fetch_markets with search parameter 'q'"""
         mock_event = MagicMock()
@@ -200,7 +200,7 @@ class MarketViewsTestCase(TestCase):
         data = json.loads(response.content)
         self.assertIn('markets', data)
 
-    @patch('djangoProject.views.market_views.Markets.objects.filter')
+    @patch('djangoProject.views.market_views.MarketPage.objects.filter')
     def test_fetch_market_exception_handling(self, mock_filter):
         """Test fetch_market exception handling"""
         mock_qs = MagicMock()
@@ -214,7 +214,7 @@ class MarketViewsTestCase(TestCase):
         data = json.loads(response.content)
         self.assertIn('error', data)
 
-    @patch('djangoProject.views.market_views.Markets.objects.filter')
+    @patch('djangoProject.views.market_views.MarketPage.objects.filter')
     def test_fetch_markets_with_empty_search_query(self, mock_filter):
         """Test fetch_markets with empty search query"""
         mock_event = MagicMock()
@@ -240,7 +240,7 @@ class MarketViewsTestCase(TestCase):
         data = json.loads(response.content)
         self.assertIn('markets', data)
 
-    @patch('djangoProject.views.market_views.Markets.objects.filter')
+    @patch('djangoProject.views.market_views.MarketPage.objects.filter')
     def test_fetch_markets_with_whitespace_search_query(self, mock_filter):
         """Test fetch_markets with whitespace-only search query"""
         mock_event = MagicMock()
@@ -266,7 +266,7 @@ class MarketViewsTestCase(TestCase):
         data = json.loads(response.content)
         self.assertIn('markets', data)
 
-    @patch('djangoProject.views.market_views.Markets.objects.filter')
+    @patch('djangoProject.views.market_views.MarketPage.objects.filter')
     def test_fetch_markets_with_multiple_events(self, mock_filter):
         """Test fetch_markets with multiple events per market"""
         mock_event1 = MagicMock()
@@ -299,7 +299,7 @@ class MarketViewsTestCase(TestCase):
         self.assertEqual(len(data['markets']), 1)
         self.assertEqual(len(data['markets'][0]['events']), 2)
 
-    @patch('djangoProject.views.market_views.Markets.objects.filter')
+    @patch('djangoProject.views.market_views.MarketPage.objects.filter')
     def test_fetch_markets_with_no_events(self, mock_filter):
         """Test fetch_markets with market that has no events"""
         mock_market = MagicMock()
@@ -319,7 +319,7 @@ class MarketViewsTestCase(TestCase):
         data = json.loads(response.content)
         self.assertEqual(len(data['markets'][0]['events']), 0)
 
-    @patch('djangoProject.views.market_views.Markets.objects.filter')
+    @patch('djangoProject.views.market_views.MarketPage.objects.filter')
     def test_fetch_markets_multiple_markets(self, mock_filter):
         """Test fetch_markets with multiple markets"""
         mock_event = MagicMock()
@@ -351,7 +351,7 @@ class MarketViewsTestCase(TestCase):
         data = json.loads(response.content)
         self.assertEqual(len(data['markets']), 2)
 
-    @patch('djangoProject.views.market_views.Markets.objects.filter')
+    @patch('djangoProject.views.market_views.MarketPage.objects.filter')
     def test_fetch_market_with_multiple_events(self, mock_filter):
         """Test fetch_market with multiple events"""
         mock_event1 = MagicMock()
@@ -383,7 +383,7 @@ class MarketViewsTestCase(TestCase):
         data = json.loads(response.content)
         self.assertEqual(len(data['market']['events']), 2)
 
-    @patch('djangoProject.views.market_views.Markets.objects.filter')
+    @patch('djangoProject.views.market_views.MarketPage.objects.filter')
     def test_fetch_market_with_no_events(self, mock_filter):
         """Test fetch_market with market that has no events"""
         mock_market = MagicMock()
@@ -456,7 +456,7 @@ class MarketViewsTestCase(TestCase):
         self.assertEqual(len(data['markets']), 2)
         self.assertEqual(data['markets'][0]['balance'], 200.0)
 
-    @patch('djangoProject.views.market_views.Markets.objects.filter')
+    @patch('djangoProject.views.market_views.MarketPage.objects.filter')
     def test_fetch_markets_filters_open_markets_only(self, mock_filter):
         """Test that fetch_markets only returns open markets"""
         mock_market = MagicMock()
@@ -475,7 +475,7 @@ class MarketViewsTestCase(TestCase):
         mock_filter.assert_called_with(open=True)
         self.assertEqual(response.status_code, 200)
 
-    @patch('djangoProject.views.market_views.Markets.objects.filter')
+    @patch('djangoProject.views.market_views.MarketPage.objects.filter')
     def test_fetch_markets_with_search_parameter(self, mock_filter):
         """Test fetch_markets with search filtering"""
         mock_market = MagicMock()

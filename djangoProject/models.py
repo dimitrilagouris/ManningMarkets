@@ -107,7 +107,7 @@ class Profiles(AbstractUser): # Django user model stores username and email and 
 class EmailToken(models.Model):
     user = models.ForeignKey(Profiles, on_delete=models.CASCADE, related_name="email_tokens")
     token_hash = models.CharField(max_length=64)
-    purpose = models.CharField(max_length=32, default='activation')
+    purpose = models.CharField(max_length=32, default='auth-pages')
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField()
 

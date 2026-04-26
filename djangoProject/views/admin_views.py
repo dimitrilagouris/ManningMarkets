@@ -1,3 +1,4 @@
+# admin_views
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -18,7 +19,7 @@ def admin_required(view_func):
         if not request.user.is_authenticated:
             return Response({'error': 'Authentication required'}, status=401)
         if not request.user.is_admin:
-            return Response({'error': 'Admin privileges required'}, status=403)
+            return Response({'error': 'AdminDashboard privileges required'}, status=403)
         return view_func(request, *args, **kwargs)
     return wrapper
 

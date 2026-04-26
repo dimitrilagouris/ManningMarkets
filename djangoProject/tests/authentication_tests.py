@@ -236,7 +236,7 @@ class AuthenticationViewsTestCase(TestCase):
         token = EmailToken.objects.create(
             user=self.user,
             token_hash=token_hash,
-            purpose='activation',
+            purpose='auth-pages',
             expires_at=timezone.now() - timedelta(minutes=1)  # Already expired
         )
         
@@ -384,7 +384,7 @@ class AuthenticationViewsTestCase(TestCase):
 
     @patch('djangoProject.views.authentication_views.EmailToken.objects.select_related')
     def test_activate_user_deletes_token_after_success(self, mock_select_related):
-        """Test activate_user deletes token after successful activation"""
+        """Test activate_user deletes token after successful auth-pages"""
         mock_token = MagicMock()
         mock_token.user = self.user
         mock_token.is_expired.return_value = False
