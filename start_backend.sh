@@ -1,15 +1,23 @@
 #!/bin/bash
 
-echo "Starting Django Backend with WebSocket support..."
+echo "Starting Django backend with WebSocket support..."
 
-# Install required packages from requirements.txt
+# Start Redis if not already running
+if ! pgrep -x "redis-server" > /dev/null; then
+    echo "Starting Redis..."
+    redis-server --daemonize yes
+else
+    echo "Redis already running."
+fi
+
+# Ensure a virtual environment exists to prevent PEP-668 system conflicts
+if [ ! -d "venv" ]; then
+    echo "Virtual environment not found. Creating one now..."
+    python3 -m venv venv
+fi
+
+source venv/bin/activate
+
 python3 -m pip install -r requirements.txt
-
-# Run migrations
 python3 manage.py migrate
-
-
-# python3 manage.py runserver was deprecated
-#   - Django runserver uses WSGI, which is synchronous and doesn't support websockets.
-#   - Use Daphne to serve the application with ASGI for WebSocket support.
 daphne -b 0.0.0.0 -p 8000 djangoProject.asgi:application
