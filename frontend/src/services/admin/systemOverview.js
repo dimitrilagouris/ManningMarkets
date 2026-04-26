@@ -12,7 +12,7 @@ export const SystemOverview = ({ stats }) => (
     <StatCard value={stats.totalUsers || 0} label="Total Users" />
     <StatCard value={stats.activeUsers || 0} label="Active Users" />
     <StatCard value={stats.suspendedUsers || 0} label="Suspended" />
-    <StatCard value={`${stats.activeMarkets || 0}/${stats.totalMarkets || 0}`} label="Active MarketPage" />
+    <StatCard value={`${stats.activeMarkets || 0}/${stats.totalMarkets || 0}`} label="Active Markets" />
   </div>
 );
 

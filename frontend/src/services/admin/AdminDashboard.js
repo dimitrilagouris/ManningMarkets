@@ -4,7 +4,7 @@ import { SystemOverview } from './systemOverview';
 import { AdminControls } from './AdminControls';
 import { UserManagement } from './userManagement';
 import { MarketsOverview } from './marketsOverview';
-import { AuditLogs } from './auditLog';
+import AuditLogsTable from '../../components/tables/admin/AuditLogTable';
 import { SuspendModal } from './ModalSuspend';
 import { ModalGivePoints } from './ModalGivePoints';
 import Loading from '../../components/common/Loading';
@@ -143,7 +143,7 @@ function AdminDashboard() {
 
                         {activeTab === 'Users' && <UserManagement users={data.users} onAction={handleTableAction} />}
                         {activeTab === 'MarketPage' && <MarketsOverview markets={data.markets} />}
-                        {activeTab === 'Audit Log' && <AuditLogs auditLogs={data.auditLogs} />}
+                        {activeTab === 'Audit Log' && <AuditLogsTable auditLogs={data.auditLogs} />}
                     </section>
                 </div>
             </div>
