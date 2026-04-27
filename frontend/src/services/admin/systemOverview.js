@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StatCard } from './StatCard';
+import { StatCard } from '../../components/cards/StatCard';
 
 /**
  * Renders the top-level system statistics across the full width of the container.
