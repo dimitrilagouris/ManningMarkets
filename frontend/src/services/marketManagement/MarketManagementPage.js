@@ -1,15 +1,52 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import clientApi from '../../api/clientApi';
+import { fetchAdminData, getCSRFToken } from '../../api/adminApi';
+import { DJANGO_API_BASE } from '../../config';
 import { FormInput } from '../../components/forms/FormInput';
 import { Button } from '../../components/buttons/Button';
 import { SettleMarketsList } from '../../components/cards/MarketCard';
+import Loading from "../../components/common/Loading";
 
 import './marketManagement.css';
 import '../../styles/base.css';
-import Loading from "../../components/common/Loading";
 
+/**
+ * @typedef {Object} PredictionEvent
+ * @property {string} name
+ */
+
+/**
+ * @typedef {Object} MarketPayload
+ * @property {string} market_name
+ * @property {string} expiration_date
+ * @property {PredictionEvent[]} events
+ */
+
+/**
+ * Executes a state-modifying administrative POST request.
+ * @param {string} endpoint - The target API endpoint suffix.
+ * @param {Object} payload - The JSON payload to transmit.
+ * @returns {Promise<Object>}
+ */
+const postAdminAction = async (endpoint, payload) => {
+    const token = await getCSRFToken();
+    const res = await fetch(`${DJANGO_API_BASE}/api/admin/${endpoint}`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': token },
+        body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Action failed');
+    return data;
+};
+
+/**
+ * Renders an individual input row for a prediction event.
+ * @param {Object} props - Component properties.
+ */
 const EventRow = ({ index, value, onChange, onRemove, canRemove, isNew = false }) => {
+    /** @type {React.RefObject<HTMLInputElement>} */
     const inputRef = useRef(null);
 
     useEffect(() => {
@@ -60,7 +97,12 @@ EventRow.propTypes = {
     isNew: PropTypes.bool,
 };
 
+/**
+ * Manages the list of prediction events for a new market.
+ * @param {Object} props - Component properties.
+ */
 export const EventsSection = ({ events, onAdd, onRemove, onUpdate }) => {
+    /** @type {[number|null, React.Dispatch<React.SetStateAction<number|null>>]} */
     const [newestIndex, setNewestIndex] = useState(null);
 
     const handleAdd = () => {
@@ -68,11 +110,11 @@ export const EventsSection = ({ events, onAdd, onRemove, onUpdate }) => {
         setNewestIndex(events.length);
     };
 
+    // Auto-clears the new row focus state to prevent layout jumps on subsequent edits
     useEffect(() => {
-        if (newestIndex !== null) {
-            const timer = setTimeout(() => setNewestIndex(null), 300);
-            return () => clearTimeout(timer);
-        }
+        if (newestIndex === null) return;
+        const timer = setTimeout(() => setNewestIndex(null), 300);
+        return () => clearTimeout(timer);
     }, [newestIndex]);
 
     const validCount = events.filter(e => e.name.trim()).length;
@@ -122,9 +164,16 @@ EventsSection.propTypes = {
     onUpdate: PropTypes.func.isRequired,
 };
 
+/**
+ * Form for defining and submitting a new prediction market.
+ * @param {Object} props - Component properties.
+ */
 const CreateMarketForm = ({ actionLoading, onMarketCreate }) => {
+    /** @type {[string, React.Dispatch<React.SetStateAction<string>>]} */
     const [marketName, setMarketName] = useState('');
+    /** @type {[string, React.Dispatch<React.SetStateAction<string>>]} */
     const [marketExpirationDate, setMarketExpirationDate] = useState('');
+    /** @type {[PredictionEvent[], React.Dispatch<React.SetStateAction<PredictionEvent[]>>]} */
     const [events, setEvents] = useState([{ name: '' }]);
 
     const addEvent = () => setEvents(prev => [...prev, { name: '' }]);
@@ -136,7 +185,10 @@ const CreateMarketForm = ({ actionLoading, onMarketCreate }) => {
     });
 
     const handleSubmit = async () => {
-        if (!marketName.trim() || !marketExpirationDate) return alert('Please provide a market name and expiration date.');
+        if (!marketName.trim() || !marketExpirationDate) {
+            return alert('Please provide a market name and expiration date.');
+        }
+
         const validEvents = events.filter(e => e.name.trim());
         if (!validEvents.length) return alert('Please add at least one valid event.');
 
@@ -168,47 +220,76 @@ CreateMarketForm.propTypes = {
     onMarketCreate: PropTypes.func.isRequired,
 };
 
+/**
+ * Main wrapper for administrative market creation and settlement.
+ * @returns {JSX.Element}
+ */
 export default function MarketManagementPage() {
+    /** @type {[Array, React.Dispatch<React.SetStateAction<Array>>]} */
     const [markets, setMarkets] = useState([]);
+    /** @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]} */
     const [loading, setLoading] = useState(true);
+    /** @type {[string, React.Dispatch<React.SetStateAction<string>>]} */
     const [activeTab, setActiveTab] = useState('create');
+    /** @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]} */
     const [actionLoading, setActionLoading] = useState(false);
 
-    const fetchMarkets = () => {
+    /**
+     * Retrieves the latest active and pending markets.
+     */
+    const loadMarkets = async () => {
         setLoading(true);
-        clientApi.get('/api/admin/markets/')
-            .then(({ data }) => {
-                setMarkets(Array.isArray(data) ? data : (data.markets || []));
-                setLoading(false);
-            })
-            .catch(err => console.error("Failed to load markets", err));
-            // no finally — if 403, loading stays true while interceptor redirects
+        try {
+            const data = await fetchAdminData('markets/');
+            setMarkets(Array.isArray(data) ? data : (data.markets || []));
+            setLoading(false);
+        } catch (err) {
+            console.error("Failed to load markets", err);
+            if (err.message.includes('401') || err.message.includes('403')) {
+                window.location.replace('/login');
+            }
+        }
     };
 
-    useEffect(() => { fetchMarkets(); }, []);
+    useEffect(() => {
+        loadMarkets();
+    }, []);
 
+    /**
+     * Transmits a new market configuration to the server.
+     * @param {MarketPayload} payload - Formatted market data.
+     */
     const handleCreateMarket = async (payload) => {
         setActionLoading(true);
         try {
-            await clientApi.post('/api/admin/create-market/', payload);
+            await postAdminAction('create-market/', payload);
             alert('Market created successfully!');
-            fetchMarkets();
+            await loadMarkets();
         } catch (err) {
-            alert(err.response?.data?.error || 'Failed to create market');
+            alert(err.message || 'Failed to create market');
         } finally {
             setActionLoading(false);
         }
     };
 
+    /**
+     * Finalises a market event by declaring the winning outcome.
+     * @param {string|number} eventId - Target event identifier.
+     * @param {string} outcome - The winning selection.
+     */
     const handleSettleEvent = async (eventId, outcome) => {
         if (!window.confirm(`Settle this event with ${outcome} as the winner? This cannot be undone!`)) return;
+
         setActionLoading(true);
         try {
-            const { data } = await clientApi.post('/api/admin/settle-market/', { event_id: eventId, winning_outcome: outcome });
+            const data = await postAdminAction('settle-market/', {
+                event_id: eventId,
+                winning_outcome: outcome
+            });
             alert(`Event settled!\nTotal payout: $${data.total_payout}`);
-            fetchMarkets();
+            await loadMarkets();
         } catch (err) {
-            alert(err.response?.data?.error || 'Failed to settle event');
+            alert(err.message || 'Failed to settle event');
         } finally {
             setActionLoading(false);
         }
