@@ -1,4 +1,4 @@
-# Manning MarketPage
+# Manning Markets
 
 ## Prerequisites
 
@@ -53,6 +53,9 @@ REACT_APP_WS_BASE_URL=ws://localhost:8000
 
 ### 1. Backend
 ```bash
+python3 -m venv env
+source env/bin/activate
+
 cd djangoProject
 ./start_backend.sh
 ```
