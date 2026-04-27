@@ -1,3 +1,4 @@
+# market_views.py
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 
@@ -10,38 +11,33 @@ from ..models import Markets, Events, Profiles
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def fetch_markets(request):
-    # AJAX Request
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        # accept query param 'q' for searching market_name
-        q = request.GET.get('q', '').strip()
+    q = request.GET.get('q', '').strip()
 
-        # base queryset
-        qs = Markets.objects.filter(open=True)
+    qs = Markets.objects.filter(open=True)
 
-        if q:
-            qs = qs.filter(market_name__icontains=q)
+    if q:
+        qs = qs.filter(market_name__icontains=q)
 
-        qs = qs.prefetch_related('events').order_by('market_name')
+    qs = qs.prefetch_related('events').order_by('market_name')
 
-        market_data = []
-        for market in qs:
-            market_data.append({
-                'id': market.id,
-                'name': market.market_name,
-                'market_volume': market.volume,
-                'events': [
-                    {
-                        'id': event.id,
-                        'name': event.event_name,
-                        'price': event.price,
-                        'volume': event.volume
-                    }
-                    for event in market.events.all()
-                ]
-            })
-        return JsonResponse({'markets': market_data})
+    market_data = []
+    for market in qs:
+        market_data.append({
+            'id': market.id,
+            'name': market.market_name,
+            'market_volume': market.volume,
+            'events': [
+                {
+                    'id': event.id,
+                    'name': event.event_name,
+                    'price': event.price,
+                    'volume': event.volume
+                }
+                for event in market.events.all()
+            ]
+        })
 
-    return HttpResponseBadRequest("Invalid Request Type")
+    return JsonResponse({'markets': market_data})
 
 @api_view(['GET'])
 @permission_classes([AllowAny])

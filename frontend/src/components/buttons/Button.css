@@ -1,0 +1,184 @@
+.selection-tabs {
+  display: flex;
+}
+
+.selection-tab {
+  padding: 12px 24px;
+  font-size: 16px;
+  border: none;
+  background: var(--usyd-grey-100);
+  color: var(--usyd-grey-800);
+  font-family: Apercu;
+  border-top: 2px solid white;
+  cursor: pointer;
+}
+
+.selection-tab:hover {
+  background: var(--usyd-grey-200);
+}
+
+.wallet-tab--active {
+  background: white;
+  border-top: 2px solid var(--usyd-red);
+}
+
+.wallet-tab--active:hover {
+  background: white;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.custom-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 4px;
+  font-family: var(--main-font, -apple-system, sans-serif);
+  color: white; /* Default font colour */
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  padding: 0 16px;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Width */
+.btn-w-full {
+  width: 100%;
+}
+
+/* Height constraints */
+.btn-h-short {
+  height: 32px;
+  font-size: 14px;
+}
+.btn-h-medium {
+  height: 40px;
+  font-size: 14px;
+}
+
+.btn-h-large {
+  height: 60px;
+  font-size: 16px;
+  padding: 0 24px;
+}
+
+/* Fill colours */
+.btn-fill-primary {
+  background-color: var(--usyd-red-dark);
+}
+
+.btn-fill-light {
+  background-color: var(--usyd-grey-200);
+  /* Invert text colour for readability on light backgrounds */
+  color: var(--usyd-grey-800);
+}
+
+.btn-fill-dark {
+  background-color: var(--usyd-grey-500);
+}
+
+.btn-fill-none {
+  background-color: transparent;
+}
+
+/* Outline colours */
+.btn-outline-primary {
+  border: 1px solid var(--usyd-red-dark);
+}
+
+.btn-outline-light {
+  border: 1px solid var(--usyd-grey-200);
+}
+
+.btn-outline-dark {
+  border: 1px solid var(--usyd-grey-500);
+}
+
+.btn-outline-none {
+  border: 2px solid transparent;
+}
+
+/* Hover effects */
+.btn-hoverable:hover {
+  opacity: 0.85;
+}
+
+.btn-hoverable.btn-fill-none.btn-outline-none:hover {
+  background-color: rgba(1, 1, 1, 0.05); /* Subtle hover for naked buttons */
+}
+
+/* Selected state override */
+.btn-selected {
+  background-color: var(--usyd-grey-600) !important;
+  border-color: var(--usyd-grey-600) !important;
+  color: white !important;
+}
+
+/* Icon layout */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Text colour overrides */
+.btn-text-dark {
+  color: var(--usyd-grey-800); /* Dark grey/black text */
+}
+
+/* Icon colour overrides */
+.btn-icon-primary .btn-icon {
+  color: var(--usyd-red-dark) !important;
+}
+
+/* Alternative selected states */
+.btn-selected-outline-primary {
+  border-color: var(--usyd-red-dark) !important;
+  /* Retains transparent background and text colour rather than forcing grey */
+}
+
+.btn-fill-link {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--usyd-red-dark);
+  border-radius: 0;
+  padding: 0 0 4px 0;
+  font-weight: 600;
+}
+
+.btn-text-primary {
+  color: var(--usyd-red-dark);
+}
+
+
+
+.btn-fill-link:hover {
+  opacity: 0.8;
+}
+
+
+.btn-h-x-short {
+  height: 26px;
+  padding: 0 10px;
+  font-size: 13px; /* Slightly smaller font to fit the 26px container */
+}
+
+/* Ensure disabled buttons look inactive */
+.custom-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

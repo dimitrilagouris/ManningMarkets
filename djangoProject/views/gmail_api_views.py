@@ -1,9 +1,11 @@
+#gmail_api_views.py
 import os
 import json
 import logging # FOR LATER
 
 from django.http import HttpResponse
 from django.shortcuts import redirect
+from django.conf import settings
 from google_auth_oauthlib.flow import Flow
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
@@ -11,7 +13,9 @@ from googleapiclient.discovery import build
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CREDENTIALS_FILE = os.path.join(BASE_DIR, 'credentials.json')
 TOKEN_FILE = os.path.join(BASE_DIR, 'token.json')
-REDIRECT_URI = 'http://localhost:8000/oauth2callback/' # CHANGE
+# Get backend URL from environment variable, defaulting to localhost:8000
+BACKEND_URL = os.environ.get('BACKEND_URL', 'http://localhost:8000')
+REDIRECT_URI = f'{BACKEND_URL}/oauth2callback/'
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
 def authorise_gmail(request):

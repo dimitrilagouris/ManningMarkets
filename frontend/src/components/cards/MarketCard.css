@@ -1,0 +1,257 @@
+/* ── Base Market Card ──────────────────────────────────────── */
+
+.market-card {
+    border: 1px solid var(--usyd-grey-200);
+    background-color: white;
+    padding: 32px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.market-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+}
+
+.market-card__title {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--usyd-grey-800);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.market-card__details {
+    display: flex;
+    align-items: stretch;
+}
+
+.market-card__col {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 0 24px;
+}
+
+.market-card__col--first {
+    padding-left: 0;
+}
+
+.market-card__icon {
+    color: var(--usyd-red);
+    font-size: 20px;
+    margin-top: 2px;
+}
+
+.market-card__text {
+    color: var(--usyd-grey-600);
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.market-card__divider {
+    width: 1px;
+    background-color: var(--usyd-grey-200);
+    flex-shrink: 0;
+}
+
+/* ── Settle MarketPage List ───────────────────────────────────── */
+
+.settle-markets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    font-family: var(--main-font);
+}
+
+.settle-empty {
+    color: var(--usyd-grey-500);
+    font-size: 16px;
+    padding: 48px 0;
+    text-align: center;
+}
+
+.settle-market-card {
+    border: 1px solid var(--usyd-grey-200);
+    background-color: white;
+    overflow: hidden;
+}
+
+.settle-market-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 32px;
+    border-bottom: 2px solid var(--usyd-grey-500);
+}
+
+.settle-market-card__header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.settle-market-card__label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--usyd-red);
+}
+
+.settle-market-card__title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--usyd-grey-800);
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* ── Events Table ──────────────────────────────────────────── */
+
+.settle-events-table {
+    display: flex;
+    flex-direction: column;
+}
+
+.settle-events-table__head,
+.settle-events-table__row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1.4fr;
+    border-bottom: 1px solid var(--usyd-grey-200);
+    align-items: center;
+}
+
+.settle-events-table__head {
+    padding: 10px 32px;
+    background-color: var(--usyd-grey-100);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--usyd-grey-500);
+}
+
+.settle-events-table__row {
+    padding: 18px 32px;
+    transition: background-color 0.15s ease;
+}
+
+.settle-events-table__row:last-child {
+    border-bottom: none;
+}
+
+.settle-events-table__row:hover {
+    background-color: var(--usyd-grey-100);
+}
+
+.settle-events-table__row--settled {
+    opacity: 0.7;
+}
+
+.settle-events-table__event-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--usyd-grey-800);
+}
+
+.settle-events-table__cell {
+    font-size: 14px;
+    color: var(--usyd-grey-600);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.settle-events-table__meta-icon {
+    color: var(--usyd-grey-500);
+    font-size: 12px;
+}
+
+.settle-events-table__actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* ── Outcome Pills ─────────────────────────────────────────── */
+
+.settle-outcome-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+.settle-outcome-pill--settled {
+    background-color: var(--success-light);
+    color: var(--success-green);
+}
+
+.settle-outcome-pill--pending {
+    background-color: var(--usyd-grey-100);
+    color: var(--usyd-grey-500);
+    border: 1px solid var(--usyd-grey-200);
+}
+
+.settle-settled-date {
+    font-size: 13px;
+    color: var(--usyd-grey-500);
+    font-style: italic;
+}
+
+.settle-action-btns {
+    display: flex;
+    gap: 8px;
+}
+
+/* ── Responsive Mobile ─────────────────────────────────────── */
+
+@media (max-width: 768px) {
+    /* Market Card Mobile */
+    .market-card__details {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .market-card__col {
+        padding: 0;
+    }
+
+    .market-card__divider {
+        display: none;
+    }
+
+    /* Settle MarketPage Mobile */
+    .settle-events-table__head {
+        display: none;
+    }
+
+    .settle-events-table__row {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .settle-events-table__event-name,
+    .settle-events-table__actions {
+        grid-column: 1 / -1;
+    }
+
+    .settle-events-table__actions {
+        justify-content: flex-start;
+    }
+
+    .settle-market-card__header {
+        padding: 20px 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}

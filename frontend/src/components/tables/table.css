@@ -1,0 +1,127 @@
+/* table.css */
+
+.table-container {
+  width: 100%;
+  background: white;
+  border: 1px solid var(--usyd-grey-200);
+  overflow: hidden;
+  font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: var(--usyd-grey-800);
+}
+
+.table-header {
+  display: grid;
+  gap: 0;
+  background: white;
+  align-items: center;
+  border-bottom: 2px solid var(--usyd-grey-200);
+  box-sizing: border-box;
+}
+
+.table-body {
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.table-row {
+  display: grid;
+  gap: 0;
+  border-bottom: 1px solid var(--usyd-grey-200);
+  box-sizing: border-box;
+  background: var(--usyd-grey-100);
+  font-size: 16px;
+  color: var(--usyd-grey-800);
+}
+
+.table-row:nth-child(even),
+.table-row.table-row--alt {
+  background: white;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-col {
+  padding: 8px;
+  box-sizing: border-box;
+  border-right: 1px solid var(--usyd-grey-200);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  /*justify-content: center;*/
+}
+
+.table-col:last-child {
+  border-right: none;
+}
+
+.table-header .table-col {
+  font-weight: 600;
+  color: var(--usyd-grey-800);
+}
+
+/* Grid definitions for specific table variants.
+  These can remain here or live in their respective domain CSS files.
+*/
+.orders-table .table-header,
+.orders-table .table-row {
+  grid-template-columns: 200px 100px 100px 100px 120px 140px 100px;
+}
+
+.transactions-table .table-header,
+.transactions-table .table-row {
+  grid-template-columns: 140px 200px 80px 80px 80px 100px 100px;
+}
+
+.positions-table .table-header,
+.positions-table .table-row {
+  grid-template-columns: 200px 100px 100px 100px 100px;
+}
+
+.users-table .table-header,
+.users-table .table-row {
+  grid-template-columns: 30px 190px 1fr 90px 110px 230px;
+}
+
+.table-col--column {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+/* Modifier for inline elements that need to sit side-by-side and wrap (e.g., Action Buttons) */
+.table-col--actions {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.audit-table .table-header,
+.audit-table .table-row {
+  /* Columns: Admin | Action (stretches) | Timestamp */
+  grid-template-columns: 180px 1fr 180px;
+}
+
+/* Market Events Table Overrides */
+.market-events-table {
+  border: none; /* Removes the outer border */
+}
+
+.market-events-table .table-header,
+.market-events-table .table-row {
+  grid-template-columns: 2fr 1fr 1.5fr 1.5fr;
+}
+
+.market-events-table .table-col {
+  border-right: none; /* Removes vertical lines, leaving only the row borders */
+}
+
+/* Modifier for vertically stacked action buttons (Order Books) */
+.table-col--stacked-actions {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 8px;
+}

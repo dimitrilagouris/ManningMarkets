@@ -51,7 +51,7 @@ class ProfileAndWalletViewsTestCase(TestCase):
     @patch("djangoProject.views.user_views.Profiles.objects.select_related")
     def test_get_profile_success(self, mock_select_related):
         mock_role = MagicMock()
-        mock_role.role_name = "Admin"
+        mock_role.role_name = "AdminDashboard"
 
         mock_user = MagicMock()
         mock_user.username = "testuser"
@@ -69,7 +69,7 @@ class ProfileAndWalletViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.render().content)
         self.assertEqual(data["username"], "testuser")
-        self.assertEqual(data["role"], "Admin")
+        self.assertEqual(data["role"], "AdminDashboard")
 
     @patch("djangoProject.views.user_views.Profiles.objects.select_related")
     def test_get_profile_not_found(self, mock_select_related):

@@ -1,21 +1,22 @@
-import Header from './base/header';
-import Login from './login/login';
-import Markets from './markets/markets';
-import Wallet from './wallet/wallet';
-import Leaderboard from './leaderboard/leaderboard';
-import VerifyOTP from './otp/verifyOTP'
-import Profile from './profile/profile';
-import Admin from './admin/admin';
-import MarketManagement from './marketManagement/marketManagement';
+import Header from './components/header/header';
+import LoginPage from './services/login/LoginPage';
+import MarketPage from './services/markets/MarketPage';
+import Wallet from './services/wallet/WalletPage';
+import LeaderboardPage from './services/leaderboard/LeaderboardPage';
+import ModalOtp from './components/modals/ModalOtp'
+import ProfilePage from './services/profile/ProfilePage';
+import AdminDashboard from './services/admin/AdminDashboard';
+import MarketManagementPage from './services/marketManagement/MarketManagementPage';
+import ProtectedRoute from './components/routing/ProtectedRoute';
+import AdminRoute from './components/routing/AdminRoute';
 
-import { AuthProvider } from './session_management/authentication_context';
-import './App.css';
+import { AuthProvider } from './auth-pages/AuthContext';
 
-import SignUp from './signUp/sign_up';
-import { PlacePositionPage } from './placePosition/placePosition';
+import SignUp from './services/signUp/SignUpPage';
+import { PlacePositionPage } from './services/placePosition/PlacePositionPage';
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Activate from './activation/activate';
+import ActivateAccount from './auth-pages/ActivateAccount';
 
 function App() {
   return (
@@ -24,18 +25,21 @@ function App() {
         <div className="App">
           <Header />
           <Routes>
-            <Route path="/" element={<Markets/>} />
-            <Route path="/markets" element={<Markets/>} />
+            {/* Public routes */}
+            <Route path="/" element={<MarketPage />} />
+            <Route path="/markets" element={<MarketPage />} />
             <Route path="/market/:marketId" element={<PlacePositionPage />} />
-            <Route path="activate/:token" element={<Activate/ >} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/leaderboard" element={<Leaderboard />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="activate/:token" element={<ActivateAccount />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/sign-up" element={<SignUp />} />
-            <Route path="/verify-otp" element={<VerifyOTP />} />
-            <Route path="/wallet" element={<Wallet/>} />
-            <Route path="/admin" element={<Admin/>} />
-            <Route path="/market-management" element={<MarketManagement/>} />
+            <Route path="/verify-otp" element={<ModalOtp />} />
+
+            {/* Protected routes */}
+            <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+            <Route path="/wallet" element={<ProtectedRoute><Wallet /></ProtectedRoute>} />
+            <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+            <Route path="/market-management" element={<AdminRoute><MarketManagementPage /></AdminRoute>} />
           </Routes>
         </div>
       </AuthProvider>

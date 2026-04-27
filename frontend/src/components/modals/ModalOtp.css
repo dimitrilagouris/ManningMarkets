@@ -1,0 +1,191 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.5);
+  z-index: 9999;
+  padding: 20px;
+  animation: ov-fade 180ms ease-out;
+}
+
+@keyframes ov-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* modal container */
+.modal-content {
+  background: #fff;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  max-width: 520px;
+  border-radius: 12px;
+  padding: 30px;
+  position: relative;
+  box-sizing: border-box;
+  animation: modal-pop 190ms cubic-bezier(.2,.9,.3,1);
+  gap: 10px;
+}
+
+@keyframes modal-pop {
+  from { transform: translateY(-6px) scale(.995); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* close button */
+.modal-close {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 6px;
+  color: rgba(0,0,0,0.7);
+  line-height: 1;
+}
+
+/* heading and lead text */
+#otp-modal-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--usyd-grey-800);
+  margin: 0;
+}
+
+.modal-content p {
+  margin: 0 0 12px 0;
+  color: rgba(0,0,0,0.75);
+  font-size: 0.95rem;
+}
+
+/* small form layout */
+.otp-form { margin-top: 8px; }
+
+/* mimic login input wrapper styles where useful */
+/* container you could add around inputs if you want icons etc */
+.login-field__control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--usyd-grey-100);
+  border-radius: var(--border-rad-main);
+  padding: 12px 14px;
+  box-sizing: border-box;
+  border: 2px solid transparent;
+  transition: var(--transition-base);
+}
+
+.login-field__control:focus-within {
+  border-color: var(--select-blue);
+  box-shadow: 0 8px 22px rgba(0, 122, 255, 0.06);
+}
+
+/* the OTP input itself, styled to match your login inputs */
+.otp-input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  box-sizing: border-box;
+  outline: none;
+  background: var(--usyd-grey-100);
+  color: var(--usyd-grey-800);
+  font-family: inherit;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.otp-input:focus {
+  border-color: var(--select-blue);
+  box-shadow: 0 8px 22px rgba(0,122,255,0.06);
+}
+
+/* helper text */
+.otp-help {
+  font-size: 0.85rem;
+  color: rgba(0,0,0,0.55);
+  margin-top: 6px;
+}
+
+/* error */
+.otp-error {
+  color: #b00020;
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+
+/* actions row uses your existing button classes so visuals match */
+.otp-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  align-items: center;
+}
+
+/* button styles taken from your LoginPage.css so modal buttons match */
+.login-cta {
+  margin-top: 0; /* modal layout controls spacing */
+  padding: 14px 16px;
+  border-radius: var(--border-rad-main);
+  background: var(--usyd-red-dark);
+  color: white;
+  border: none;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: var(--transition-base);
+  height: 48px;
+  font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.login-cta:hover {
+  background: var(--usyd-red);
+}
+
+.login-cta:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.signup-cta {
+  margin-top: 0;
+  padding: 14px 16px;
+  border-radius: var(--border-rad-main);
+  background: white;
+  color: var(--usyd-red-dark);
+  border: 1px solid var(--usyd-red-dark);
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: var(--transition-base);
+  height: 48px;
+  font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.signup-cta:hover {
+  background: var(--usyd-grey-100);
+}
+
+.signup-cta:disabled {
+  background: var(--usyd-grey-200);
+}
+
+/* responsive tweaks */
+@media (max-width: 420px) {
+  .modal-content { padding: 16px; }
+  .otp-actions { flex-direction: column-reverse; gap: 8px; align-items: stretch; }
+}
+
+/* keyboard focus outlines for accessibility */
+.modal-close:focus,
+.login-cta:focus,
+.signup-cta:focus,
+.otp-input:focus {
+  outline: 3px solid rgba(11,102,255,0.12);
+  outline-offset: 2px;
+}

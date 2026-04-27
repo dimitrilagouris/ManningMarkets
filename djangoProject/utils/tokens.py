@@ -5,7 +5,7 @@ from datetime import timedelta
 from django.utils import timezone
 from ..models import EmailToken
 
-def create_email_token(user, purpose='activation', expiry_minutes=30):
+def create_email_token(user, purpose='auth-pages', expiry_minutes=30):
     raw_token = secrets.token_urlsafe(32)
     token_hash = hashlib.sha256(raw_token.encode()).hexdigest()
 
@@ -18,7 +18,7 @@ def create_email_token(user, purpose='activation', expiry_minutes=30):
 
     return raw_token
 
-def verify_email_token(user, raw_token, purpose='activation'):
+def verify_email_token(user, raw_token, purpose='auth-pages'):
     token_hash = hashlib.sha256(raw_token.encode()).hexdigest()
     try:
         token = EmailToken.objects.get(user=user, token_hash=token_hash, purpose=purpose)

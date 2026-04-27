@@ -25,7 +25,7 @@ class RegisterSerialiser(serializers.ModelSerializer):
             password=validated_data['password'],
             is_active=False,
         )
-        send_activation_email(user)
+        # send_activation_email(user)
         return user
 
 class UserSerialiser(serializers.ModelSerializer):

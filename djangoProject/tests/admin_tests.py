@@ -297,7 +297,7 @@ class DeleteUserTests(AdminViewsTestCase):
 
 class GetSystemStatsTests(AdminViewsTestCase):
     @patch('djangoProject.views.admin_views.Orders.objects')
-    @patch('djangoProject.views.admin_views.Markets.objects')
+    @patch('djangoProject.views.admin_views.MarketPage.objects')
     @patch('djangoProject.views.admin_views.Profiles.objects')
     def test_get_system_stats_success(self, mock_profiles, mock_markets, mock_orders):
         mock_profiles.count.return_value = 100
@@ -322,7 +322,7 @@ class GetSystemStatsTests(AdminViewsTestCase):
 
 class GetMarketsOverviewTests(AdminViewsTestCase):
     @patch('djangoProject.views.admin_views.Orders.objects')
-    @patch('djangoProject.views.admin_views.Markets.objects')
+    @patch('djangoProject.views.admin_views.MarketPage.objects')
     def test_get_markets_overview_success(self, mock_markets, mock_orders):
         mock_event1 = MagicMock()
         mock_event1.price = Decimal('10.50')
@@ -350,7 +350,7 @@ class GetMarketsOverviewTests(AdminViewsTestCase):
         self.assertEqual(len(data['markets']), 1)
 
     @patch('djangoProject.views.admin_views.Orders.objects')
-    @patch('djangoProject.views.admin_views.Markets.objects')
+    @patch('djangoProject.views.admin_views.MarketPage.objects')
     def test_get_markets_overview_empty_events(self, mock_markets, mock_orders):
         """Test get_markets_overview with market that has no events"""
         mock_market = MagicMock()

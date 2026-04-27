@@ -1,0 +1,43 @@
+.loading-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 60vh;
+}
+
+.loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.loading-bar-track {
+    width: 200px;
+    height: 3px;
+    background-color: var(--usyd-grey-100);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.loading-bar-fill {
+    height: 100%;
+    width: 40%;
+    background-color: var(--usyd-red);
+    border-radius: 2px;
+    animation: loading-slide 1.2s ease-in-out infinite;
+}
+
+.loading-label {
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--usyd-grey-500);
+    margin: 0;
+}
+
+@keyframes loading-slide {
+    0%   { transform: translateX(-250%); }
+    100% { transform: translateX(650%); }
+}
