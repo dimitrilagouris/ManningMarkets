@@ -33,11 +33,16 @@ clientApi.interceptors.request.use(config => {
 
 // Redirect to login on any auth failure — handles expired sessions globally.
 clientApi.interceptors.response.use(
-    response => response,
-    error => {
-        if (error.response?.status === 401 || error.response?.status === 403) {
+    (response) => response,
+    (error) => {
+        const status = error.response?.status;
+        const requestUrl = error.config?.url || '';
+
+        // If it's an auth error, NOT the /user/ check, and NOT already on the login page
+        if ((status === 401 || status === 403) && !requestUrl.includes('/user/') && window.location.pathname !== '/login') {
             window.location.replace('/login');
         }
+
         return Promise.reject(error);
     }
 );

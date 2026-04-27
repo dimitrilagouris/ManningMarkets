@@ -1,12 +1,12 @@
-// OtpModal.js
+// ModalOtp.js
 import React, { useEffect, useRef, useState, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import Cookies from 'js-cookie';
 import { DJANGO_API_BASE } from '../../config';
-import { AuthContext } from '../../auth-pages/authentication_context';
+import { AuthContext } from '../../auth-pages/AuthContext';
 
-function OtpModal({ email, onClose, onSuccess }) {
+function ModalOtp({ email, onClose, onSuccess }) {
   const [otp, setOtp] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -107,4 +107,4 @@ function OtpModal({ email, onClose, onSuccess }) {
   );
 }
 
-export default OtpModal;
+export default ModalOtp;

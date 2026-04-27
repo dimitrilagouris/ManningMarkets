@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { DJANGO_API_BASE } from "../../config";
 import { LeaderboardTable } from "../../components/tables/leaderboard/LeaderboardTable";
 
-import '../wallet/wallet.css';
+import '../wallet/WalletPage.css';
 import '../../components/tables/leaderboard/leaderboard.css';
 import '../../styles/base.css';
 

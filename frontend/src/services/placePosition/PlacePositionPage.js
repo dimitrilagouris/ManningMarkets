@@ -2,11 +2,11 @@ import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import PropTypes from 'prop-types';
 import clientApi from '../../api/clientApi';
-import { AuthContext } from '../../auth-pages/authentication_context';
+import { AuthContext } from '../../auth-pages/AuthContext';
 import { MarketEventsTable } from '../../components/tables/place-position/MarketEventsTable';
 import { OrderForm } from './OrderForm';
 
-import './placePosition.css';
+import './PlacePositionPage.css';
 import '../../styles/base.css';
 
 /**

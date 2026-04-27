@@ -127,7 +127,7 @@
   align-items: center;
 }
 
-/* button styles taken from your login.css so modal buttons match */
+/* button styles taken from your LoginPage.css so modal buttons match */
 .login-cta {
   margin-top: 0; /* modal layout controls spacing */
   padding: 14px 16px;

@@ -3,7 +3,7 @@ import { faUser, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { AuthContext } from '../../auth-pages/authentication_context';
+import { AuthContext } from '../../auth-pages/AuthContext';
 import { SearchBar } from '../forms/SearchBar';
 
 import './header.css';

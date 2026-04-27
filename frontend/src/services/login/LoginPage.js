@@ -4,13 +4,13 @@ import Cookies from 'js-cookie';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 
-import './login.css';
+import './LoginPage.css';
 import '../../styles/base.css';
-import '../otp/OtpModal.css';
+import '../../components/modals/ModalOtp.css';
 
 import { DJANGO_API_BASE } from '../../config';
-import { AuthContext } from '../../auth-pages/authentication_context';
-import OtpModal from '../../components/modals/OtpModal';
+import { AuthContext } from '../../auth-pages/AuthContext';
+import ModalOtp from '../../components/modals/ModalOtp';
 
 import { Button } from '../../components/buttons/Button';
 import { FormInput } from '../../components/forms/FormInput';
@@ -146,7 +146,7 @@ function LoginPage() {
       </aside>
 
       {showOtpModal && (
-        <OtpModal
+        <ModalOtp
           email={otpEmail}
           onClose={() => setShowOtpModal(false)}
           onSuccess={async () => {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import OrderBook from './OrderBook';
-import './orderbook.css';
+import './OrderBook.css';
 
 const OrderBookDropdown = ({ eventId, eventName, shareType = 'YES', className = "", orderbookData, connectionStatus, lastUpdated }) => {
   const [isOrderBookOpen, setIsOrderBookOpen] = useState(false);

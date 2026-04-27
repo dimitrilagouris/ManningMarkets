@@ -1,6 +1,6 @@
 import { useEffect, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { AuthContext } from '../auth-pages/authentication_context';
+import { AuthContext } from '../auth-pages/AuthContext';
 
 /**
  * Enforces authentication, redirecting unauthenticated users to login.

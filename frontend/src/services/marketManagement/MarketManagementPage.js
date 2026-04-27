@@ -7,7 +7,7 @@ import { Button } from '../../components/buttons/Button';
 import { SettleMarketsList } from '../../components/cards/MarketCard';
 import Loading from "../../components/common/Loading";
 
-import './marketManagement.css';
+import './MarketManagementPage.css';
 import '../../styles/base.css';
 
 /**
@@ -37,7 +37,11 @@ const postAdminAction = async (endpoint, payload) => {
         body: JSON.stringify(payload)
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Action failed');
+    if (!res.ok) {
+        const error = new Error(data.error || 'Action failed');
+        error.status = res.status;
+        throw error;
+    }
     return data;
 };
 

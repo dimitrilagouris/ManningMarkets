@@ -6,7 +6,7 @@ const gridStyle = { display: 'grid', gridTemplateColumns: '0.5fr 3fr 1fr 1fr 1.5
 /**
  * Renders the markets table directly below the tabs.
  */
-export const MarketsOverview = ({ markets }) => (
+export const MarketsOverviewTab = ({ markets }) => (
   <div className="wallet-transactions-table" role="table" aria-label="MarketPage overview list" style={{ marginTop: 0 }}>
     <div className="wallet-transactions-header" role="row" style={gridStyle}>
       <div className="wallet-table-col">ID</div><div className="wallet-table-col">Market Title</div>
@@ -27,4 +27,4 @@ export const MarketsOverview = ({ markets }) => (
   </div>
 );
 
-MarketsOverview.propTypes = { markets: PropTypes.array.isRequired };
+MarketsOverviewTab.propTypes = { markets: PropTypes.array.isRequired };

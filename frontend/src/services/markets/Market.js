@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { Button } from '../../components/buttons/Button';
-import './markets.css';
+import './MarketPage.css';
 
 /**
  * @typedef {Object} Event

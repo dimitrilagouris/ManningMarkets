@@ -8,7 +8,7 @@ import TransactionsTable from '../../components/tables/wallet/TransactionsTable'
 import PositionsTable from '../../components/tables/wallet/PositionsTable';
 import LiveOrdersTable from '../../components/tables/wallet/LiveOrdersTable';
 
-import './wallet.css';
+import './WalletPage.css';
 import '../../styles/base.css';
 import Loading from "../../components/common/Loading";
 

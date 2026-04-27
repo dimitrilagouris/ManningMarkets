@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 
-import './signUp.css';
+import './SignUp.css';
 import '../../styles/base.css';
 import { DJANGO_API_BASE } from '../../config';
 

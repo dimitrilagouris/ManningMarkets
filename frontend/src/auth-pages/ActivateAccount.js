@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { DJANGO_API_BASE } from '../config';
 import { useNavigate } from 'react-router-dom';
 
-function Activate() {
+function ActivateAccount() {
     const { token } = useParams();
     const [status, setStatus] = useState('Activating your account...')
     const navigate = useNavigate();
@@ -31,4 +31,4 @@ function Activate() {
     
 }
 
-export default Activate
+export default ActivateAccount

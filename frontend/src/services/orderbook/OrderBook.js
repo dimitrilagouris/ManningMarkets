@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './orderbook.css';
+import './OrderBook.css';
 
 const OrderBook = ({
   eventId,

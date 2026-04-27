@@ -3,14 +3,14 @@ import { fetchAdminData, executeUserAction } from '../../api/adminApi';
 import { SystemOverview } from './systemOverview';
 import { AdminControls } from './AdminControls';
 import { UserManagement } from './userManagement';
-import { MarketsOverview } from './marketsOverview';
+import { MarketsOverviewTab } from './MarketsOverviewTab';
 import AuditLogsTable from '../../components/tables/admin/AuditLogTable';
 import { SuspendModal } from '../../components/modals/ModalSuspend';
 import { ModalGivePoints } from '../../components/modals/ModalGivePoints';
 import { ModalDeleteUser } from "../../components/modals/ModalDeleteUser";
 import Loading from '../../components/common/Loading';
 
-import '../wallet/wallet.css';
+import '../wallet/WalletPage.css';
 import '../../styles/base.css';
 
 /**
@@ -191,7 +191,7 @@ export default function AdminDashboard() {
                         </div>
 
                         {activeTab === 'Users' && <UserManagement users={data.users} onAction={(type, user) => setModalState({ type, user })} />}
-                        {activeTab === 'MarketPage' && <MarketsOverview markets={data.markets} />}
+                        {activeTab === 'MarketPage' && <MarketsOverviewTab markets={data.markets} />}
                         {activeTab === 'Audit Log' && <AuditLogsTable auditLogs={data.auditLogs} />}
                     </section>
                 </div>

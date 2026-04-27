@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock, faUser } from '@fortawesome/free-solid-svg-icons';
-import './registration.css';
+import './RegistrationPage.css';
 import '../../styles/base.css';
 
 function RegisterPage() {

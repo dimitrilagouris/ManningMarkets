@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 import { DJANGO_API_BASE } from '../../config';
-import { AuthContext } from '../../auth-pages/authentication_context';
+import { AuthContext } from '../../auth-pages/AuthContext';
 import { Button } from '../../components/buttons/Button';
 
-import '../login/login.css';
+import '../login/LoginPage.css';
 
 /**
  * Renders a full-width primary button that handles user logout.

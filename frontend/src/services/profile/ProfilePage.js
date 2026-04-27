@@ -7,7 +7,7 @@ import ChangeUsername from "./ChangeUsernameForm";
 import ChangePassword from "./ChangePasswordForm";
 import LogoutButton from "./LogoutButton";
 
-import './profile.css';
+import './ProfilePage.css';
 import '../../styles/base.css';
 import Loading from "../../components/common/Loading";
 

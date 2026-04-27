@@ -1,15 +1,28 @@
 import React, { useContext } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { AuthContext } from '../../auth-pages/authentication_context';
+import PropTypes from 'prop-types';
+import { AuthContext } from '../../auth-pages/AuthContext';
+import Loading from '../common/Loading';
 
-function ProtectedRoute({ children }) {
+/**
+ * Restricts route access to authenticated users.
+ * @param {Object} props
+ * @returns {JSX.Element}
+ */
+export default function ProtectedRoute({ children }) {
     const { isAuthenticated, loading } = useContext(AuthContext);
     const location = useLocation();
 
-    if (loading) return <div className="main-content">Loading...</div>;
-    if (!isAuthenticated) return <Navigate to="/login" state={{ from: location }} replace />;
+    if (loading) return <Loading />;
+
+    if (!isAuthenticated) {
+        // Pass pathname as a string to avoid object reference loops
+        return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+    }
 
     return children;
 }
 
-export default ProtectedRoute;
+ProtectedRoute.propTypes = {
+    children: PropTypes.node.isRequired,
+};
