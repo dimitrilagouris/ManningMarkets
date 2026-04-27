@@ -23,6 +23,7 @@ function Header() {
     /**
      * Navigates to the markets page with the provided search query.
      * @param {string} searchQuery
+     * @returns {void}
      */
     const handleSearch = (searchQuery) => {
         const trimmed = searchQuery.trim();
@@ -46,7 +47,6 @@ function Header() {
                     </div>
                 </Link>
 
-                {/* Wrapper maintains existing CSS grid placement */}
                 <div className="site-header__search search">
                     <SearchBar
                         placeholderText="Enter keywords to find a market e.g timetables"
@@ -76,9 +76,11 @@ function Header() {
                                     <Link className="main-nav__link" to="/market-management" onClick={closeMenu}>Market Management</Link>
                                 </li>
                             )}
+
                             <li className="main-nav__item">
-                                <Link className="main-nav__link" to={isAuthenticated ? "/leaderboard" : "/login"} onClick={closeMenu}>Leaderboard</Link>
+                                <Link className="main-nav__link" to="/leaderboard" onClick={closeMenu}>Leaderboard</Link>
                             </li>
+
                             {isAuthenticated && (
                                 <li className="main-nav__item">
                                     <Link className="main-nav__link" to="/wallet" onClick={closeMenu}>Wallet</Link>
@@ -87,6 +89,12 @@ function Header() {
                             {isAuthenticated && (
                                 <li className="main-nav__item main-nav__item--mobile-only">
                                     <Link className="main-nav__link" to="/profile" onClick={closeMenu}>Profile</Link>
+                                </li>
+                            )}
+
+                            {!isAuthenticated && (
+                                <li className="main-nav__item">
+                                    <Link className="main-nav__link" to="/login" onClick={closeMenu}>Log In</Link>
                                 </li>
                             )}
                         </ul>
