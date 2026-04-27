@@ -1,29 +1,40 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import clientApi from '../../api/clientApi';
+import { formatDate } from '../../utils/dateFormatters';
 
-import ChangeUsername from "../login/ChangeUsernameForm";
-import ChangePassword from "../login/ChangePasswordForm";
-import LogoutButton from "../login/LogoutButton";
+import ChangeUsername from "./ChangeUsernameForm";
+import ChangePassword from "./ChangePasswordForm";
+import LogoutButton from "./LogoutButton";
 
 import './profile.css';
 import '../../styles/base.css';
 import Loading from "../../components/common/Loading";
 
-const formatDate = (isoString) => new Date(isoString).toLocaleString('en-AU', {
-    day: '2-digit', month: '2-digit', year: 'numeric',
-    hour: '2-digit', minute: '2-digit', second: '2-digit',
-    hour12: false, timeZone: 'Australia/Sydney'
-});
+/**
+ * @typedef {Object} ProfileData
+ * @property {string} username
+ * @property {string} role
+ * @property {string} email
+ * @property {string} date_joined
+ * @property {string} last_login
+ */
 
-function ProfilePage() {
+/**
+ * Renders the top-level user profile management page.
+ * @returns {JSX.Element}
+ */
+export default function ProfilePage() {
+    /** @type {[ProfileData|null, React.Dispatch<React.SetStateAction<ProfileData|null>>]} */
     const [data, setData] = useState(null);
+    /** @type {[Error|null, React.Dispatch<React.SetStateAction<Error|null>>]} */
     const [error, setError] = useState(null);
+    /** @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]} */
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         clientApi.get('/profile/')
-            .then(({ data }) => setData(data))
+            .then(({ data: resData }) => setData(resData))
             .catch(setError)
             .finally(() => setLoading(false));
     }, []);
@@ -64,6 +75,11 @@ function ProfilePage() {
     );
 }
 
+/**
+ * Renders the read-only overview of the user's profile data.
+ * @param {{ data: ProfileData }} props
+ * @returns {JSX.Element}
+ */
 const ProfileDetails = ({ data }) => (
     <section className="profile-overview-section" aria-labelledby="profile-overview-heading">
         <div className="profile-info">
@@ -93,7 +109,11 @@ const ProfileDetails = ({ data }) => (
 );
 
 ProfileDetails.propTypes = {
-    data: PropTypes.object.isRequired,
+    data: PropTypes.shape({
+        username: PropTypes.string.isRequired,
+        role: PropTypes.string.isRequired,
+        email: PropTypes.string.isRequired,
+        date_joined: PropTypes.string.isRequired,
+        last_login: PropTypes.string,
+    }).isRequired,
 };
-
-export default ProfilePage;

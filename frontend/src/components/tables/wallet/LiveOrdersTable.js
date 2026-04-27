@@ -1,7 +1,7 @@
 // LiveOrdersTable.jsx
 import React from 'react';
 import PropTypes from 'prop-types';
-import Badge from '../../Badge';
+import Badge from '../../common/Badge';
 import { Button } from '../../buttons/Button';
 import '../table.css';
 

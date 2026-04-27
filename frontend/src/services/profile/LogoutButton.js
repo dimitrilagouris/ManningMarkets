@@ -6,7 +6,7 @@ import { DJANGO_API_BASE } from '../../config';
 import { AuthContext } from '../../auth-pages/authentication_context';
 import { Button } from '../../components/buttons/Button';
 
-import './login.css';
+import '../login/login.css';
 
 /**
  * Renders a full-width primary button that handles user logout.

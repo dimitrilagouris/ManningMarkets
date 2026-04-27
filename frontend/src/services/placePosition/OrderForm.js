@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Cookies from 'js-cookie';
 
 import { DJANGO_API_BASE } from '../../config';
-import { getYesNoPrices, determineLimitPrice } from './orderPricing';
+import { getYesNoPrices, determineLimitPrice } from '../../utils/orderPricing';
 import { Button } from '../../components/buttons/Button';
 import { FormInput } from '../../components/forms/FormInput';
 import { AlertCard } from '../../components/cards/AlertCard';

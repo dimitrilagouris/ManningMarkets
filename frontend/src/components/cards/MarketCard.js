@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt, faUsers } from '@fortawesome/free-solid-svg-icons';
 
 import { Button } from '../buttons/Button';
-import Badge from '../Badge'; // Ensure this relative path is correct for your directory structure
+import Badge from '../common/Badge'; // Ensure this relative path is correct for your directory structure
 import './MarketCard.css';
 
 export const MarketCard = ({
