@@ -24,38 +24,36 @@ import './MarketPage.css';
  * Renders a market overview card displaying its associated events.
  * @param {Object} props
  * @param {MarketData} props.market
- * @returns {JSX.Element}
+ * @returns {React.JSX.Element}
  */
 function Market({ market }) {
     const { id, name, market_volume, events } = market;
-    const market_id = `market-${id}`;
+    const marketId = `market-${id}`;
     const navigate = useNavigate();
 
     /** @type {React.MouseEventHandler<HTMLElement>} */
     const navigateToMarket = () => navigate(`/market/${id}`);
 
     return (
-        <section className="market" aria-labelledby={market_id}>
+        <section className="market" aria-labelledby={marketId}>
             <header className="market__header">
                 <h3 
-                    id={market_id} 
+                    id={marketId} 
                     className="market__name market__name--clickable" 
                     onClick={navigateToMarket}
-                    style={{ cursor: 'pointer' }}
                     title="Click to view market"
                 >
                     {name}
                 </h3>
             </header>
 
-            <div className="market__events" tabIndex="0" role="list" aria-label={`${market_id} events`}>
+            <div className="market__events" tabIndex={0} role="list" aria-label={`${marketId} events`}>
                 {(events || []).map((ev) => (
                     <div className="market__event" role="listitem" key={ev.id}>
                         <div className="event__info">
                             <div 
                                 className="event__name event__name--clickable" 
                                 onClick={navigateToMarket}
-                                style={{ cursor: 'pointer' }}
                                 title="Click to view market"
                             >
                                 {ev.name || 'Unnamed Event'}
