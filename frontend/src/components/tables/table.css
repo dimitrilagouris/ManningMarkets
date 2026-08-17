@@ -67,17 +67,17 @@
 */
 .orders-table .table-header,
 .orders-table .table-row {
-  grid-template-columns: 200px 100px 100px 100px 120px 140px 100px;
+  grid-template-columns: 1fr 90px 90px 90px 120px 130px 100px;
 }
 
 .transactions-table .table-header,
 .transactions-table .table-row {
-  grid-template-columns: 140px 200px 80px 80px 80px 100px 100px;
+  grid-template-columns: 160px 1fr 80px 80px 80px 80px 110px;
 }
 
 .positions-table .table-header,
 .positions-table .table-row {
-  grid-template-columns: 200px 100px 100px 100px 100px;
+  grid-template-columns: 1fr 100px 120px 120px;
 }
 
 .users-table .table-header,
