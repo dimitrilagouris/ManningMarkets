@@ -77,12 +77,12 @@ ASGI_APPLICATION = 'djangoProject.asgi.application'
 
 
 # --- CHANNELS (WebSockets) CONFIG ---
+REDIS_URL = os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379/0')
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            # Default Redis host and port for the EC2 instance
-            "hosts": [("127.0.0.1", 6379)], 
+            "hosts": [REDIS_URL],
         },
     },
 }

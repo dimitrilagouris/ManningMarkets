@@ -69,7 +69,6 @@ function Wallet() {
     const [walletData, setWalletData] = useState({ id: "", balance: 0, allocated: 0, available: 0 });
     const [tabData, setTabData] = useState({ Transactions: [], Positions: [], 'Live Orders': [] });
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         clientApi.get('/wallet/')
@@ -79,7 +78,7 @@ function Wallet() {
                 allocated: data.allocated,
                 available: data.available,
             }))
-            .catch(err => setError(err))
+            .catch(err => console.error("Failed to load wallet:", err))
             .finally(() => setLoading(false));
     }, []);
 

@@ -124,7 +124,7 @@ function LoginPage() {
               fullWidth
             />
 
-            <Button fill="primary" width="full">
+            <Button fill="primary" width="full" height="medium">
               {loginLoading ? 'Logging in...' : 'Log In'}
             </Button>
           </form>

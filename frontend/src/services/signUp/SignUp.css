@@ -1,172 +1,220 @@
-.sign_up-page {
+.signup-page {
   position: relative;
-  height: 100vh;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  background: white;
-  box-sizing: border-box;
-  font-family: Apercu, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  color: var(--usyd-grey-800);
+  grid-template-columns: 55fr 45fr;
+  min-height: calc(100vh - 81);
   overflow: hidden;
+  font-family: Apercu, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: var(--usyd-grey-800);
 }
 
-.top-band {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 110px;
-  background: var(--usyd-red-light);
-  z-index: 0;
-}
 
-.sign_up-image {
-  grid-column: 1 / 2;
-  width: 100%;
-  height: calc(80vh);
-  max-height: 980px;
-  align-self: start;
-  transform: translateY(56px);
+.signup-hero {
+  position: relative;
   background-image: url('../../../public/images/sign_up-hero.jpeg');
   background-size: cover;
   background-position: center 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.signup-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 10, 10, 0.08) 0%,
+    rgba(10, 10, 10, 0.72) 70%,
+    rgba(10, 10, 10, 0.88) 100%
+  );
+}
+
+/* Red band running along the bottom edge, matching USYD's signature stripe */
+.signup-hero__bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: var(--usyd-red-dark);
+  z-index: 2;
+}
+
+.signup-hero__content {
+  position: relative;
   z-index: 1;
+  padding: 56px 52px;
+}
+
+.signup-hero__eyebrow {
+  display: block;
+  font-family: Apercu, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+  /*margin-bottom: 20px;*/
+}
+
+.signup-hero__title {
+  font-family: LyonDisplay, Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 68px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: white;
   margin: 0;
 }
 
-.sign_up-side {
-  grid-column: 2 / 3;
-  background: var(--usyd-red-light);
-  padding: 40px 80px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  box-sizing: border-box;
-  align-self: start;
-  overflow: visible;
-  z-index: 0;
+.signup-panel__rule {
+  width: 68px;
+  height: 5px;
+  background: var(--usyd-red-dark);
+  border-radius: 2px;
+  margin: 20px 0;
 }
 
-.sign_up-side__content {
-  max-width: 520px;
-  width: 100%;
-  margin-top: 8px;
-}
-
-.sign_up-side__title {
-  font-family: LyonDisplay, Apercu, sans-serif;
-  font-size: 40px;
-  margin: 0 0 16px 0;
-  color: var(--usyd-grey-800);
-  font-weight: 400;
-  line-height: 1.02;
-}
-
-.sign_up-side__lead {
-  margin: 0 0 24px 0;
-  color: var(--usyd-grey-800);
-  font-family: -apple-system, 'Apercu', "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-weight: 400;
+.signup-hero__tagline {
+  font-size: 15px;
   line-height: 1.6;
-  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0; /* Already 0, which is perfect */
+  max-width: 340px;
+  font-weight: 400;
 }
 
-.sign_up-list {
+
+
+.signup-panel {
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 64px;
+  box-sizing: border-box;
+  box-shadow: -4px 0 32px rgba(0, 0, 0, 0.06);
+}
+
+.signup-panel__inner {
+  width: 100%;
+  max-width: 420px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin: 0 0 20px 0;
 }
 
-.info-link {
-  display: inline-block;
-  margin-top: 18px;
-  color: var(--usyd-red-dark);
-  font-weight: 900;
+.signup-panel__header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+
+
+.signup-panel__title {
+  font-family: Lyon, Georgia, 'Times New Roman', serif;
+  font-size: 40px;
+  font-weight: 400;
+  line-height: 1.1;
+  margin: 0;
+  color: var(--usyd-grey-800);
+}
+
+.signup-panel__lead {
   font-size: 14px;
-  text-decoration: none;
-  border-bottom: 1px solid var(--usyd-red-dark);
-  padding-bottom: 6px;
-  transition: var(--transition-base);
+  line-height: 1.6;
+  color: var(--usyd-grey-500);
+  margin: 0;
 }
 
-.info-link:hover {
-  color: black;
-  border-bottom: 1px solid black;
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.info-text {
-  display: inline-block;
-  margin-top: 0px;
-  opacity: 80%;
+.signup-form__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.signup-form__validation {
+  font-size: 13px;
+  font-weight: 600;
   color: var(--usyd-red-dark);
-  font-weight: 900;
-  font-size: 14px;
-  text-decoration: none;
-  padding-bottom: 0px;
+  margin: 0;
+  min-height: 1em;
 }
 
-@media (max-width: 1000px) {
-  .sign_up-page {
+.signup-form__submit-error {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--usyd-red-dark);
+  margin: 0;
+}
+
+
+.signup-panel__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.signup-panel__footer-text {
+  font-size: 13px;
+  color: var(--usyd-grey-500);
+}
+
+@media (max-width: 900px) {
+  .signup-page {
     grid-template-columns: 1fr;
-    height: auto;
-    min-height: 100vh;
+    grid-template-rows: auto 1fr;
     overflow-y: auto;
-    overflow-x: hidden;
   }
 
-  .top-band {
-    display: none;
-  }
-
-  .sign_up-side {
-    grid-column: 1 / -1;
+  .signup-hero {
+    min-height: 40vh;
     grid-row: 1;
-    background: var(--usyd-red-light);
-    padding: 56px 20px 28px 20px;
-    align-self: start;
-    max-height: none;
-    margin-top: 0;
+    animation: none;
   }
 
-  .sign_up-side__content {
-    margin: 0 auto;
-    max-width: 520px;
-    width: 100%;
+  .signup-hero__content {
+    padding: 40px 32px;
+    animation: none;
   }
 
-  .sign_up-side__title {
-    font-size: 34px;
-    margin-top: 8px;
+  .signup-hero__title {
+    font-size: 48px;
   }
 
-  .sign_up-image {
-    grid-column: 1 / -1;
+  .signup-panel {
     grid-row: 2;
-    width: 100%;
-    height: 320px;
-    max-height: none;
-    align-self: start;
-    transform: translateY(0);
-    background-position: center 30%;
+    padding: 48px 32px 56px;
     box-shadow: none;
-    border-radius: 0;
-    margin: 0;
+    align-items: flex-start;
   }
 }
 
-/* small phones */
+
 @media (max-width: 520px) {
-  .sign_up-image {
-    height: 260px;
+  .signup-hero {
+    min-height: 34vh;
   }
 
-  .sign_up-side {
-    padding: 40px 16px 20px 16px;
+  .signup-hero__content {
+    padding: 28px 20px;
   }
 
-  .sign_up-side__title {
-    font-size: 28px;
+  .signup-hero__title {
+    font-size: 38px;
+  }
+
+  .signup-panel {
+    padding: 36px 20px 48px;
   }
 }

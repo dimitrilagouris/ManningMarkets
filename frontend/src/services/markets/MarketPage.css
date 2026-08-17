@@ -1,19 +1,20 @@
-.markets-container {
-  margin-top: 24px;
-  margin-bottom: 24px;
-  width: 100%;
-  max-width: 1200px;
-  display: grid;
-  gap: 24px;
-  align-items: stretch;
-  box-sizing: border-box;
-  grid-template-columns: repeat(4, minmax(260px, 1fr));
-}
-
 .main-content {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 32px 32px;
+}
+
+.markets-container {
+  width: 100%;
+  max-width: 1200px;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  align-items: stretch;
+  box-sizing: border-box;
 }
 
 .market {
@@ -22,34 +23,46 @@
   height: 100%;
   background: var(--usyd-grey-100);
   border-radius: var(--border-rad-main);
+  border: 1px solid transparent;
   padding: 24px;
   width: 100%;
   box-sizing: border-box;
-  font-family: -apple-system, 'Apercu', "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--main-font);
   align-self: stretch;
+  transition: var(--transition-base);
+}
 
+.market:hover {
+  border-color: var(--usyd-grey-200);
 }
 
 .market__header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   position: relative;
 }
 
 .market__name {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 600;
   color: var(--usyd-grey-800);
   margin: 0;
+  line-height: 1.3;
+  transition: var(--transition-base);
+}
+
+.market__name--clickable {
+  cursor: pointer;
+}
+
+.market__name--clickable:hover {
+  color: var(--usyd-red-dark);
 }
 
 .market__percent {
-  position: absolute;
-  right: 0;
-  top: 0;
-  transform: translateY(-6px);
   font-size: 13px;
   font-weight: 700;
   color: var(--usyd-red-dark);
@@ -57,6 +70,7 @@
   padding: 6px 10px;
   border-radius: 999px;
   line-height: 1;
+  flex-shrink: 0;
 }
 
 .market__events-wrapper {
@@ -67,57 +81,99 @@
 .market__events {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 16px;
-
   flex: 1;
   overflow-y: auto;
   min-height: 0;
-
+  max-height: 280px;
   scrollbar-gutter: stable;
 }
 
-.market__events::-webkit-scrollbar { width: 10px; }
-.market__events::-webkit-scrollbar-track { background: transparent; }
+.market__events::-webkit-scrollbar {
+  width: 6px;
+}
+
+.market__events::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 .market__events::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,0.12);
+  background: var(--usyd-grey-200);
   border-radius: 8px;
 }
 
 @supports (scrollbar-color: auto) {
-  .market__events { scrollbar-color: rgba(0,0,0,0.12) transparent; }
+  .market__events {
+    scrollbar-color: var(--usyd-grey-200) transparent;
+  }
 }
 
 .market__event {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
+  padding: 4px 0;
 }
 
 .event__info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  flex: 1;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .event__name {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--usyd-grey-800);
   word-break: break-word;
+  line-height: 1.3;
+  transition: var(--transition-base);
+}
+
+.event__name--clickable {
+  cursor: pointer;
+}
+
+.event__name--clickable:hover {
+  color: var(--usyd-red-dark);
 }
 
 .event__odds {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--usyd-grey-500);
 }
 
+.event__buttons {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
 
+.market__footer {
+  border-top: 1px solid var(--usyd-grey-200);
+  padding-top: 14px;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.market__volume {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--usyd-red-dark);
+  text-transform: uppercase;
+  font-family: 'Apercu mono';
+}
+
+/* Single market layout variant */
 .market--single .market__header {
   margin-bottom: 14px;
-  padding-right: 64px;
 }
 
 .market--single .market__events {
@@ -131,94 +187,43 @@
   gap: 12px;
 }
 
-
 .event__buttons--single {
   display: flex;
   gap: 12px;
   width: 100%;
 }
 
-.event__buttons {
-  display: flex;
-  gap: 8px;
-}
-
 .market--single .event__button {
   flex: 1 1 0;
   min-width: 0;
   padding: 12px 10px;
-
 }
 
-
-.market__footer {
-  border-top: 1px solid var(--usyd-grey-200);
-  padding-top: 16px;
-  /* This pushes the footer to the bottom of the flex container */
-  margin-top: auto;
-}
-
-.market__volume {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--usyd-red-dark);
-  text-transform: uppercase;
-  font-family: 'Apercu mono';
-}
-
-@media (max-width: 1100px) {
-  .markets-container {
-    grid-template-columns: repeat(2, minmax(260px, 1fr));
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .main-content {
+    padding: 24px 20px;
   }
 }
-
-@media (max-width: 680px) {
-  .markets-container {
-    grid-template-columns: 1fr;
-  }
-}
-
-
 
 @media (max-width: 600px) {
   .main-content {
-    padding: 16px;
+    padding: 16px 16px;
+  }
+
+  .markets-container {
+    gap: 16px;
   }
 
   .market {
-    padding: 16px;
+    padding: 18px 16px;
   }
 
   .market__header {
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
 
   .market__name {
-    font-size: 20px;
-  }
-
-  .market__event {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-
-  .event__button {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .market__events {
-    height: 100%;
-  }
-
-  .market__event--single .event__buttons--single {
-    flex-direction: row;
-    gap: 8px;
-  }
-
-  .market--single .market__header {
-    padding-right: 0;
+    font-size: 18px;
   }
 }

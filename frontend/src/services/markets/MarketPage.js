@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import clientApi from '../../api/clientApi';
 import Market from './Market';
+import './MarketPage.css';
 
 /**
  * @typedef {Object} MarketData

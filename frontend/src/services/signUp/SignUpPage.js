@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
@@ -13,65 +13,61 @@ import { FormInput } from '../../components/forms/FormInput';
 
 /**
  * Registers a new user with the backend API.
- * @param {string} username - The chosen username.
- * @param {string} email - The user's university email address.
- * @param {string} password - The chosen password.
- * @returns {Promise<{ok: boolean, data: Object}>} The API response payload.
+ * Returns ok flag and parsed response body.
  */
 async function registerUser(username, email, password) {
   const response = await fetch(`${DJANGO_API_BASE}/register/`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-CSRFToken': Cookies.get("csrftoken"),
+      'X-CSRFToken': Cookies.get('csrftoken') ?? '',
     },
-    body: JSON.stringify({ username, email, password })
+    body: JSON.stringify({ username, email, password }),
   });
-  
+
   const data = await response.json();
   return { ok: response.ok, data };
 }
 
+const PASSWORD_REGEX = /^(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,}).*$/;
+
 /**
- * Renders the sign-up page for new users.
- * @returns {React.JSX.Element} The sign-up page component.
+ * Derives a human-readable validation error from the current field values.
+ * Returns null when the form is fully valid.
+ */
+function getValidationError(username, email, password, confirmPassword) {
+  if (username.trim() === '') return 'Username is required.';
+  if (!email.endsWith('@uni.sydney.edu.au')) return 'Email must be a @uni.sydney.edu.au address.';
+  if (!PASSWORD_REGEX.test(password))
+    return 'Password must be 8+ characters with a number and special character.';
+  if (password !== confirmPassword || password === '') return 'Passwords do not match.';
+  return null;
+}
+
+/**
+ * Sign-up page for new ManningMarkets users.
+ * Handles validation, submission, and navigation on success.
  */
 function SignUp() {
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [username, setUsername] = useState('');
   const [touched, setTouched] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const [loading, setLoading] = useState(false);
-  
+
   const navigate = useNavigate();
 
-  const validUsername = username.trim() !== '';
-  const validEmail = email.endsWith('@uni.sydney.edu.au');
-  const passwordRegex = /^(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,}).*$/;
-  const validPassword = passwordRegex.test(password);
-  const passwordMatch = password === confirmPassword && password !== '';
-  
-  const validForm = validUsername && validEmail && validPassword && passwordMatch;
+  const validationError = getValidationError(username, email, password, confirmPassword);
+  const isFormValid = validationError === null;
 
-  let errorMessage = '\u200b'; 
-  if (touched) {
-    if (!validUsername) {
-      errorMessage = 'Username is required.';
-    } else if (!validEmail) {
-      errorMessage = 'Email must be a @uni.sydney.edu.au address.';
-    } else if (!validPassword) {
-      errorMessage = 'Password must be at least 8 characters, contain a number and a special character.';
-    } else if (!passwordMatch) {
-      errorMessage = 'Passwords do not match.';
-    }
-  }
+  const displayedError = touched && validationError ? validationError : '\u200b';
 
-  /**
-   * Handles the form submission to register the user.
-   * @param {React.FormEvent<HTMLFormElement>} e - The form submission event.
-   */
+  const markTouched = () => {
+    if (!touched) setTouched(true);
+  };
+
   const onSubmit = async (e) => {
     e.preventDefault();
     setSubmitError(null);
@@ -81,102 +77,110 @@ function SignUp() {
       const { ok, data } = await registerUser(username, email, password);
 
       if (ok) {
-        navigate("/login", { state: { message: "Check your email to activate your account!" } });
+        navigate('/login', { state: { message: 'Check your email to activate your account!' } });
       } else {
-        const firstError = Object.values(data).flat()[0] ?? "RegisterPage failed.";
+        const firstError = Object.values(data).flat()[0] ?? 'Registration failed.';
         setSubmitError(firstError);
       }
-    } catch (err) {
-      setSubmitError("A network error occurred. Please try again.");
+    } catch {
+      setSubmitError('A network error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="sign_up-page">
-      <div className="top-band" aria-hidden="true" />
+    <div className="signup-page">
+      {/* Left: hero panel */}
+      <div className="signup-hero" role="img" aria-label="University campus hero image">
+        <div className="signup-hero__overlay" />
+        <div className="signup-hero__content">
+          <span className="signup-hero__eyebrow">University of Sydney</span>
+          <h1 className="signup-hero__title">Manning<br />Markets</h1>
+          <div className="signup-panel__rule" aria-hidden="true" />
+          <p className="signup-hero__tagline">Prediction markets for the university community.</p>
 
-      <div className="sign_up-image" role="img" aria-label="hero image" />
+        </div>
+      </div>
 
-      <aside className="sign_up-side" aria-labelledby="sign_up-heading">
-        <div className="sign_up-side__content">
-          <h2 id="sign_up-heading" className="sign_up-side__title">Welcome.</h2>
-          <p className="sign_up-side__lead">
-            Sign Up to access ManningMarkets.
-          </p>
+      {/* Right: form panel */}
+      <aside className="signup-panel" aria-labelledby="signup-heading">
+        <div className="signup-panel__inner">
+          <div className="signup-panel__header">
+            <h2 id="signup-heading" className="signup-panel__title">Create account</h2>
+            <p className="signup-panel__lead">
+              Use your University of Sydney email to get started.
+            </p>
+          </div>
 
-          <form className="sign_up-list" onSubmit={onSubmit}>
-            <FormInput
-              type="text"
-              label="Username"
-              value={username}
-              onChange={e => {
-                setUsername(e.target.value);
-                setTouched(true);
-              }}
-              icon={<FontAwesomeIcon icon={faUser} />}
-              fullWidth
-            />
+          <form className="signup-form" onSubmit={onSubmit} noValidate>
+            <div className="signup-form__fields">
+              <FormInput
+                type="text"
+                label="Username"
+                value={username}
+                onChange={e => { setUsername(e.target.value); markTouched(); }}
+                icon={<FontAwesomeIcon icon={faUser} />}
+                fullWidth
+              />
 
-            <FormInput
-              type="email"
-              label="Email"
-              value={email}
-              onChange={e => {
-                setEmail(e.target.value);
-                setTouched(true);
-              }}
-              icon={<FontAwesomeIcon icon={faEnvelope} />}
-              fullWidth
-            />
+              <FormInput
+                type="email"
+                label="Email"
+                value={email}
+                onChange={e => { setEmail(e.target.value); markTouched(); }}
+                icon={<FontAwesomeIcon icon={faEnvelope} />}
+                fullWidth
+              />
 
-            <FormInput
-              type="password"
-              label="Password"
-              value={password}
-              onChange={e => {
-                setPassword(e.target.value);
-                setTouched(true);
-              }}
-              icon={<FontAwesomeIcon icon={faLock} />}
-              fullWidth
-            />
+              <FormInput
+                type="password"
+                label="Password"
+                value={password}
+                onChange={e => { setPassword(e.target.value); markTouched(); }}
+                icon={<FontAwesomeIcon icon={faLock} />}
+                fullWidth
+              />
 
-            <FormInput
-              type="password"
-              label="Confirm Password"
-              value={confirmPassword}
-              onChange={e => {
-                setConfirmPassword(e.target.value);
-                setTouched(true);
-              }}
-              icon={<FontAwesomeIcon icon={faLock} />}
-              fullWidth
-            />
+              <FormInput
+                type="password"
+                label="Confirm Password"
+                value={confirmPassword}
+                onChange={e => { setConfirmPassword(e.target.value); markTouched(); }}
+                icon={<FontAwesomeIcon icon={faLock} />}
+                fullWidth
+              />
+            </div>
 
-            <p className="info-text">{errorMessage}</p>
-            
-            <Button 
-              fill="primary" 
-              width="full" 
-              disabled={!validForm || loading}
+            <p className="signup-form__validation" aria-live="polite">
+              {displayedError}
+            </p>
+
+            <Button
+              fill="primary"
+              width="full"
+              height="medium"
+              disabled={!isFormValid || loading}
             >
-              {loading ? 'Signing up...' : 'Sign Up'}
+              {loading ? 'Creating account…' : 'Sign up'}
             </Button>
 
             {submitError && (
-              <p className="info-text" role="alert" style={{ color: 'red' }}>{submitError}</p>
+              <p className="signup-form__submit-error" role="alert">
+                {submitError}
+              </p>
             )}
           </form>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
+
+          <div className="signup-panel__footer">
+            <span className="signup-panel__footer-text">Already have an account?</span>
             <Button
               fill="link"
               textColor="primary"
+              height="short"
               onClick={() => navigate('/login')}
-              height={"short"}
             >
-              Login here.
+              Log in
             </Button>
           </div>
         </div>
